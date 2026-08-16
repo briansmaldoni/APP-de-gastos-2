@@ -273,7 +273,7 @@
         <h3 class="text-[11px] font-bold uppercase tracking-wider text-slate-300 flex items-center gap-1">
           <span>💼 Extras del Mes</span>
         </h3>
-        <button onclick="saveProyeccionCurrent()" class="text-[9px] bg-indigo-600/30 hover:bg-indigo-600/60 text-indigo-300 border border-indigo-500/40 px-2 py-0.5 rounded font-bold transition-all">
+        <button onclick="saveProyeccionCurrent(this)" class="btn-update-action text-[9px] bg-indigo-600/30 hover:bg-indigo-600/60 text-indigo-300 border border-indigo-500/40 px-2 py-0.5 rounded font-bold transition-all">
           🔄 Actualizar Extras
         </button>
       </div>
@@ -309,7 +309,7 @@
         <h3 class="text-xs font-bold uppercase tracking-wider text-blue-400">📌 Gastos Fijos - Brian</h3>
         <div class="flex gap-1.5">
           <button onclick="addGastoRow('Brian')" class="text-[10px] bg-slate-800 hover:bg-slate-700 text-slate-200 px-2 py-1 rounded border border-slate-700 font-bold">+ Agregar</button>
-          <button onclick="saveProyeccionCurrent()" class="text-[10px] bg-blue-900/40 hover:bg-blue-800/60 text-blue-300 border border-blue-700/50 px-2 py-1 rounded font-bold transition-all">🔄 Actualizar Brian</button>
+          <button onclick="saveProyeccionCurrent(this)" class="btn-update-action text-[10px] bg-blue-900/40 hover:bg-blue-800/60 text-blue-300 border border-blue-700/50 px-2 py-1 rounded font-bold transition-all">🔄 Actualizar Brian</button>
         </div>
       </div>
       <div id="container-gastos-brian" class="space-y-2"></div>
@@ -324,7 +324,7 @@
         <h3 class="text-xs font-bold uppercase tracking-wider text-fuchsia-400">📌 Gastos Fijos - Virginia</h3>
         <div class="flex gap-1.5">
           <button onclick="addGastoRow('Virginia')" class="text-[10px] bg-slate-800 hover:bg-slate-700 text-slate-200 px-2 py-1 rounded border border-slate-700 font-bold">+ Agregar</button>
-          <button onclick="saveProyeccionCurrent()" class="text-[10px] bg-fuchsia-900/40 hover:bg-fuchsia-800/60 text-fuchsia-300 border border-fuchsia-700/50 px-2 py-1 rounded font-bold transition-all">🔄 Actualizar Virginia</button>
+          <button onclick="saveProyeccionCurrent(this)" class="btn-update-action text-[10px] bg-fuchsia-900/40 hover:bg-fuchsia-800/60 text-fuchsia-300 border border-fuchsia-700/50 px-2 py-1 rounded font-bold transition-all">🔄 Actualizar Virginia</button>
         </div>
       </div>
       <div id="container-gastos-virginia" class="space-y-2"></div>
@@ -333,14 +333,16 @@
       </div>
     </div>
 
-    <!-- Resumen Servicios Globales Computados -->
-    <div class="glass p-3 rounded-xl border border-slate-700/80 flex justify-between items-center text-xs mb-3">
-      <span class="text-slate-400 font-semibold">⚡ Servicios Globales Configurados:</span>
-      <span id="subtotal-servicios-globales" class="font-bold text-indigo-300">$ 0,00</span>
+    <!-- Resumen Servicios Globales Configurados -->
+    <div class="glass p-3 rounded-2xl border border-slate-700/80 flex justify-between items-center text-xs mb-3 shadow-md">
+      <span class="text-slate-300 font-semibold flex items-center gap-1.5">
+        <span>⚡ Servicios Globales Configurados:</span>
+      </span>
+      <span id="subtotal-servicios-globales" class="font-extrabold text-indigo-300 text-sm">$ 0,00</span>
     </div>
 
     <!-- RESUMEN FINAL FLOTANTE AL FINAL DE PANTALLA -->
-    <div class="grid grid-cols-2 gap-3 pt-2 border-t border-slate-800">
+    <div class="grid grid-cols-2 gap-3 pt-2 border-t border-slate-800/80">
       <div class="glass p-3 rounded-xl border-l-2 border-emerald-500 shadow-md">
         <span class="text-[10px] text-slate-400 uppercase font-bold block">Ingresos Totales</span>
         <span class="proy-total-ingresos text-base font-extrabold text-emerald-400 block mt-1">$ 0,00</span>
@@ -975,8 +977,16 @@
     async function syncBackend(payload) {
       document.getElementById('btn-top-sync').classList.add('hidden');
       document.getElementById('sync-status').classList.remove('hidden');
-      try { await fetch(API_URL, { method: 'POST', mode: 'no-cors', headers: { "Content-Type": "text/plain" }, body: JSON.stringify(payload) }); setTimeout(() => fetchData(false), 2000); } 
+      try { 
+        await fetch(API_URL, { method: 'POST', mode: 'no-cors', headers: { "Content-Type": "text/plain" }, body: JSON.stringify(payload) }); 
+      } 
       catch (e) { console.error("Error", e); }
+      finally {
+        setTimeout(() => {
+          document.getElementById('sync-status').classList.add('hidden'); 
+          document.getElementById('btn-top-sync').classList.remove('hidden');
+        }, 1200);
+      }
     }
 
     function reverseMath(m) {
@@ -1506,7 +1516,11 @@
       document.querySelectorAll('.proy-nos-queda').forEach(el => el.innerText = formatMoney(nosQueda));
     }
 
-    function saveProyeccionCurrent() {
+    function saveProyeccionCurrent(btnElement) {
+      if (btnElement) {
+        btnElement.innerText = "⏳ Guardando...";
+      }
+
       const mesSelect = document.getElementById('proy-select-mes').value;
       let mesData = getOrCreateMesData(mesSelect);
 
@@ -1518,20 +1532,18 @@
       mesData.tipoExtraVirginia = document.getElementById('p-tipo-extra-virginia').value;
       mesData.conceptoExtraVirginia = document.getElementById('p-concepto-extra-virginia').value;
 
-      proyeccionesData.forEach(pData => {
-        syncBackend({
-          action: "saveProyeccionMes",
-          mes: pData.mes,
-          extraBrian: pData.extraBrian,
-          tipoExtraBrian: pData.tipoExtraBrian,
-          conceptoExtraBrian: pData.conceptoExtraBrian,
-          extraVirginia: pData.extraVirginia,
-          tipoExtraVirginia: pData.tipoExtraVirginia,
-          conceptoExtraVirginia: pData.conceptoExtraVirginia,
-          gastosBrian: pData.gastosBrian || [],
-          gastosVirginia: pData.gastosVirginia || []
-        });
+      // Unificar todos los meses y enviarlos en una sola llamada limpia
+      syncBackend({
+        action: "saveProyeccionesAll",
+        proyecciones: proyeccionesData
       });
+
+      setTimeout(() => {
+        if (btnElement) {
+          btnElement.innerText = "🔄 Actualizar";
+        }
+      }, 1000);
+
       calcProyTotales();
     }
 
