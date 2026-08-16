@@ -552,21 +552,12 @@
     let state = { hb: 0, bs: 0, movements: [], config: { paydate: "", themeBrian: "", themeVirginia: "", lastProcessedDate: "" } };
     
     // Variables Módulo Macro
-    let currentProyMonth = "Enero"; // Se asignará dinámicamente
+    let currentProyMonth = "Enero";
     let proyeccionesData = [];
     let dolarUSD = 1200;
     let sueldoBaseBrian = 1559009.85;
     let sueldoBaseVirginia = 0;
-    let serviciosGlobales = [
-      { concepto: "Netflix", moneda: "ARS", cant: 1, precio: 13588.49 },
-      { concepto: "Adobe", moneda: "ARS", cant: 1, precio: 21695.30 },
-      { concepto: "Mercado Pago", moneda: "ARS", cant: 1, precio: 8990.00 },
-      { concepto: "YouTube Premium", moneda: "USD", cant: 1, precio: 6.99 },
-      { concepto: "One", moneda: "USD", cant: 1, precio: 2.00 },
-      { concepto: "Internet", moneda: "ARS", cant: 1, precio: 37810.00 },
-      { concepto: "Celulares", moneda: "ARS", cant: 2, precio: 741.00 },
-      { concepto: "Rappi", moneda: "ARS", cant: 1, precio: 9990.00 }
-    ];
+    let serviciosGlobales = [];
 
     const ALL_MESES = [
       "Enero", "Febrero", "Marzo", "Abril", "Mayo [Premio]", "Junio [SAC]",
@@ -682,7 +673,6 @@
       } catch(e) { console.log("Feriados Offline"); }
     }
 
-    // TEMAS VISUALES ORIGINALES INTACTOS
     const THEME_GROUPS = [
       {
         label: "Oscuros / Modernos",
@@ -803,6 +793,7 @@
       return new Date(year, month, day);
     }
 
+    // Calcula las fechas restantes desde HOY
     function getRemainingDates() {
       const today = new Date();
       let payDateStr = state.config.paydate; let payDate;
@@ -815,6 +806,24 @@
       let dates = []; let currentDate = new Date(today);
       while(toLocalISODate(currentDate) < toLocalISODate(payDate)) { dates.push(toLocalISODate(currentDate)); currentDate.setDate(currentDate.getDate() + 1); }
       if(dates.length === 0) dates.push(toLocalISODate(today)); 
+      return dates;
+    }
+
+    // MÁQUINA DEL TIEMPO: Calcula las fechas restantes desde una fecha del PASADO
+    function getRemainingDatesFrom(startDateStr) {
+      let parts = startDateStr.split('-');
+      let startDate = new Date(parts[0], parts[1] - 1, parts[2]);
+      
+      let payDateStr = state.config.paydate; let payDate;
+      if (payDateStr && payDateStr !== "") {
+        let pParts = payDateStr.split('-'); payDate = new Date(pParts[0], pParts[1] - 1, pParts[2]);
+      } else {
+        payDate = getSecondBusinessDay(startDate.getFullYear(), startDate.getMonth());
+        if (startDate >= payDate) payDate = getSecondBusinessDay(startDate.getFullYear(), startDate.getMonth() + 1);
+      }
+      let dates = []; let currentDate = new Date(startDate);
+      while(toLocalISODate(currentDate) < toLocalISODate(payDate)) { dates.push(toLocalISODate(currentDate)); currentDate.setDate(currentDate.getDate() + 1); }
+      if(dates.length === 0) dates.push(toLocalISODate(startDate)); 
       return dates;
     }
 
@@ -956,7 +965,7 @@
     function toggleAjusteFields() { const extra = document.getElementById('a-extra-fields'); const val = document.getElementById('a-tipo').value; if (val === "7" || val === "8") extra.classList.remove('hidden'); else extra.classList.add('hidden'); }
     function clearForm(formId) { document.getElementById(formId).reset(); document.getElementById('u-fecha').value = toLocalISODate(new Date()); document.getElementById('d-fecha').value = toLocalISODate(new Date()); document.getElementById('u-fecha').disabled = false; toggleAjusteFields(); }
     
-    // NAVEGACIÓN INTELIGENTE (ENTER / SIGUIENTE) PARA MÓDULO DIARIO
+    // NAVEGACIÓN INTELIGENTE (ENTER / SIGUIENTE) PARA MÓDULO DIARIO CON CURSOR AL FINAL
     function setupEnterNavigation() { 
       document.querySelectorAll('form').forEach(form => { 
         const inputs = Array.from(form.querySelectorAll('input:not([type="hidden"]), select, button[type="submit"]')); 
@@ -965,7 +974,14 @@
             if (e.key === 'Enter') { 
               e.preventDefault(); 
               if (index < inputs.length - 1) { 
-                 inputs[index + 1].focus(); 
+                 let nextInput = inputs[index + 1];
+                 nextInput.focus(); 
+                 if (nextInput.tagName.toLowerCase() === 'input' && (nextInput.type === 'text' || nextInput.type === 'number')) {
+                     setTimeout(() => {
+                         let len = nextInput.value.length;
+                         if (nextInput.setSelectionRange) nextInput.setSelectionRange(len, len);
+                     }, 10);
+                 }
               }
               if (inputs[index + 1] && inputs[index + 1].type === 'submit') {
                  inputs[index + 1].scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -976,6 +992,7 @@
       }); 
     }
 
+    // LÓGICA CORREGIDA DEL RE-CÁLCULO DEL PASADO PARA EL CARTEL DE NUEVO DÍA
     function checkDayRollover() {
       const todayStr = toLocalISODate(new Date());
       const lastProcessed = state.config.lastProcessedDate;
@@ -987,10 +1004,42 @@
       }
 
       if (todayStr > lastProcessed) {
-         const { baseDailyBudget, gastosPorDia } = calculateBudgets();
-         const unspentPreviousDay = baseDailyBudget - (gastosPorDia[lastProcessed] || 0);
+         // Reconstruimos el entorno matemático de AYER
+         const pastDates = getRemainingDatesFrom(lastProcessed);
+         const liquidHB = state.hb - state.bs;
+         
+         let gastosEnPeriodoPasado = 0; 
+         let gastoExactoAyer = 0;
 
-         if (unspentPreviousDay > 0) {
+         state.movements.forEach(m => {
+            if(m.fechas_afectadas && m.fechas_afectadas.length > 2) { 
+              try { 
+                let affectedDates = JSON.parse(m.fechas_afectadas);
+                if(affectedDates.length > 0) { 
+                   let montoParcial = parseFloat(m.monto) / affectedDates.length; 
+                   affectedDates.forEach(ad => { 
+                     // Sumamos todos los gastos que afectan el periodo desde ayer hasta el pago
+                     if (pastDates.includes(ad)) { 
+                         gastosEnPeriodoPasado += montoParcial; 
+                     }
+                     // Extraemos especificamente el gasto de ese dia exacto
+                     if (ad === lastProcessed) {
+                         gastoExactoAyer += montoParcial;
+                     }
+                   }); 
+                }
+              } catch(e) {}
+            }
+         });
+
+         // Capital líquido original que tenías ayer a la mañana = Saldo actual + Todo lo gastado en el periodo
+         let poolAyer = liquidHB + gastosEnPeriodoPasado;
+         let baseDailyBudgetAyer = pastDates.length > 0 ? poolAyer / pastDates.length : 0;
+         
+         // El sobrante real es lo que podías gastar ayer menos lo que gastaste realmente ayer
+         const unspentPreviousDay = baseDailyBudgetAyer - gastoExactoAyer;
+
+         if (unspentPreviousDay > 0.05) { // Ignoramos centavos basura
             pendingRolloverAmount = unspentPreviousDay;
             pendingRolloverDate = lastProcessed;
             document.getElementById('rollover-amount').innerText = formatMoney(unspentPreviousDay);
@@ -1271,23 +1320,27 @@
 
     // ================= LÓGICA DEL MÓDULO DE PROYECCIÓN (MACRO) =================
 
-    // Función para generar IDs únicos
     function generateId() {
        return 'g-' + Math.random().toString(36).substr(2, 9) + Date.now().toString(36);
     }
 
-    // MANEJADOR DE EVENTO ENTER EN GASTOS FIJOS
+    // MANEJADOR DE EVENTO ENTER EN GASTOS FIJOS CON CURSOR AL FINAL
     function handleGastoMontoKeydown(e, el) {
       if (e.key === 'Enter') {
         e.preventDefault();
         let inputs = Array.from(document.querySelectorAll('.gasto-monto-input'));
         let idx = inputs.indexOf(el);
         if (idx !== -1 && idx < inputs.length - 1) {
-            inputs[idx + 1].focus();
+            let nextInput = inputs[idx + 1];
+            nextInput.focus();
+            setTimeout(() => {
+                let len = nextInput.value.length;
+                if (nextInput.setSelectionRange) nextInput.setSelectionRange(len, len);
+            }, 10);
         } else {
             let btns = document.querySelectorAll('.btn-update-action');
             if (btns.length > 0) {
-                let lastBtn = btns[btns.length - 1]; // Tomar el último botón Guardar
+                let lastBtn = btns[btns.length - 1]; 
                 lastBtn.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 lastBtn.focus();
             }
@@ -1334,7 +1387,6 @@
           }
           proyeccionesData = data.proyecciones || [];
 
-          // Auto-asignar IDs a los gastos existentes
           let conceptMap = {}; 
           proyeccionesData.forEach(mes => {
             ['gastosBrian', 'gastosVirginia'].forEach(key => {
@@ -1672,7 +1724,6 @@
       return found;
     }
 
-    // CÁLCULOS MATEMÁTICOS CORREGIDOS (Solo suma positivos en Gastos, negativos van a Ingresos y Terceros)
     function calcProyTotales() {
       let extraB = parseAmountInput(document.getElementById('p-extra-brian').value);
       let extraV = parseAmountInput(document.getElementById('p-extra-virginia').value);
@@ -1694,15 +1745,11 @@
       let totalServicios = getServiciosTotalCalculated();
       let totalTerceros = tercerosBrian + tercerosVirginia;
 
-      // Gastos Fijos Totales: SOLO suma los montos positivos (reales)
       let totalGastosFijos = totalBrianNormal + totalVirginiaNormal + totalServicios;
-      
-      // Ingresos Totales: Suma Sueldos + Extras + La plata de deudores (que está en totalTerceros)
       let totalIngresos = sueldoBaseBrian + sueldoBaseVirginia + extraB + extraV + totalTerceros;
       
       let nosQueda = totalIngresos - totalGastosFijos;
 
-      // Los subtotales visuales de Brian y Virginia ahora solo reflejan la plata que de verdad sale de ellos
       document.getElementById('subtotal-brian').innerText = formatMoney(totalBrianNormal);
       document.getElementById('subtotal-virginia').innerText = formatMoney(totalVirginiaNormal);
       
@@ -1739,7 +1786,7 @@
       setTimeout(() => {
         if (btnElement) {
           btnElement.innerText = "🔄 Guardado OK";
-          setTimeout(() => { btnElement.innerText = "🔄 Actualizar Extras"; }, 1500);
+          setTimeout(() => { btnElement.innerText = "🔄 Actualizar"; }, 1500);
         }
       }, 1000);
 
