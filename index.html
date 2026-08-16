@@ -22,6 +22,7 @@
     body { background-color: var(--c-bg); color: #f8fafc; font-family: system-ui, sans-serif; transition: background-color 0.4s ease; }
     .glass { background: var(--c-panel); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.08); transition: background 0.4s ease, border-color 0.4s ease; }
     
+    /* Nueva Píldora Elegante para Totales Macro */
     .glass-pill { background: rgba(255, 255, 255, 0.04); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.08); box-shadow: 0 4px 15px rgba(0,0,0,0.1); border-radius: 9999px; transition: all 0.3s ease; }
 
     .t-primary { color: var(--c-primary); transition: color 0.4s; }
@@ -334,7 +335,7 @@
       </div>
     </div>
 
-    <!-- RESUMEN FINAL EN PÍLDORAS ESTÉTICAS (INFERIOR - 4 BURBUJAS) -->
+    <!-- RESUMEN FINAL EN PÍLDORAS ESTÉTICAS (INFERIOR) -->
     <div class="space-y-2.5 pt-3 border-t border-slate-800/80">
       <div class="glass-pill flex justify-between items-center px-4 py-3">
         <span class="text-[10px] text-slate-300 font-semibold uppercase tracking-wide truncate">⚡ Servicios Globales:</span>
@@ -993,13 +994,18 @@
       }
     }
 
+    // FUNCIÓN DE GUARDADO CORREGIDA (Sin modo oculto no-cors)
     async function syncBackend(payload) {
       document.getElementById('btn-top-sync').classList.add('hidden');
       document.getElementById('sync-status').classList.remove('hidden');
       try { 
-        await fetch(API_URL, { method: 'POST', mode: 'no-cors', headers: { "Content-Type": "text/plain" }, body: JSON.stringify(payload) }); 
+        await fetch(API_URL, { 
+          method: 'POST', 
+          headers: { "Content-Type": "text/plain;charset=utf-8" }, 
+          body: JSON.stringify(payload) 
+        }); 
       } 
-      catch (e) { console.error("Error", e); }
+      catch (e) { console.error("Error al sincronizar con Google Sheets:", e); }
       finally {
         setTimeout(() => {
           document.getElementById('sync-status').classList.add('hidden'); 
@@ -1574,7 +1580,9 @@
       document.getElementById('subtotal-brian').innerText = formatMoney(totalBrian);
       document.getElementById('subtotal-virginia').innerText = formatMoney(totalVirginia);
       
+      const lblServTop = document.getElementById('subtotal-servicios-globales-top');
       const lblServBottom = document.getElementById('subtotal-servicios-globales-bottom');
+      if (lblServTop) lblServTop.innerText = formatMoney(totalServicios);
       if (lblServBottom) lblServBottom.innerText = formatMoney(totalServicios);
 
       document.querySelectorAll('.proy-total-ingresos').forEach(el => el.innerText = formatMoney(totalIngresos));
@@ -1606,7 +1614,7 @@
       setTimeout(() => {
         if (btnElement) {
           btnElement.innerText = "🔄 Guardado OK";
-          setTimeout(() => { btnElement.innerText = "🔄 Guardar"; }, 1500);
+          setTimeout(() => { btnElement.innerText = "🔄 Actualizar"; }, 1500);
         }
       }, 1000);
 
