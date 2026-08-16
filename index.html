@@ -227,11 +227,11 @@
 
   <!-- ================= MÓDULO 2: PROYECCIÓN DE GASTOS (MACRO) ================= -->
   <section id="view-proyeccion" class="hidden space-y-4 pb-12">
-    <!-- Selector de Mes + Botón de Config. Servicios -->
+    <!-- Selector de Mes + Botón de Config. Servicios/Sueldos -->
     <div class="glass p-3 rounded-xl border border-slate-700 flex justify-between items-center gap-2">
       <div class="flex items-center gap-2">
         <label class="text-xs font-bold uppercase tracking-wider text-slate-400">Mes:</label>
-        <select id="proy-select-mes" onchange="renderProyeccion()" class="bg-slate-900 border border-slate-700 text-white text-xs font-bold px-2.5 py-1.5 rounded-lg outline-none">
+        <select id="proy-select-mes" onchange="renderProyeccion()" class="bg-slate-900 border border-slate-700 text-white text-xs font-bold px-2 py-1.5 rounded-lg outline-none">
           <option value="Enero">Enero</option>
           <option value="Febrero">Febrero</option>
           <option value="Marzo">Marzo</option>
@@ -247,8 +247,8 @@
         </select>
       </div>
 
-      <button onclick="openServiciosModal()" class="bg-slate-800 hover:bg-slate-700 text-indigo-300 border border-slate-700 font-bold text-xs px-3 py-1.5 rounded-lg shadow flex items-center gap-1">
-        ⚙️ Servicios
+      <button onclick="openServiciosModal()" class="bg-slate-800 hover:bg-slate-700 text-indigo-300 border border-slate-700 font-bold text-xs px-2.5 py-1.5 rounded-lg shadow flex items-center gap-1">
+        ⚙️ Servicios/Sueldos
       </button>
     </div>
 
@@ -268,51 +268,40 @@
       </div>
     </div>
 
-    <!-- Sección Ingresos (Brian + Virginia) -->
+    <!-- Sección Ingresos Extras / Variables del Mes -->
     <div class="glass p-4 rounded-xl border border-slate-700/80 space-y-3">
-      <h3 class="text-xs font-bold uppercase tracking-wider text-slate-300 border-b border-slate-800 pb-2 flex justify-between items-center">
-        <span>💼 Ingresos del Mes</span>
-      </h3>
+      <h3 class="text-xs font-bold uppercase tracking-wider text-slate-300 border-b border-slate-800 pb-2">💼 Ingresos Extras / Variables del Mes</h3>
+      <p class="text-[10px] text-slate-400 italic">Los sueldos base se cargan en ⚙️ Servicios/Sueldos y aplican a todos los meses.</p>
       
-      <!-- Brian -->
+      <!-- Brian Extra -->
       <div class="bg-slate-900/60 p-2.5 rounded-lg border border-blue-900/40 space-y-2">
-        <span class="text-xs font-bold text-blue-400 block">Brian</span>
+        <div class="flex justify-between items-center">
+          <span class="text-xs font-bold text-blue-400">Brian (Ingreso Extra)</span>
+          <select id="p-tipo-extra-brian" onchange="autoCalcSAC('Brian')" class="bg-slate-800 text-[10px] text-indigo-300 border border-slate-700 rounded px-1 py-0.5">
+            <option value="SAC">SAC (Aguinaldo)</option>
+            <option value="Premio">Premio / Bono</option>
+            <option value="Otro">Otro Ingreso</option>
+          </select>
+        </div>
         <div class="grid grid-cols-2 gap-2 text-xs">
-          <div>
-            <label class="text-[9px] text-slate-400">Sueldo Base</label>
-            <input type="text" id="p-sueldo-brian" inputmode="decimal" onchange="calcProyTotales()" class="w-full bg-slate-800 border border-slate-700 p-1.5 rounded font-bold text-white mt-0.5">
-          </div>
-          <div>
-            <div class="flex justify-between items-center">
-              <label class="text-[9px] text-slate-400">Ingreso Extra</label>
-              <select id="p-tipo-extra-brian" onchange="toggleExtraType('Brian')" class="bg-slate-800 text-[9px] text-indigo-300 border border-slate-700 rounded px-1">
-                <option value="SAC">SAC</option>
-                <option value="Premio">Premio/Bono</option>
-              </select>
-            </div>
-            <input type="text" id="p-extra-brian" inputmode="decimal" onchange="calcProyTotales()" class="w-full bg-slate-800 border border-slate-700 p-1.5 rounded font-bold text-white mt-0.5">
-          </div>
+          <input type="text" id="p-concepto-extra-brian" placeholder="Detalle (ej. SAC 1er sem)" class="bg-slate-800 border border-slate-700 p-1.5 rounded text-white text-xs">
+          <input type="text" id="p-extra-brian" inputmode="decimal" placeholder="Monto ($)" onchange="calcProyTotales()" class="bg-slate-800 border border-slate-700 p-1.5 rounded font-bold text-white text-right text-xs">
         </div>
       </div>
 
-      <!-- Virginia -->
+      <!-- Virginia Extra -->
       <div class="bg-slate-900/60 p-2.5 rounded-lg border border-fuchsia-900/40 space-y-2">
-        <span class="text-xs font-bold text-fuchsia-400 block">Virginia</span>
+        <div class="flex justify-between items-center">
+          <span class="text-xs font-bold text-fuchsia-400">Virginia (Ingreso Extra)</span>
+          <select id="p-tipo-extra-virginia" onchange="autoCalcSAC('Virginia')" class="bg-slate-800 text-[10px] text-indigo-300 border border-slate-700 rounded px-1 py-0.5">
+            <option value="SAC">SAC (Aguinaldo)</option>
+            <option value="Premio">Premio / Bono</option>
+            <option value="Otro">Otro Ingreso</option>
+          </select>
+        </div>
         <div class="grid grid-cols-2 gap-2 text-xs">
-          <div>
-            <label class="text-[9px] text-slate-400">Sueldo Base</label>
-            <input type="text" id="p-sueldo-virginia" inputmode="decimal" onchange="calcProyTotales()" class="w-full bg-slate-800 border border-slate-700 p-1.5 rounded font-bold text-white mt-0.5">
-          </div>
-          <div>
-            <div class="flex justify-between items-center">
-              <label class="text-[9px] text-slate-400">Ingreso Extra</label>
-              <select id="p-tipo-extra-virginia" onchange="toggleExtraType('Virginia')" class="bg-slate-800 text-[9px] text-indigo-300 border border-slate-700 rounded px-1">
-                <option value="SAC">SAC</option>
-                <option value="Premio">Premio/Bono</option>
-              </select>
-            </div>
-            <input type="text" id="p-extra-virginia" inputmode="decimal" onchange="calcProyTotales()" class="w-full bg-slate-800 border border-slate-700 p-1.5 rounded font-bold text-white mt-0.5">
-          </div>
+          <input type="text" id="p-concepto-extra-virginia" placeholder="Detalle (ej. Bono anual)" class="bg-slate-800 border border-slate-700 p-1.5 rounded text-white text-xs">
+          <input type="text" id="p-extra-virginia" inputmode="decimal" placeholder="Monto ($)" onchange="calcProyTotales()" class="bg-slate-800 border border-slate-700 p-1.5 rounded font-bold text-white text-right text-xs">
         </div>
       </div>
     </div>
@@ -352,38 +341,60 @@
     </button>
   </section>
 
-  <!-- MODAL DE CONFIGURACIÓN DE SERVICIOS GLOBALES Y DÓLAR -->
+  <!-- MODAL UNIFICADO: CONFIGURACIÓN DE SERVICIOS, SUELDOS Y DÓLAR -->
   <div id="modal-servicios" onclick="if(event.target === this) closeServiciosModal()" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-md z-[80] flex items-center justify-center p-4">
-    <div class="glass w-full max-w-md max-h-[90vh] rounded-2xl border border-slate-600 p-4 flex flex-col shadow-2xl space-y-4">
+    <div class="glass w-full max-w-md max-h-[90vh] rounded-2xl border border-slate-600 p-4 flex flex-col shadow-2xl space-y-3">
       <div class="flex justify-between items-center border-b border-slate-800 pb-2">
-        <h2 class="text-base font-bold text-white flex items-center gap-2">⚙️ Tarifario de Servicios</h2>
+        <h2 class="text-base font-bold text-white flex items-center gap-2">⚙️ Tarifario & Sueldos Base</h2>
         <button onclick="closeServiciosModal()" class="w-7 h-7 rounded-full bg-slate-800 text-slate-400 font-bold text-xs hover:bg-slate-700 border border-slate-700">✕</button>
       </div>
 
-      <!-- Cotización Dólar -->
-      <div class="bg-slate-900/80 p-3 rounded-xl border border-slate-700 flex justify-between items-center">
-        <div>
-          <label class="text-xs font-bold text-amber-400 block">Cotización Dólar ($ USD)</label>
-          <span class="text-[10px] text-slate-400 block">Usado para convertir servicios en USD</span>
+      <!-- Pestañas del Modal -->
+      <div class="flex border-b border-slate-700 text-xs font-bold">
+        <button onclick="switchServTab('tab-serv-lista')" id="btn-serv-lista" class="flex-1 py-2 text-indigo-400 border-b-2 border-indigo-400 transition-all">Servicios / Subscripciones</button>
+        <button onclick="switchServTab('tab-serv-sueldos')" id="btn-serv-sueldos" class="flex-1 py-2 text-slate-500 transition-all">Sueldos Base</button>
+      </div>
+
+      <!-- Pestaña 1: Servicios & Dólar -->
+      <div id="tab-serv-lista" class="space-y-3">
+        <div class="bg-slate-900/80 p-2.5 rounded-xl border border-slate-700 flex justify-between items-center">
+          <div>
+            <label class="text-xs font-bold text-amber-400 block">Cotización Dólar ($ USD)</label>
+            <span class="text-[10px] text-slate-400 block">Para convertir servicios en USD</span>
+          </div>
+          <input type="text" id="cfg-dolar-usd" inputmode="decimal" placeholder="1200" onchange="renderServiciosGlobales()" class="w-24 bg-slate-800 border border-slate-700 p-2 rounded text-right font-black text-amber-300 text-sm">
         </div>
-        <input type="text" id="cfg-dolar-usd" inputmode="decimal" placeholder="1200" onchange="renderServiciosGlobales()" class="w-24 bg-slate-800 border border-slate-700 p-2 rounded text-right font-black text-amber-300 text-sm">
+
+        <div class="flex justify-between items-center">
+          <span class="text-xs font-bold uppercase text-slate-300">Lista de Servicios</span>
+          <button onclick="addServicioGlobalRow()" class="text-[10px] bg-indigo-600 text-white px-2 py-1 rounded font-bold">+ Nuevo Servicio</button>
+        </div>
+
+        <div id="modal-servicios-list" class="space-y-2 overflow-y-auto max-h-52 pr-1 custom-scroll"></div>
+
+        <div class="pt-2 border-t border-slate-800 flex justify-between items-center">
+          <span class="text-xs text-slate-400 font-semibold">Total Servicios Est.:</span>
+          <span id="modal-servicios-total" class="text-sm font-black text-indigo-400">$ 0,00</span>
+        </div>
       </div>
 
-      <!-- Tabla de Servicios -->
-      <div class="flex justify-between items-center">
-        <span class="text-xs font-bold uppercase text-slate-300">Servicios/Suscripciones</span>
-        <button onclick="addServicioGlobalRow()" class="text-[10px] bg-indigo-600 text-white px-2 py-1 rounded font-bold">+ Nuevo Servicio</button>
-      </div>
+      <!-- Pestaña 2: Sueldos Base -->
+      <div id="tab-serv-sueldos" class="hidden space-y-3 py-2">
+        <p class="text-xs text-slate-400">Ingresá los sueldos base actualizados. Aplicarán a todas las proyecciones de los meses.</p>
+        
+        <div class="bg-slate-900/80 p-3 rounded-xl border border-blue-900/40 space-y-1">
+          <label class="text-xs font-bold text-blue-400 block">Sueldo Base Brian ($)</label>
+          <input type="text" id="cfg-sueldo-brian" inputmode="decimal" placeholder="0.00" class="w-full bg-slate-800 border border-slate-700 p-2 rounded font-black text-white text-base">
+        </div>
 
-      <div id="modal-servicios-list" class="space-y-2 overflow-y-auto max-h-60 pr-1 custom-scroll"></div>
-
-      <div class="pt-2 border-t border-slate-800 flex justify-between items-center">
-        <span class="text-xs text-slate-400 font-semibold">Total Servicios Est.:</span>
-        <span id="modal-servicios-total" class="text-sm font-black text-indigo-400">$ 0,00</span>
+        <div class="bg-slate-900/80 p-3 rounded-xl border border-fuchsia-900/40 space-y-1">
+          <label class="text-xs font-bold text-fuchsia-400 block">Sueldo Base Virginia ($)</label>
+          <input type="text" id="cfg-sueldo-virginia" inputmode="decimal" placeholder="0.00" class="w-full bg-slate-800 border border-slate-700 p-2 rounded font-black text-white text-base">
+        </div>
       </div>
 
       <button onclick="saveServiciosConfig()" class="w-full bg-blue-600 hover:bg-blue-500 text-white py-2.5 rounded-lg text-sm font-bold shadow">
-        Guardar Configuración de Servicios
+        Guardar Ajustes Globales
       </button>
     </div>
   </div>
@@ -508,6 +519,8 @@
     // Variables Módulo Macro
     let proyeccionesData = [];
     let dolarUSD = 1200;
+    let sueldoBaseBrian = 1559009.85;
+    let sueldoBaseVirginia = 0;
     let serviciosGlobales = [
       { concepto: "Netflix", moneda: "ARS", cant: 1, precio: 13588.49 },
       { concepto: "Adobe", moneda: "ARS", cant: 1, precio: 21695.30 },
@@ -570,6 +583,7 @@
       } catch(e) { console.log("Feriados Offline"); }
     }
 
+    // TODOS LOS TEMAS VISUALES ORIGINALES
     const THEME_GROUPS = [
       {
         label: "Oscuros / Modernos",
@@ -578,7 +592,77 @@
           { id: "dark-ruby", name: "🔴 Rubí Nocturno", vals: { primary: "#f43f5e", bolsa: "#fbbf24", hb: "#818cf8", bg: "#18181b", panel: "#27272aa6", isLight: false } },
           { id: "dark-sapphire", name: "🔵 Zafiro Profundo", vals: { primary: "#3b82f6", bolsa: "#ec4899", hb: "#14b8a6", bg: "#172554", panel: "#164e63b3", isLight: false } },
           { id: "dark-amethyst", name: "🟣 Amatista", vals: { primary: "#c084fc", bolsa: "#2dd4bf", hb: "#f472b6", bg: "#2e1065", panel: "#3b0764b3", isLight: false } },
-          { id: "dark-amber", name: "🟠 Ámbar Quemado", vals: { primary: "#f59e0b", bolsa: "#ef4444", hb: "#6366f1", bg: "#451a03", panel: "#78350fb3", isLight: false } }
+          { id: "dark-amber", name: "🟠 Ámbar Quemado", vals: { primary: "#f59e0b", bolsa: "#ef4444", hb: "#6366f1", bg: "#451a03", panel: "#78350fb3", isLight: false } },
+          { id: "dark-graphite", name: "⚫ Grafito", vals: { primary: "#94a3b8", bolsa: "#64748b", hb: "#475569", bg: "#020617", panel: "#0f172ab3", isLight: false } },
+          { id: "dark-obsidian", name: "🖤 Obsidiana", vals: { primary: "#e4e4e7", bolsa: "#a1a1aa", hb: "#d4d4d8", bg: "#000000", panel: "#18181bb3", isLight: false } },
+          { id: "dark-forest", name: "🌲 Bosque Negro", vals: { primary: "#22c55e", bolsa: "#eab308", hb: "#0ea5e9", bg: "#052e16", panel: "#14532db3", isLight: false } },
+          { id: "dark-ocean", name: "🌊 Océano Oscuro", vals: { primary: "#06b6d4", bolsa: "#f43f5e", hb: "#3b82f6", bg: "#083344", panel: "#164e63b3", isLight: false } },
+          { id: "dark-blood", name: "🩸 Sangre y Ceniza", vals: { primary: "#dc2626", bolsa: "#7f1d1d", hb: "#ef4444", bg: "#1a0505", panel: "#450a0ab3", isLight: false } }
+        ]
+      },
+      {
+        label: "Neón / Cyberpunk",
+        options: [
+          { id: "neon-synth", name: "👾 Synthwave", vals: { primary: "#f0abfc", bolsa: "#2dd4bf", hb: "#fde047", bg: "#2c1030", panel: "#4a1c40b3", isLight: false } },
+          { id: "neon-cyber", name: "🦾 Cyberpunk", vals: { primary: "#fde047", bolsa: "#f43f5e", hb: "#06b6d4", bg: "#09090b", panel: "#18181bb3", isLight: false } },
+          { id: "neon-matrix", name: "🖥️ Matrix", vals: { primary: "#4ade80", bolsa: "#22c55e", hb: "#16a34a", bg: "#000000", panel: "#022c22b3", isLight: false } },
+          { id: "neon-tokyo", name: "🌃 Tokyo Night", vals: { primary: "#fb7185", bolsa: "#38bdf8", hb: "#c084fc", bg: "#111827", panel: "#1e293bb3", isLight: false } },
+          { id: "neon-miami", name: "🦩 Miami Vice", vals: { primary: "#f472b6", bolsa: "#2dd4bf", hb: "#fde047", bg: "#1e1b4b", panel: "#312e81b3", isLight: false } },
+          { id: "neon-laser", name: "🔦 Láser", vals: { primary: "#e879f9", bolsa: "#34d399", hb: "#f87171", bg: "#171717", panel: "#262626b3", isLight: false } },
+          { id: "neon-acid", name: "🧪 Ácido", vals: { primary: "#a3e635", bolsa: "#eab308", hb: "#22d3ee", bg: "#0f172a", panel: "#1e293bb3", isLight: false } },
+          { id: "neon-purple", name: "🔮 Ultra Púrpura", vals: { primary: "#d946ef", bolsa: "#a855f7", hb: "#8b5cf6", bg: "#2e1065", panel: "#4c1d95b3", isLight: false } },
+          { id: "neon-blue", name: "⚡ Electric Blue", vals: { primary: "#3b82f6", bolsa: "#60a5fa", hb: "#93c5fd", bg: "#020617", panel: "#0f172ab3", isLight: false } },
+          { id: "neon-sunset", name: "🌇 Neón Sunset", vals: { primary: "#fb923c", bolsa: "#f43f5e", hb: "#c084fc", bg: "#2e0219", panel: "#4c0519b3", isLight: false } }
+        ]
+      },
+      {
+        label: "Claros / Minimalistas",
+        options: [
+          { id: "light-arctic", name: "❄️ Ártico Puro", vals: { primary: "#0ea5e9", bolsa: "#8b5cf6", hb: "#14b8a6", bg: "#f8fafc", panel: "#ffffffcc", isLight: true } },
+          { id: "light-ivory", name: "🦴 Marfil", vals: { primary: "#d97706", bolsa: "#be123c", hb: "#4338ca", bg: "#fdfbf7", panel: "#fefdfbcc", isLight: true } },
+          { id: "light-cotton", name: "☁️ Algodón", vals: { primary: "#10b981", bolsa: "#ec4899", hb: "#3b82f6", bg: "#f1f5f9", panel: "#ffffffb3", isLight: true } },
+          { id: "light-vanilla", name: "🍦 Vainilla", vals: { primary: "#f59e0b", bolsa: "#db2777", hb: "#0284c7", bg: "#fffbeb", panel: "#fef3c7cc", isLight: true } },
+          { id: "light-paper", name: "📄 Papel", vals: { primary: "#334155", bolsa: "#64748b", hb: "#475569", bg: "#fdfcfc", panel: "#ffffffb3", isLight: true } },
+          { id: "light-silver", name: "🥄 Plata", vals: { primary: "#64748b", bolsa: "#475569", hb: "#334155", bg: "#e2e8f0", panel: "#f8fafcb3", isLight: true } },
+          { id: "light-rose", name: "🌸 Rosa Pálido", vals: { primary: "#e11d48", bolsa: "#4f46e5", hb: "#059669", bg: "#fff1f2", panel: "#ffe4e6cc", isLight: true } },
+          { id: "light-sky", name: "🌤️ Cielo Claro", vals: { primary: "#0284c7", bolsa: "#7c3aed", hb: "#ea580c", bg: "#f0f9ff", panel: "#e0f2fecc", isLight: true } },
+          { id: "light-mint", name: "🍃 Menta Claro", vals: { primary: "#059669", bolsa: "#2563eb", hb: "#d97706", bg: "#f0fdf4", panel: "#d1fae5cc", isLight: true } },
+          { id: "light-lemon", name: "🍋 Limón Suave", vals: { primary: "#d97706", bolsa: "#059669", hb: "#4f46e5", bg: "#fefce8", panel: "#fef9c3cc", isLight: true } }
+        ]
+      },
+      {
+        label: "Pasteles Suaves",
+        options: [
+          { id: "pastel-peach", name: "🍑 Durazno", vals: { primary: "#f97316", bolsa: "#db2777", hb: "#0284c7", bg: "#ffedd5", panel: "#fef08acc", isLight: true } },
+          { id: "pastel-lavender", name: "🪻 Lavanda", vals: { primary: "#9333ea", bolsa: "#0284c7", hb: "#ea580c", bg: "#faf5ff", panel: "#f3e8ffcc", isLight: true } },
+          { id: "pastel-babyblue", name: "🍼 Celeste Bebé", vals: { primary: "#3b82f6", bolsa: "#f43f5e", hb: "#10b981", bg: "#eff6ff", panel: "#dbeafecc", isLight: true } },
+          { id: "pastel-pistachio", name: "🥜 Pistacho", vals: { primary: "#65a30d", bolsa: "#0284c7", hb: "#8b5cf6", bg: "#f7fee7", panel: "#dcfce7cc", isLight: true } },
+          { id: "pastel-pink", name: "🎀 Rosa Pastel", vals: { primary: "#ec4899", bolsa: "#8b5cf6", hb: "#06b6d4", bg: "#fdf2f8", panel: "#fce7f3cc", isLight: true } },
+          { id: "pastel-butter", name: "🧈 Manteca", vals: { primary: "#eab308", bolsa: "#ec4899", hb: "#14b8a6", bg: "#fefce8", panel: "#fef08acc", isLight: true } },
+          { id: "pastel-lilac", name: "💐 Lila", vals: { primary: "#d946ef", bolsa: "#0ea5e9", hb: "#f59e0b", bg: "#fdf4ff", panel: "#fae8ffcc", isLight: true } },
+          { id: "pastel-mint", name: "🌿 Menta Pastel", vals: { primary: "#14b8a6", bolsa: "#a855f7", hb: "#f43f5e", bg: "#f0fdfa", panel: "#ccfbf1cc", isLight: true } },
+          { id: "pastel-sand", name: "🏖️ Arena", vals: { primary: "#b45309", bolsa: "#1d4ed8", hb: "#047857", bg: "#fffbeb", panel: "#fef3c7cc", isLight: true } },
+          { id: "pastel-coral", name: "🐠 Coral Pastel", vals: { primary: "#f43f5e", bolsa: "#eab308", hb: "#0ea5e9", bg: "#fff1f2", panel: "#ffe4e6cc", isLight: true } }
+        ]
+      },
+      {
+        label: "Estéticas / Vibes",
+        options: [
+          { id: "vibe-coffee", name: "☕ Café Latte", vals: { primary: "#b45309", bolsa: "#14b8a6", hb: "#6366f1", bg: "#292524", panel: "#44403cb3", isLight: false } },
+          { id: "vibe-matcha", name: "🍵 Matcha", vals: { primary: "#4d7c0f", bolsa: "#0369a1", hb: "#b45309", bg: "#f7fee7", panel: "#ecfccbcc", isLight: true } },
+          { id: "vibe-grape", name: "🍇 Uva", vals: { primary: "#7e22ce", bolsa: "#be123c", hb: "#15803d", bg: "#3b0764", panel: "#581c87b3", isLight: false } },
+          { id: "vibe-berry", name: "🍓 Frutos Rojos", vals: { primary: "#be123c", bolsa: "#6d28d9", hb: "#b45309", bg: "#2e0219", panel: "#4c0519b3", isLight: false } },
+          { id: "vibe-autumn", name: "🍂 Otoño", vals: { primary: "#ea580c", bolsa: "#b91c1c", hb: "#a16207", bg: "#451a03", panel: "#78350fb3", isLight: false } },
+          { id: "vibe-desert", name: "🐪 Desierto", vals: { primary: "#d97706", bolsa: "#c2410c", hb: "#b45309", bg: "#78350f", panel: "#92400eb3", isLight: false } },
+          { id: "vibe-galaxy", name: "🌌 Galaxia", vals: { primary: "#c084fc", bolsa: "#38bdf8", hb: "#f472b6", bg: "#0f172a", panel: "#1e1b4bb3", isLight: false } },
+          { id: "vibe-aurora", name: "🌠 Aurora Boreal", vals: { primary: "#34d399", bolsa: "#818cf8", hb: "#a78bfa", bg: "#064e3b", panel: "#065f46b3", isLight: false } },
+          { id: "vibe-twilight", name: "🌆 Crepúsculo", vals: { primary: "#f472b6", bolsa: "#818cf8", hb: "#fb923c", bg: "#2e1065", panel: "#4c1d95b3", isLight: false } },
+          { id: "vibe-candy", name: "🍬 Caramelo", vals: { primary: "#f43f5e", bolsa: "#0ea5e9", hb: "#eab308", bg: "#fdf2f8", panel: "#fbcfe8cc", isLight: true } },
+          { id: "vibe-tangerine", name: "🍊 Mandarina", vals: { primary: "#f97316", bolsa: "#84cc16", hb: "#06b6d4", bg: "#fff7ed", panel: "#ffedd5cc", isLight: true } },
+          { id: "vibe-dracula", name: "🧛 Drácula", vals: { primary: "#ff79c6", bolsa: "#bd93f9", hb: "#50fa7b", bg: "#282a36", panel: "#44475ab3", isLight: false } },
+          { id: "vibe-monokai", name: "🦇 Monokai", vals: { primary: "#a6e22e", bolsa: "#fd971f", hb: "#66d9ef", bg: "#272822", panel: "#3e3d32b3", isLight: false } },
+          { id: "vibe-nord", name: "🧭 Nord", vals: { primary: "#a3be8c", bolsa: "#b48ead", hb: "#81a1c1", bg: "#2e3440", panel: "#3b4252b3", isLight: false } },
+          { id: "vibe-hacker", name: "💻 Hacker", vals: { primary: "#22c55e", bolsa: "#16a34a", hb: "#4ade80", bg: "#000000", panel: "#052e16b3", isLight: false } }
         ]
       }
     ];
@@ -1061,6 +1145,8 @@
         const data = await res.json();
         if (data.status === "ok") {
           dolarUSD = data.dolarUSD || 1200;
+          sueldoBaseBrian = parseFloat(data.sueldoBaseBrian) || 1559009.85;
+          sueldoBaseVirginia = parseFloat(data.sueldoBaseVirginia) || 0;
           if (data.serviciosGlobales && data.serviciosGlobales.length > 0) {
             serviciosGlobales = data.serviciosGlobales;
           }
@@ -1072,12 +1158,23 @@
 
     function openServiciosModal() {
       document.getElementById('cfg-dolar-usd').value = dolarUSD;
+      document.getElementById('cfg-sueldo-brian').value = sueldoBaseBrian;
+      document.getElementById('cfg-sueldo-virginia').value = sueldoBaseVirginia;
       renderServiciosGlobales();
       document.getElementById('modal-servicios').classList.remove('hidden');
     }
 
     function closeServiciosModal() {
       document.getElementById('modal-servicios').classList.add('hidden');
+    }
+
+    function switchServTab(tabId) {
+      document.getElementById('tab-serv-lista').classList.add('hidden');
+      document.getElementById('tab-serv-sueldos').classList.add('hidden');
+      document.getElementById(tabId).classList.remove('hidden');
+
+      document.getElementById('btn-serv-lista').className = tabId === 'tab-serv-lista' ? "flex-1 py-2 text-indigo-400 border-b-2 border-indigo-400 transition-all" : "flex-1 py-2 text-slate-500 transition-all";
+      document.getElementById('btn-serv-sueldos').className = tabId === 'tab-serv-sueldos' ? "flex-1 py-2 text-indigo-400 border-b-2 border-indigo-400 transition-all" : "flex-1 py-2 text-slate-500 transition-all";
     }
 
     function renderServiciosGlobales() {
@@ -1127,9 +1224,14 @@
 
     function saveServiciosConfig() {
       dolarUSD = parseAmountInput(document.getElementById('cfg-dolar-usd').value) || 1200;
+      sueldoBaseBrian = parseAmountInput(document.getElementById('cfg-sueldo-brian').value);
+      sueldoBaseVirginia = parseAmountInput(document.getElementById('cfg-sueldo-virginia').value);
+
       syncBackend({
         action: "saveConfigServicios",
         dolarUSD: dolarUSD,
+        sueldoBaseBrian: sueldoBaseBrian,
+        sueldoBaseVirginia: sueldoBaseVirginia,
         serviciosGlobales: serviciosGlobales
       });
       closeServiciosModal();
@@ -1146,38 +1248,42 @@
       return total;
     }
 
+    function autoCalcSAC(user) {
+      const selectTipo = document.getElementById(user === 'Brian' ? 'p-tipo-extra-brian' : 'p-tipo-extra-virginia').value;
+      const inputExtra = document.getElementById(user === 'Brian' ? 'p-extra-brian' : 'p-extra-virginia');
+      const inputConcepto = document.getElementById(user === 'Brian' ? 'p-concepto-extra-brian' : 'p-concepto-extra-virginia');
+
+      if (selectTipo === "SAC") {
+        let base = user === 'Brian' ? sueldoBaseBrian : sueldoBaseVirginia;
+        inputExtra.value = (base * 0.5).toFixed(2);
+        inputConcepto.value = "SAC (Medio Aguinaldo)";
+      } else if (selectTipo === "Premio") {
+        inputConcepto.value = "Premio / Bono por Objetivos";
+      }
+      calcProyTotales();
+    }
+
     function renderProyeccion() {
       const mesSelect = document.getElementById('proy-select-mes').value;
       document.getElementById('lbl-save-mes').innerText = mesSelect;
 
       let mesData = proyeccionesData.find(p => p.mes === mesSelect) || {
-        mes: mesSelect, sueldoBrian: 0, extraBrian: 0, tipoExtraBrian: "SAC",
-        sueldoVirginia: 0, extraVirginia: 0, tipoExtraVirginia: "SAC",
+        mes: mesSelect, extraBrian: 0, tipoExtraBrian: "SAC", conceptoExtraBrian: "SAC",
+        extraVirginia: 0, tipoExtraVirginia: "SAC", conceptoExtraVirginia: "SAC",
         gastosBrian: [], gastosVirginia: []
       };
 
-      document.getElementById('p-sueldo-brian').value = mesData.sueldoBrian || 0;
-      document.getElementById('p-extra-brian').value = mesData.extraBrian || 0;
       document.getElementById('p-tipo-extra-brian').value = mesData.tipoExtraBrian || "SAC";
+      document.getElementById('p-concepto-extra-brian').value = mesData.conceptoExtraBrian || "";
+      document.getElementById('p-extra-brian').value = mesData.extraBrian || 0;
 
-      document.getElementById('p-sueldo-virginia').value = mesData.sueldoVirginia || 0;
-      document.getElementById('p-extra-virginia').value = mesData.extraVirginia || 0;
       document.getElementById('p-tipo-extra-virginia').value = mesData.tipoExtraVirginia || "SAC";
+      document.getElementById('p-concepto-extra-virginia').value = mesData.conceptoExtraVirginia || "";
+      document.getElementById('p-extra-virginia').value = mesData.extraVirginia || 0;
 
       renderGastosList('Brian', mesData.gastosBrian || []);
       renderGastosList('Virginia', mesData.gastosVirginia || []);
 
-      calcProyTotales();
-    }
-
-    function toggleExtraType(user) {
-      const inputSueldo = parseAmountInput(document.getElementById(user === 'Brian' ? 'p-sueldo-brian' : 'p-sueldo-virginia').value);
-      const selectTipo = document.getElementById(user === 'Brian' ? 'p-tipo-extra-brian' : 'p-tipo-extra-virginia').value;
-      const inputExtra = document.getElementById(user === 'Brian' ? 'p-extra-brian' : 'p-extra-virginia');
-
-      if (selectTipo === "SAC") {
-        inputExtra.value = (inputSueldo * 0.5).toFixed(2);
-      }
       calcProyTotales();
     }
 
@@ -1227,19 +1333,17 @@
     function getOrCreateMesData(mes) {
       let found = proyeccionesData.find(p => p.mes === mes);
       if (!found) {
-        found = { mes: mes, sueldoBrian: 0, extraBrian: 0, tipoExtraBrian: "SAC", sueldoVirginia: 0, extraVirginia: 0, tipoExtraVirginia: "SAC", gastosBrian: [], gastosVirginia: [] };
+        found = { mes: mes, extraBrian: 0, tipoExtraBrian: "SAC", conceptoExtraBrian: "SAC", extraVirginia: 0, tipoExtraVirginia: "SAC", conceptoExtraVirginia: "SAC", gastosBrian: [], gastosVirginia: [] };
         proyeccionesData.push(found);
       }
       return found;
     }
 
     function calcProyTotales() {
-      let sueldoB = parseAmountInput(document.getElementById('p-sueldo-brian').value);
       let extraB = parseAmountInput(document.getElementById('p-extra-brian').value);
-      let sueldoV = parseAmountInput(document.getElementById('p-sueldo-virginia').value);
       let extraV = parseAmountInput(document.getElementById('p-extra-virginia').value);
 
-      let totalIngresos = sueldoB + extraB + sueldoV + extraV;
+      let totalIngresos = sueldoBaseBrian + sueldoBaseVirginia + extraB + extraV;
 
       const mesSelect = document.getElementById('proy-select-mes').value;
       let mesData = getOrCreateMesData(mesSelect);
@@ -1264,23 +1368,23 @@
       const mesSelect = document.getElementById('proy-select-mes').value;
       let mesData = getOrCreateMesData(mesSelect);
 
-      mesData.sueldoBrian = parseAmountInput(document.getElementById('p-sueldo-brian').value);
       mesData.extraBrian = parseAmountInput(document.getElementById('p-extra-brian').value);
       mesData.tipoExtraBrian = document.getElementById('p-tipo-extra-brian').value;
+      mesData.conceptoExtraBrian = document.getElementById('p-concepto-extra-brian').value;
 
-      mesData.sueldoVirginia = parseAmountInput(document.getElementById('p-sueldo-virginia').value);
       mesData.extraVirginia = parseAmountInput(document.getElementById('p-extra-virginia').value);
       mesData.tipoExtraVirginia = document.getElementById('p-tipo-extra-virginia').value;
+      mesData.conceptoExtraVirginia = document.getElementById('p-concepto-extra-virginia').value;
 
       syncBackend({
         action: "saveProyeccionMes",
         mes: mesData.mes,
-        sueldoBrian: mesData.sueldoBrian,
         extraBrian: mesData.extraBrian,
         tipoExtraBrian: mesData.tipoExtraBrian,
-        sueldoVirginia: mesData.sueldoVirginia,
+        conceptoExtraBrian: mesData.conceptoExtraBrian,
         extraVirginia: mesData.extraVirginia,
         tipoExtraVirginia: mesData.tipoExtraVirginia,
+        conceptoExtraVirginia: mesData.conceptoExtraVirginia,
         gastosBrian: mesData.gastosBrian || [],
         gastosVirginia: mesData.gastosVirginia || []
       });
