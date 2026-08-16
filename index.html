@@ -8,7 +8,7 @@
   <meta name="theme-color" content="#10b981">
   <link rel="apple-touch-icon" href="icon-192.png">
   
-  <title>Presupuesto Inteligente</title>
+  <title>Presupuesto e Inteligencia Financiera</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     :root {
@@ -70,9 +70,35 @@
 </head>
 <body id="app-body" class="p-4 max-w-md mx-auto min-h-screen flex flex-col justify-start dark relative">
 
-  <!-- Encabezado y Opciones -->
+  <!-- MENÚ LATERAL DRAWER -->
+  <div id="drawer-menu" class="hidden fixed inset-0 z-[100] flex">
+    <div onclick="toggleDrawer()" class="absolute inset-0 bg-slate-950/80 backdrop-blur-sm"></div>
+    <div class="relative w-72 bg-slate-900 h-full p-5 shadow-2xl border-r border-slate-700 flex flex-col justify-between z-10">
+      <div>
+        <div class="flex justify-between items-center pb-4 border-b border-slate-800 mb-6">
+          <h2 class="font-bold text-lg text-white flex items-center gap-2">📱 Menú App</h2>
+          <button onclick="toggleDrawer()" class="text-slate-400 hover:text-white font-bold text-lg">✕</button>
+        </div>
+        <nav class="space-y-2">
+          <button onclick="switchView('diario')" id="nav-btn-diario" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm bg-primary text-white shadow">
+            ⚡ Presupuesto Diario
+          </button>
+          <button onclick="switchView('proyeccion')" id="nav-btn-proyeccion" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm text-slate-400 hover:bg-slate-800 transition-all">
+            📊 Proyección Mensual
+          </button>
+        </nav>
+      </div>
+      <div class="pt-4 border-t border-slate-800 text-xs text-slate-500 text-center">
+        Brian & Virginia © 2026
+      </div>
+    </div>
+  </div>
+
+  <!-- ENCABEZADO Y NAVEGACIÓN GLOBAL -->
   <div class="flex justify-between items-center mb-4 relative">
     <div class="flex gap-1.5 items-center shrink-0">
+      <!-- BOTÓN MENÚ HAMBURGUESA -->
+      <button onclick="toggleDrawer()" class="px-2.5 py-1.5 text-base rounded-full bg-slate-800 border border-slate-700 hover:bg-slate-700 transition-all shadow" title="Menú Principal">☰</button>
       <button id="user-brian" onclick="setUser('Brian')" class="px-3 py-1.5 text-xs rounded-full transition-all shadow">Brian</button>
       <button id="user-virginia" onclick="setUser('Virginia')" class="px-3 py-1.5 text-xs rounded-full transition-all shadow">Virginia</button>
       <button onclick="openConfigModal()" class="px-2 py-1.5 text-sm rounded-full bg-slate-800 border border-slate-700 hover:bg-slate-700 transition-all shadow" title="Configuración">⚙️</button>
@@ -91,48 +117,197 @@
     </div>
   </div>
 
-  <!-- Dashboard Central -->
-  <div class="grid grid-cols-2 gap-3 mb-4">
-    <div class="glass p-4 rounded-xl col-span-2 text-center border-l-4 border-primary bg-primary-light relative overflow-hidden shadow-lg flex flex-col items-center justify-center">
-      <div class="flex justify-between w-full items-start px-1 mb-1">
-         <span class="text-xs t-primary uppercase tracking-wider font-bold">Presupuesto para Hoy</span>
-         <button onclick="enviarSaldoHoyABolsa()" class="bg-bolsa hover:brightness-110 text-white text-[9px] font-bold px-2 py-1 rounded shadow-md flex items-center gap-1 transition-all" title="Mandar lo que sobró hoy a la Bolsa">
-            <span class="text-[10px]">📥</span> A Bolsa
-         </button>
+  <!-- ================= MÓDULO 1: PRESUPUESTO DIARIO (MICRO) ================= -->
+  <section id="view-diario" class="space-y-4">
+    <!-- Dashboard Central -->
+    <div class="grid grid-cols-2 gap-3 mb-4">
+      <div class="glass p-4 rounded-xl col-span-2 text-center border-l-4 border-primary bg-primary-light relative overflow-hidden shadow-lg flex flex-col items-center justify-center">
+        <div class="flex justify-between w-full items-start px-1 mb-1">
+           <span class="text-xs t-primary uppercase tracking-wider font-bold">Presupuesto para Hoy</span>
+           <button onclick="enviarSaldoHoyABolsa()" class="bg-bolsa hover:brightness-110 text-white text-[9px] font-bold px-2 py-1 rounded shadow-md flex items-center gap-1 transition-all" title="Mandar lo que sobró hoy a la Bolsa">
+              <span class="text-[10px]">📥</span> A Bolsa
+           </button>
+        </div>
+        <span id="display-today" class="text-4xl font-black t-primary">$ 0,00</span>
       </div>
-      <span id="display-today" class="text-4xl font-black t-primary">$ 0,00</span>
-    </div>
-    
-    <div class="glass p-3 rounded-xl border-l-2 border-bolsa text-center flex flex-col justify-center shadow-md">
-      <span class="text-[11px] text-slate-400 block uppercase font-bold">Bolsa de Saldos</span>
-      <span id="display-bs" class="text-lg font-bold t-bolsa mt-1 block">$ 0,00</span>
+      
+      <div class="glass p-3 rounded-xl border-l-2 border-bolsa text-center flex flex-col justify-center shadow-md">
+        <span class="text-[11px] text-slate-400 block uppercase font-bold">Bolsa de Saldos</span>
+        <span id="display-bs" class="text-lg font-bold t-bolsa mt-1 block">$ 0,00</span>
+      </div>
+
+      <div class="glass p-3 rounded-xl border-l-2 border-slate-600 text-center flex flex-col justify-center shadow-md">
+        <span class="text-[11px] text-slate-400 block uppercase font-bold">Mañana</span>
+        <span id="display-tomorrow" class="text-lg font-bold text-slate-100 mt-1 block">$ 0,00</span>
+      </div>
+
+      <div class="glass p-3 rounded-xl flex flex-col justify-between border-l-2 border-hb text-center shadow-md">
+        <div>
+          <span class="text-[11px] text-slate-400 block uppercase font-bold">Home Banking</span>
+          <span id="display-hb" class="text-base font-bold t-hb mt-1 block">$ 0,00</span>
+        </div>
+        <button onclick="focusUpdateHB()" class="mt-2 bg-hb-light hover:bg-slate-700 t-hb py-1 rounded text-[11px] font-bold border border-hb transition-colors w-full">Actualizar Saldo</button>
+      </div>
+
+      <div onclick="openCalendarModal()" class="glass p-3 rounded-xl border-l-2 border-indigo-500 text-center flex flex-col justify-between cursor-pointer hover:bg-slate-800/80 transition-all group shadow-md">
+        <div>
+          <span class="text-[11px] text-slate-400 block uppercase font-bold">Días Restantes</span>
+          <span id="display-days" class="text-xl font-black text-indigo-400 mt-0.5 block">0 Días</span>
+        </div>
+        <button type="button" class="mt-2 bg-indigo-600/30 group-hover:bg-indigo-600/50 text-indigo-400 py-1 px-1 rounded text-[10px] font-bold border border-indigo-500/30 transition-all">
+          📅 Ver Presupuestos
+        </button>
+      </div>
     </div>
 
-    <div class="glass p-3 rounded-xl border-l-2 border-slate-600 text-center flex flex-col justify-center shadow-md">
-      <span class="text-[11px] text-slate-400 block uppercase font-bold">Mañana</span>
-      <span id="display-tomorrow" class="text-lg font-bold text-slate-100 mt-1 block">$ 0,00</span>
+    <!-- Pestañas de Modos de Carga -->
+    <div class="flex border-b border-slate-800 mb-4 text-xs font-bold">
+      <button onclick="switchTab('tab-unico')" id="btn-tab-unico" class="flex-1 py-3 t-primary border-b-2 border-primary transition-all text-center">Gasto Único</button>
+      <button onclick="switchTab('tab-divisible')" id="btn-tab-divisible" class="flex-1 py-3 text-slate-500 transition-all text-center">Divisible</button>
+      <button onclick="switchTab('tab-ajuste')" id="btn-tab-ajuste" class="flex-1 py-3 text-slate-500 transition-all text-center">Ajustes</button>
     </div>
 
-    <div class="glass p-3 rounded-xl flex flex-col justify-between border-l-2 border-hb text-center shadow-md">
-      <div>
-        <span class="text-[11px] text-slate-400 block uppercase font-bold">Home Banking</span>
-        <span id="display-hb" class="text-base font-bold t-hb mt-1 block">$ 0,00</span>
+    <!-- Formulario 1: Gasto Único -->
+    <form id="tab-unico" class="space-y-3 nav-form" onsubmit="submitUnico(event)">
+      <input type="text" id="u-monto" inputmode="decimal" placeholder="Monto del gasto ($)" required class="w-full bg-slate-800/60 border border-slate-700 p-3 rounded-lg text-white font-bold input-focus">
+      <input type="date" id="u-fecha" class="w-full bg-slate-800/60 border border-slate-700 p-3 rounded-lg text-white text-sm input-focus">
+      <input type="text" id="u-concepto" placeholder="¿En qué se gastó? (Detalle)" required class="w-full bg-slate-800/60 border border-slate-700 p-3 rounded-lg text-white text-sm input-focus">
+      <label class="flex items-center gap-2 text-sm t-bolsa font-semibold cursor-pointer p-1">
+        <input type="checkbox" id="u-bolsa" onchange="toggleBolsaUnico(this)" class="w-4 h-4"> Descontar directo de Bolsa
+      </label>
+      <div class="flex gap-2 pt-2">
+        <button type="submit" class="flex-1 bg-primary bg-primary-hover text-white font-bold text-sm py-3 rounded-lg shadow-lg">Guardar Gasto</button>
+        <button type="button" onclick="clearForm('tab-unico')" class="bg-slate-800 p-3 rounded-lg text-sm text-slate-400">Limpiar</button>
       </div>
-      <button onclick="focusUpdateHB()" class="mt-2 bg-hb-light hover:bg-slate-700 t-hb py-1 rounded text-[11px] font-bold border border-hb transition-colors w-full">Actualizar Saldo</button>
+    </form>
+
+    <!-- Formulario 2: Gasto Divisible -->
+    <form id="tab-divisible" class="space-y-3 nav-form hidden" onsubmit="submitDivisible(event)">
+      <input type="text" id="d-monto" inputmode="decimal" placeholder="Monto Total a dividir ($)" required class="w-full bg-slate-800/60 border border-slate-700 p-3 rounded-lg text-white font-bold input-focus">
+      <input type="number" id="d-dias" placeholder="Días a dividir (Vacío = hasta fin de ciclo)" class="w-full bg-slate-800/60 border border-slate-700 p-3 rounded-lg text-white text-sm input-focus">
+      <label class="text-xs text-slate-400 ml-1">Fecha de inicio del gasto:</label>
+      <input type="date" id="d-fecha" class="w-full bg-slate-800/60 border border-slate-700 p-3 rounded-lg text-white text-sm mt-0 input-focus">
+      <input type="text" id="d-concepto" placeholder="Detalle del gasto" required class="w-full bg-slate-800/60 border border-slate-700 p-3 rounded-lg text-white text-sm input-focus">
+      <label class="flex items-center gap-2 text-sm t-bolsa font-semibold cursor-pointer p-1">
+        <input type="checkbox" id="d-bolsa" onchange="redirectDivisibleToUnico(this)" class="w-4 h-4"> Descontar de Bolsa (Gasto Único)
+      </label>
+      <div class="flex gap-2 pt-2">
+        <button type="submit" class="flex-1 bg-primary bg-primary-hover text-white font-bold text-sm py-3 rounded-lg shadow-lg">Dividir y Guardar</button>
+        <button type="button" onclick="clearForm('tab-divisible')" class="bg-slate-800 p-3 rounded-lg text-sm text-slate-400">Limpiar</button>
+      </div>
+    </form>
+
+    <!-- Formulario 3: Ajustes -->
+    <form id="tab-ajuste" class="space-y-3 nav-form hidden" onsubmit="submitAjuste(event)">
+      <input type="text" id="a-monto" inputmode="decimal" placeholder="Monto del movimiento ($)" required class="w-full bg-slate-800/60 border border-slate-700 p-3 rounded-lg text-white font-bold input-focus">
+      <input type="text" id="a-concepto" placeholder="Concepto o justificación" required class="w-full bg-slate-800/60 border border-slate-700 p-3 rounded-lg text-white text-sm input-focus">
+      <select id="a-tipo" onchange="toggleAjusteFields()" class="w-full bg-slate-900 border border-slate-700 p-3 rounded-lg text-white text-xs input-focus">
+        <option value="1">1. Ingresar plata a Home Banking (Sumar al saldo)</option>
+        <option value="2">2. Ingresar plata directo a Bolsa de Saldos</option>
+        <option value="3">3. Restar plata del Home Banking general</option>
+        <option value="4">4. Restar plata de Bolsa de Saldos</option>
+        <option value="5">5. Mover de HB a Bolsa de Saldos (Ahorro)</option>
+        <option value="6">6. Agregar de HB a Presupuesto Diario (Hoy)</option>
+        <option value="7">7. Agregar de HB a día(s) específico(s)</option>
+        <option value="8">8. Agregar de Bolsa a día(s) específico(s)</option>
+      </select>
+      <div id="a-extra-fields" class="hidden space-y-2 mt-2 bg-slate-800/40 p-3 rounded-lg border border-slate-700">
+          <label class="text-xs text-slate-400">A partir de qué fecha y en cuántos días:</label>
+          <input type="date" id="a-fecha" class="w-full bg-slate-900 border border-slate-700 p-2 rounded text-white text-sm input-focus">
+          <input type="number" id="a-dias" placeholder="Cant. días (Ej: 1 o más)" class="w-full bg-slate-900 border border-slate-700 p-2 rounded text-white text-sm input-focus">
+      </div>
+      <div class="flex gap-2 pt-2">
+        <button type="submit" class="flex-1 bg-primary bg-primary-hover text-white font-bold text-sm py-3 rounded-lg shadow-lg">Ejecutar Acción</button>
+        <button type="button" onclick="clearForm('tab-ajuste')" class="bg-slate-800 p-3 rounded-lg text-sm text-slate-400">Limpiar</button>
+      </div>
+    </form>
+
+    <!-- Historial de Movimientos -->
+    <div class="mt-6 pb-10">
+      <div class="flex justify-between items-center border-b border-slate-800 pb-2 mb-3">
+        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400">📃 Últimos Movimientos</h3>
+      </div>
+      <div id="bottom-movimientos" class="space-y-2 max-h-80 overflow-y-auto pr-1 custom-scroll"></div>
+    </div>
+  </section>
+
+  <!-- ================= MÓDULO 2: PROYECCIÓN DE GASTOS (MACRO) ================= -->
+  <section id="view-proyeccion" class="hidden space-y-4 pb-12">
+    <!-- Selector de Mes -->
+    <div class="glass p-3 rounded-xl border border-slate-700 flex justify-between items-center">
+      <label class="text-xs font-bold uppercase tracking-wider text-slate-400">Mes Proyectado:</label>
+      <select id="proy-select-mes" onchange="renderProyeccion()" class="bg-slate-900 border border-slate-700 text-white text-sm font-bold px-3 py-1.5 rounded-lg outline-none">
+        <option value="Agosto">Agosto</option>
+        <option value="Septiembre P">Septiembre P</option>
+        <option value="Octubre P">Octubre P</option>
+        <option value="Noviembre">Noviembre</option>
+        <option value="Diciembre">Diciembre</option>
+        <option value="Enero P">Enero P</option>
+        <option value="Febrero">Febrero</option>
+        <option value="Marzo p">Marzo p</option>
+        <option value="Abril p">Abril p</option>
+        <option value="Mayo">Mayo</option>
+        <option value="Junio">Junio</option>
+        <option value="Julio P">Julio P</option>
+      </select>
     </div>
 
-    <div onclick="openCalendarModal()" class="glass p-3 rounded-xl border-l-2 border-indigo-500 text-center flex flex-col justify-between cursor-pointer hover:bg-slate-800/80 transition-all group shadow-md">
-      <div>
-        <span class="text-[11px] text-slate-400 block uppercase font-bold">Días Restantes</span>
-        <span id="display-days" class="text-xl font-black text-indigo-400 mt-0.5 block">0 Días</span>
+    <!-- Resumen Macro -->
+    <div class="grid grid-cols-2 gap-3">
+      <div class="glass p-3 rounded-xl border-l-2 border-emerald-500 shadow-md">
+        <span class="text-[10px] text-slate-400 uppercase font-bold block">Ingresos Totales</span>
+        <span id="proy-total-ingresos" class="text-base font-extrabold text-emerald-400 block mt-1">$ 0,00</span>
       </div>
-      <button type="button" class="mt-2 bg-indigo-600/30 group-hover:bg-indigo-600/50 text-indigo-400 py-1 px-1 rounded text-[10px] font-bold border border-indigo-500/30 transition-all">
-        📅 Ver Presupuestos
+      <div class="glass p-3 rounded-xl border-l-2 border-rose-500 shadow-md">
+        <span class="text-[10px] text-slate-400 uppercase font-bold block">Gastos Fijos</span>
+        <span id="proy-total-gastos" class="text-base font-extrabold text-rose-400 block mt-1">$ 0,00</span>
+      </div>
+      <div class="glass p-4 rounded-xl col-span-2 text-center border-l-4 border-indigo-500 shadow-lg">
+        <span class="text-xs text-slate-400 uppercase font-bold block">Resultado Proyectado ("Nos Queda")</span>
+        <span id="proy-nos-queda" class="text-3xl font-black text-indigo-400 mt-1 block">$ 0,00</span>
+      </div>
+    </div>
+
+    <!-- Formulario / Desglose de Ingresos -->
+    <div class="glass p-4 rounded-xl border border-slate-700/80 space-y-3">
+      <h3 class="text-xs font-bold uppercase tracking-wider text-slate-300 border-b border-slate-800 pb-2">💼 Ingresos Proyectados</h3>
+      <div class="grid grid-cols-2 gap-2 text-xs">
+        <div>
+          <label class="text-[10px] text-slate-400">Sueldo Brian</label>
+          <input type="text" id="p-sueldo-brian" inputmode="decimal" class="w-full bg-slate-900 border border-slate-700 p-2 rounded font-bold text-white mt-1">
+        </div>
+        <div>
+          <label class="text-[10px] text-slate-400">SAC Brian</label>
+          <input type="text" id="p-sac-brian" inputmode="decimal" class="w-full bg-slate-900 border border-slate-700 p-2 rounded font-bold text-white mt-1">
+        </div>
+        <div>
+          <label class="text-[10px] text-slate-400">Sueldo Virginia</label>
+          <input type="text" id="p-sueldo-virginia" inputmode="decimal" class="w-full bg-slate-900 border border-slate-700 p-2 rounded font-bold text-white mt-1">
+        </div>
+        <div>
+          <label class="text-[10px] text-slate-400">SAC Virginia</label>
+          <input type="text" id="p-sac-virginia" inputmode="decimal" class="w-full bg-slate-900 border border-slate-700 p-2 rounded font-bold text-white mt-1">
+        </div>
+      </div>
+    </div>
+
+    <!-- Lista de Gastos Fijos -->
+    <div class="glass p-4 rounded-xl border border-slate-700/80 space-y-3">
+      <div class="flex justify-between items-center border-b border-slate-800 pb-2">
+        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-300">📌 Gastos Fijos & Servicios</h3>
+        <button onclick="addProyGastoRow()" class="text-[10px] bg-slate-800 hover:bg-slate-700 text-slate-200 px-2 py-1 rounded border border-slate-700 font-bold">+ Agregar</button>
+      </div>
+      <div id="proy-gastos-container" class="space-y-2 max-h-60 overflow-y-auto pr-1 custom-scroll">
+        <!-- Render dinámico de items -->
+      </div>
+      <button onclick="saveProyeccionCurrent()" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2.5 rounded-lg text-sm shadow transition-all">
+        💾 Guardar Proyección del Mes
       </button>
     </div>
-  </div>
+  </section>
 
-  <!-- Modal Rápido Actualizar HB -->
+  <!-- MODALES DE LA APP -->
+  <!-- HB Modal -->
   <div id="hb-quick-modal" onclick="if(event.target === this) closeHBUpdate()" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-[60] flex items-center justify-center p-4">
     <div class="glass w-full max-w-sm p-5 rounded-2xl border border-hb shadow-xl">
       <label class="text-xs t-hb font-bold block mb-3 text-center uppercase tracking-wide">Ingresar Nuevo Saldo (HB)</label>
@@ -144,77 +319,7 @@
     </div>
   </div>
 
-  <!-- Pestañas de Modos de Carga -->
-  <div class="flex border-b border-slate-800 mb-4 text-xs font-bold">
-    <button onclick="switchTab('tab-unico')" id="btn-tab-unico" class="flex-1 py-3 t-primary border-b-2 border-primary transition-all text-center">Gasto Único</button>
-    <button onclick="switchTab('tab-divisible')" id="btn-tab-divisible" class="flex-1 py-3 text-slate-500 transition-all text-center">Divisible</button>
-    <button onclick="switchTab('tab-ajuste')" id="btn-tab-ajuste" class="flex-1 py-3 text-slate-500 transition-all text-center">Ajustes</button>
-  </div>
-
-  <!-- Formulario 1: Gasto Único -->
-  <form id="tab-unico" class="space-y-3 nav-form" onsubmit="submitUnico(event)">
-    <input type="text" id="u-monto" inputmode="decimal" placeholder="Monto del gasto ($)" required class="w-full bg-slate-800/60 border border-slate-700 p-3 rounded-lg text-white font-bold input-focus">
-    <input type="date" id="u-fecha" class="w-full bg-slate-800/60 border border-slate-700 p-3 rounded-lg text-white text-sm input-focus">
-    <input type="text" id="u-concepto" placeholder="¿En qué se gastó? (Detalle)" required class="w-full bg-slate-800/60 border border-slate-700 p-3 rounded-lg text-white text-sm input-focus">
-    <label class="flex items-center gap-2 text-sm t-bolsa font-semibold cursor-pointer p-1">
-      <input type="checkbox" id="u-bolsa" onchange="toggleBolsaUnico(this)" class="w-4 h-4"> Descontar directo de Bolsa
-    </label>
-    <div class="flex gap-2 pt-2">
-      <button type="submit" class="flex-1 bg-primary bg-primary-hover text-white font-bold text-sm py-3 rounded-lg shadow-lg">Guardar Gasto</button>
-      <button type="button" onclick="clearForm('tab-unico')" class="bg-slate-800 p-3 rounded-lg text-sm text-slate-400">Limpiar</button>
-    </div>
-  </form>
-
-  <!-- Formulario 2: Gasto Divisible -->
-  <form id="tab-divisible" class="space-y-3 nav-form hidden" onsubmit="submitDivisible(event)">
-    <input type="text" id="d-monto" inputmode="decimal" placeholder="Monto Total a dividir ($)" required class="w-full bg-slate-800/60 border border-slate-700 p-3 rounded-lg text-white font-bold input-focus">
-    <input type="number" id="d-dias" placeholder="Días a dividir (Vacío = hasta fin de ciclo)" class="w-full bg-slate-800/60 border border-slate-700 p-3 rounded-lg text-white text-sm input-focus">
-    <label class="text-xs text-slate-400 ml-1">Fecha de inicio del gasto:</label>
-    <input type="date" id="d-fecha" class="w-full bg-slate-800/60 border border-slate-700 p-3 rounded-lg text-white text-sm mt-0 input-focus">
-    <input type="text" id="d-concepto" placeholder="Detalle del gasto" required class="w-full bg-slate-800/60 border border-slate-700 p-3 rounded-lg text-white text-sm input-focus">
-    <label class="flex items-center gap-2 text-sm t-bolsa font-semibold cursor-pointer p-1">
-      <input type="checkbox" id="d-bolsa" onchange="redirectDivisibleToUnico(this)" class="w-4 h-4"> Descontar de Bolsa (Gasto Único)
-    </label>
-    <div class="flex gap-2 pt-2">
-      <button type="submit" class="flex-1 bg-primary bg-primary-hover text-white font-bold text-sm py-3 rounded-lg shadow-lg">Dividir y Guardar</button>
-      <button type="button" onclick="clearForm('tab-divisible')" class="bg-slate-800 p-3 rounded-lg text-sm text-slate-400">Limpiar</button>
-    </div>
-  </form>
-
-  <!-- Formulario 3: Ajustes -->
-  <form id="tab-ajuste" class="space-y-3 nav-form hidden" onsubmit="submitAjuste(event)">
-    <input type="text" id="a-monto" inputmode="decimal" placeholder="Monto del movimiento ($)" required class="w-full bg-slate-800/60 border border-slate-700 p-3 rounded-lg text-white font-bold input-focus">
-    <input type="text" id="a-concepto" placeholder="Concepto o justificación" required class="w-full bg-slate-800/60 border border-slate-700 p-3 rounded-lg text-white text-sm input-focus">
-    <select id="a-tipo" onchange="toggleAjusteFields()" class="w-full bg-slate-900 border border-slate-700 p-3 rounded-lg text-white text-xs input-focus">
-      <option value="1">1. Ingresar plata a Home Banking (Sumar al saldo)</option>
-      <option value="2">2. Ingresar plata directo a Bolsa de Saldos</option>
-      <option value="3">3. Restar plata del Home Banking general</option>
-      <option value="4">4. Restar plata de Bolsa de Saldos</option>
-      <option value="5">5. Mover de HB a Bolsa de Saldos (Ahorro)</option>
-      <option value="6">6. Agregar de HB a Presupuesto Diario (Hoy)</option>
-      <option value="7">7. Agregar de HB a día(s) específico(s)</option>
-      <option value="8">8. Agregar de Bolsa a día(s) específico(s)</option>
-    </select>
-    <div id="a-extra-fields" class="hidden space-y-2 mt-2 bg-slate-800/40 p-3 rounded-lg border border-slate-700">
-        <label class="text-xs text-slate-400">A partir de qué fecha y en cuántos días:</label>
-        <input type="date" id="a-fecha" class="w-full bg-slate-900 border border-slate-700 p-2 rounded text-white text-sm input-focus">
-        <input type="number" id="a-dias" placeholder="Cant. días (Ej: 1 o más)" class="w-full bg-slate-900 border border-slate-700 p-2 rounded text-white text-sm input-focus">
-    </div>
-    <div class="flex gap-2 pt-2">
-      <button type="submit" class="flex-1 bg-primary bg-primary-hover text-white font-bold text-sm py-3 rounded-lg shadow-lg">Ejecutar Acción</button>
-      <button type="button" onclick="clearForm('tab-ajuste')" class="bg-slate-800 p-3 rounded-lg text-sm text-slate-400">Limpiar</button>
-    </div>
-  </form>
-
-  <!-- Historial de Movimientos -->
-  <div class="mt-6 pb-10">
-    <div class="flex justify-between items-center border-b border-slate-800 pb-2 mb-3">
-      <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400">📃 Últimos Movimientos</h3>
-    </div>
-    <div id="bottom-movimientos" class="space-y-2 max-h-80 overflow-y-auto pr-1 custom-scroll"></div>
-  </div>
-
-  <!-- MODAL CAMBIO DE DÍA (DECISIÓN SOBRANTE) -->
+  <!-- Modal Rollover -->
   <div id="modal-rollover" class="hidden fixed inset-0 bg-slate-950/90 backdrop-blur-md z-[80] flex items-center justify-center p-4">
     <div class="glass w-full max-w-sm rounded-2xl border border-purple-500/50 p-5 flex flex-col text-center shadow-2xl">
       <span class="text-3xl mb-2">🌅</span>
@@ -233,7 +338,7 @@
     </div>
   </div>
 
-  <!-- MODAL DE CONFIGURACIÓN Y TEMAS -->
+  <!-- Modal Configuración -->
   <div id="modal-config" onclick="if(event.target === this) closeConfigModal()" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-md z-[70] flex items-center justify-center p-4">
     <div class="glass w-full max-w-sm rounded-2xl border border-slate-600 p-4 flex flex-col shadow-2xl">
       <div class="flex justify-between items-center border-b border-slate-800 pb-2 mb-3">
@@ -281,7 +386,7 @@
     </div>
   </div>
 
-  <!-- Modal de Calendario -->
+  <!-- Modal Calendario -->
   <div id="modal-calendario" onclick="if(event.target === this) closeCalendarModal()" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-md z-[50] flex items-center justify-center p-4">
     <div class="glass w-full max-w-md max-h-[85vh] rounded-2xl border border-indigo-500/30 p-4 flex flex-col shadow-2xl">
       <div class="flex justify-between items-center border-b border-slate-800 pb-3 mb-3">
@@ -296,7 +401,7 @@
     </div>
   </div>
 
-  <!-- Modal para Editar / Eliminar -->
+  <!-- Modal Editar -->
   <div id="modal-editar" onclick="if(event.target === this) closeEditModal()" class="hidden fixed inset-0 bg-slate-950/90 backdrop-blur-md z-[60] flex items-center justify-center p-4">
     <div class="glass w-full max-w-sm rounded-2xl border border-slate-600 p-5 shadow-2xl">
       <h2 class="text-lg font-bold text-white mb-1">Editar Movimiento</h2>
@@ -316,15 +421,41 @@
     </div>
   </div>
 
+  <!-- SCRIPT GENERAL -->
   <script>
     const API_URL = "https://script.google.com/macros/s/AKfycbxqMkqNgYqcdliQkmz4foC-g6RvI9OGOw-Kai3fnltL-A9dpZC4frGYDsX7TIMxzW0R/exec"; 
     
     let currentUser = "Brian";
     let state = { hb: 0, bs: 0, movements: [], config: { paydate: "", themeBrian: "", themeVirginia: "", lastProcessedDate: "" } };
+    let proyeccionesData = [];
     let feriadosOficiales = ["2026-01-01", "2026-03-24", "2026-04-02", "2026-05-01", "2026-05-25", "2026-06-20", "2026-07-09", "2026-08-17", "2026-10-12", "2026-11-20", "2026-12-25"];
-    let lastFetchTime = 0;
     let pendingRolloverAmount = 0;
     let pendingRolloverDate = "";
+
+    // CONTROL DE MENÚ / DRAWER Y VISTAS
+    function toggleDrawer() {
+      document.getElementById('drawer-menu').classList.toggle('hidden');
+    }
+
+    function switchView(view) {
+      document.getElementById('view-diario').classList.add('hidden');
+      document.getElementById('view-proyeccion').classList.add('hidden');
+      
+      const btnD = document.getElementById('nav-btn-diario');
+      const btnP = document.getElementById('nav-btn-proyeccion');
+
+      if (view === 'diario') {
+        document.getElementById('view-diario').classList.remove('hidden');
+        btnD.className = "w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm bg-primary text-white shadow";
+        btnP.className = "w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm text-slate-400 hover:bg-slate-800 transition-all";
+      } else {
+        document.getElementById('view-proyeccion').classList.remove('hidden');
+        btnP.className = "w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm bg-indigo-600 text-white shadow";
+        btnD.className = "w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm text-slate-400 hover:bg-slate-800 transition-all";
+        fetchProyecciones();
+      }
+      toggleDrawer();
+    }
 
     function guardarEnCache() {
       let cacheData = { user: currentUser, config: state.config };
@@ -395,41 +526,6 @@
           { id: "light-sky", name: "🌤️ Cielo Claro", vals: { primary: "#0284c7", bolsa: "#7c3aed", hb: "#ea580c", bg: "#f0f9ff", panel: "#e0f2fecc", isLight: true } },
           { id: "light-mint", name: "🍃 Menta Claro", vals: { primary: "#059669", bolsa: "#2563eb", hb: "#d97706", bg: "#f0fdf4", panel: "#d1fae5cc", isLight: true } },
           { id: "light-lemon", name: "🍋 Limón Suave", vals: { primary: "#d97706", bolsa: "#059669", hb: "#4f46e5", bg: "#fefce8", panel: "#fef9c3cc", isLight: true } }
-        ]
-      },
-      {
-        label: "Pasteles Suaves",
-        options: [
-          { id: "pastel-peach", name: "🍑 Durazno", vals: { primary: "#f97316", bolsa: "#db2777", hb: "#0284c7", bg: "#ffedd5", panel: "#fef08acc", isLight: true } },
-          { id: "pastel-lavender", name: "🪻 Lavanda", vals: { primary: "#9333ea", bolsa: "#0284c7", hb: "#ea580c", bg: "#faf5ff", panel: "#f3e8ffcc", isLight: true } },
-          { id: "pastel-babyblue", name: "🍼 Celeste Bebé", vals: { primary: "#3b82f6", bolsa: "#f43f5e", hb: "#10b981", bg: "#eff6ff", panel: "#dbeafecc", isLight: true } },
-          { id: "pastel-pistachio", name: "🥜 Pistacho", vals: { primary: "#65a30d", bolsa: "#0284c7", hb: "#8b5cf6", bg: "#f7fee7", panel: "#dcfce7cc", isLight: true } },
-          { id: "pastel-pink", name: "🎀 Rosa Pastel", vals: { primary: "#ec4899", bolsa: "#8b5cf6", hb: "#06b6d4", bg: "#fdf2f8", panel: "#fce7f3cc", isLight: true } },
-          { id: "pastel-butter", name: "🧈 Manteca", vals: { primary: "#eab308", bolsa: "#ec4899", hb: "#14b8a6", bg: "#fefce8", panel: "#fef08acc", isLight: true } },
-          { id: "pastel-lilac", name: "💐 Lila", vals: { primary: "#d946ef", bolsa: "#0ea5e9", hb: "#f59e0b", bg: "#fdf4ff", panel: "#fae8ffcc", isLight: true } },
-          { id: "pastel-mint", name: "🌿 Menta Pastel", vals: { primary: "#14b8a6", bolsa: "#a855f7", hb: "#f43f5e", bg: "#f0fdfa", panel: "#ccfbf1cc", isLight: true } },
-          { id: "pastel-sand", name: "🏖️ Arena", vals: { primary: "#b45309", bolsa: "#1d4ed8", hb: "#047857", bg: "#fffbeb", panel: "#fef3c7cc", isLight: true } },
-          { id: "pastel-coral", name: "🐠 Coral Pastel", vals: { primary: "#f43f5e", bolsa: "#eab308", hb: "#0ea5e9", bg: "#fff1f2", panel: "#ffe4e6cc", isLight: true } }
-        ]
-      },
-      {
-        label: "Estéticas / Vibes",
-        options: [
-          { id: "vibe-coffee", name: "☕ Café Latte", vals: { primary: "#b45309", bolsa: "#14b8a6", hb: "#6366f1", bg: "#292524", panel: "#44403cb3", isLight: false } },
-          { id: "vibe-matcha", name: "🍵 Matcha", vals: { primary: "#4d7c0f", bolsa: "#0369a1", hb: "#b45309", bg: "#f7fee7", panel: "#ecfccbcc", isLight: true } },
-          { id: "vibe-grape", name: "🍇 Uva", vals: { primary: "#7e22ce", bolsa: "#be123c", hb: "#15803d", bg: "#3b0764", panel: "#581c87b3", isLight: false } },
-          { id: "vibe-berry", name: "🍓 Frutos Rojos", vals: { primary: "#be123c", bolsa: "#6d28d9", hb: "#b45309", bg: "#2e0219", panel: "#4c0519b3", isLight: false } },
-          { id: "vibe-autumn", name: "🍂 Otoño", vals: { primary: "#ea580c", bolsa: "#b91c1c", hb: "#a16207", bg: "#451a03", panel: "#78350fb3", isLight: false } },
-          { id: "vibe-desert", name: "🐪 Desierto", vals: { primary: "#d97706", bolsa: "#c2410c", hb: "#b45309", bg: "#78350f", panel: "#92400eb3", isLight: false } },
-          { id: "vibe-galaxy", name: "🌌 Galaxia", vals: { primary: "#c084fc", bolsa: "#38bdf8", hb: "#f472b6", bg: "#0f172a", panel: "#1e1b4bb3", isLight: false } },
-          { id: "vibe-aurora", name: "🌠 Aurora Boreal", vals: { primary: "#34d399", bolsa: "#818cf8", hb: "#a78bfa", bg: "#064e3b", panel: "#065f46b3", isLight: false } },
-          { id: "vibe-twilight", name: "🌆 Crepúsculo", vals: { primary: "#f472b6", bolsa: "#818cf8", hb: "#fb923c", bg: "#2e1065", panel: "#4c1d95b3", isLight: false } },
-          { id: "vibe-candy", name: "🍬 Caramelo", vals: { primary: "#f43f5e", bolsa: "#0ea5e9", hb: "#eab308", bg: "#fdf2f8", panel: "#fbcfe8cc", isLight: true } },
-          { id: "vibe-tangerine", name: "🍊 Mandarina", vals: { primary: "#f97316", bolsa: "#84cc16", hb: "#06b6d4", bg: "#fff7ed", panel: "#ffedd5cc", isLight: true } },
-          { id: "vibe-dracula", name: "🧛 Drácula", vals: { primary: "#ff79c6", bolsa: "#bd93f9", hb: "#50fa7b", bg: "#282a36", panel: "#44475ab3", isLight: false } },
-          { id: "vibe-monokai", name: "🦇 Monokai", vals: { primary: "#a6e22e", bolsa: "#fd971f", hb: "#66d9ef", bg: "#272822", panel: "#3e3d32b3", isLight: false } },
-          { id: "vibe-nord", name: "🧭 Nord", vals: { primary: "#a3be8c", bolsa: "#b48ead", hb: "#81a1c1", bg: "#2e3440", panel: "#3b4252b3", isLight: false } },
-          { id: "vibe-hacker", name: "💻 Hacker", vals: { primary: "#22c55e", bolsa: "#16a34a", hb: "#4ade80", bg: "#000000", panel: "#052e16b3", isLight: false } }
         ]
       }
     ];
@@ -625,12 +721,11 @@
     function clearForm(formId) { document.getElementById(formId).reset(); document.getElementById('u-fecha').value = toLocalISODate(new Date()); document.getElementById('d-fecha').value = toLocalISODate(new Date()); document.getElementById('u-fecha').disabled = false; toggleAjusteFields(); }
     function setupEnterNavigation() { document.querySelectorAll('form').forEach(form => { const inputs = Array.from(form.querySelectorAll('input, select, button[type="submit"]')); inputs.forEach((input, index) => { input.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); if (index < inputs.length - 1) inputs[index + 1].focus(); } }); }); }); }
 
-    // --- LÓGICA AUTOMÁTICA DE CAMBIO DE DÍA (ROLLOVER) ---
+    // ROLLOVER AUTOMÁTICO
     function checkDayRollover() {
       const todayStr = toLocalISODate(new Date());
       const lastProcessed = state.config.lastProcessedDate;
 
-      // Si es la primera vez que abre o ya fue procesado hoy, no hace nada
       if (!lastProcessed) {
          syncBackend({ action: "updateConfig", user: currentUser, lastProcessedDate: todayStr });
          state.config.lastProcessedDate = todayStr;
@@ -638,7 +733,6 @@
       }
 
       if (todayStr > lastProcessed) {
-         // Calcular sobrante del día anterior
          const { baseDailyBudget, gastosPorDia } = calculateBudgets();
          const unspentPreviousDay = baseDailyBudget - (gastosPorDia[lastProcessed] || 0);
 
@@ -648,7 +742,6 @@
             document.getElementById('rollover-amount').innerText = formatMoney(unspentPreviousDay);
             document.getElementById('modal-rollover').classList.remove('hidden');
          } else {
-            // Si no sobró nada, actualiza la fecha procesada directamente
             state.config.lastProcessedDate = todayStr;
             syncBackend({ action: "updateConfig", user: currentUser, lastProcessedDate: todayStr });
          }
@@ -674,7 +767,6 @@
          state.config.lastProcessedDate = todayStr;
          syncBackend(newMovement);
       } else {
-         // Repartir en el mes (No mueve a bolsa, solo registra el día procesado)
          state.config.lastProcessedDate = todayStr;
          syncBackend({ action: "updateConfig", user: currentUser, lastProcessedDate: todayStr });
       }
@@ -687,14 +779,14 @@
          document.getElementById('sync-status').classList.remove('hidden');
       }
       try {
-        const cacheBuster = "?t=" + new Date().getTime();
+        const cacheBuster = "?action=getDiario&t=" + new Date().getTime();
         const res = await fetch(API_URL + cacheBuster); const data = await res.json();
         state.hb = parseFloat(data.hb) || 0; state.bs = parseFloat(data.bs) || 0;
         state.movements = data.movements || []; 
         state.config = data.config || { paydate: "", themeBrian: "", themeVirginia: "", lastProcessedDate: "" };
         
         applySavedConfig(); guardarEnCache(); render();
-        checkDayRollover(); // Verifica cambio de día
+        checkDayRollover();
       } catch (e) { console.error("Error", e); }
       finally { 
         document.getElementById('sync-status').classList.add('hidden'); 
@@ -710,21 +802,21 @@
     }
 
     function reverseMath(m) {
-      let amt = parseFloat(m.monto); let absAmt = Math.abs(amt);
+      let amt = parseFloat(m.monto);
       let isExpense = (m.tipo === "Gasto Único" || m.tipo === "Gasto Divisible" || m.tipo === "Ajuste T-3" || m.tipo === "Ajuste T-4" || m.tipo === "Ajuste T-5");
       let isIncome = (m.tipo === "Ajuste T-2"); let isInjection = (m.tipo === "Ajuste T-6" || m.tipo === "Ajuste T-7" || m.tipo === "Ajuste T-8");
       if (isExpense) { state.hb += amt; if(m.target === "Bolsa" || m.tipo === "Ajuste T-4" || m.tipo === "Ajuste T-5") state.bs += amt; } 
       else if (isIncome) { state.hb -= amt; state.bs -= amt; } 
-      else if (isInjection) { if (m.tipo === "Ajuste T-8") state.bs += absAmt; }
+      else if (isInjection) { if (m.tipo === "Ajuste T-8") state.bs += Math.abs(amt); }
       else if (m.tipo === "Ajuste T-1") { state.hb -= amt; }
     }
     function applyMath(m) {
-      let amt = parseFloat(m.monto); let absAmt = Math.abs(amt);
+      let amt = parseFloat(m.monto);
       let isExpense = (m.tipo === "Gasto Único" || m.tipo === "Gasto Divisible" || m.tipo === "Ajuste T-3" || m.tipo === "Ajuste T-4" || m.tipo === "Ajuste T-5");
       let isIncome = (m.tipo === "Ajuste T-2"); let isInjection = (m.tipo === "Ajuste T-6" || m.tipo === "Ajuste T-7" || m.tipo === "Ajuste T-8");
       if (isExpense) { state.hb -= amt; if(m.target === "Bolsa" || m.tipo === "Ajuste T-4" || m.tipo === "Ajuste T-5") state.bs -= amt; } 
       else if (isIncome) { state.hb += amt; state.bs += amt; } 
-      else if (isInjection) { if (m.tipo === "Ajuste T-8") state.bs -= absAmt; }
+      else if (isInjection) { if (m.tipo === "Ajuste T-8") state.bs -= Math.abs(amt); }
       else if (m.tipo === "Ajuste T-1") { state.hb += amt; }
     }
 
@@ -914,6 +1006,103 @@
         if(!hasMovements) html += `<p class="italic text-[11px] text-slate-500">Sin gastos computados.</p>`;
         html += `</div></div>`; cal.innerHTML += html;
       });
+    }
+
+    // ================= LÓGICA DEL MÓDULO DE PROYECCIÓN (MACRO) =================
+    async function fetchProyecciones() {
+      try {
+        const cacheBuster = "?action=getProyecciones&t=" + new Date().getTime();
+        const res = await fetch(API_URL + cacheBuster);
+        const data = await res.json();
+        if (data.status === "ok") {
+          proyeccionesData = data.proyecciones || [];
+          renderProyeccion();
+        }
+      } catch (e) { console.error("Error cargando proyecciones", e); }
+    }
+
+    function renderProyeccion() {
+      const mesSelect = document.getElementById('proy-select-mes').value;
+      let mesData = proyeccionesData.find(p => p.mes === mesSelect) || {
+        mes: mesSelect, sueldoBrian: 0, sacBrian: 0, sueldoVirginia: 0, sacVirginia: 0, gastosFijos: []
+      };
+
+      document.getElementById('p-sueldo-brian').value = mesData.sueldoBrian || 0;
+      document.getElementById('p-sac-brian').value = mesData.sacBrian || 0;
+      document.getElementById('p-sueldo-virginia').value = mesData.sueldoVirginia || 0;
+      document.getElementById('p-sac-virginia').value = mesData.sacVirginia || 0;
+
+      const container = document.getElementById('proy-gastos-container');
+      container.innerHTML = "";
+      
+      let totalGastos = 0;
+      (mesData.gastosFijos || []).forEach((gasto, idx) => {
+        totalGastos += parseFloat(gasto.precio) || 0;
+        let rowHtml = `
+          <div class="flex gap-2 items-center bg-slate-900/80 p-2 rounded-lg border border-slate-800">
+            <input type="text" value="${gasto.concepto || ''}" placeholder="Servicio/Gasto" onchange="updateProyGastoItem(${idx}, 'concepto', this.value)" class="flex-1 bg-slate-800 border border-slate-700 p-1.5 rounded text-xs text-white">
+            <input type="text" inputmode="decimal" value="${gasto.precio || 0}" placeholder="Monto ($)" onchange="updateProyGastoItem(${idx}, 'precio', this.value)" class="w-24 bg-slate-800 border border-slate-700 p-1.5 rounded text-xs text-white font-bold text-right">
+            <button onclick="removeProyGastoRow(${idx})" class="text-red-400 p-1 hover:text-red-300">🗑️</button>
+          </div>`;
+        container.innerHTML += rowHtml;
+      });
+
+      let totalIngresos = (parseFloat(mesData.sueldoBrian) || 0) + (parseFloat(mesData.sacBrian) || 0) + (parseFloat(mesData.sueldoVirginia) || 0) + (parseFloat(mesData.sacVirginia) || 0);
+      let nosQueda = totalIngresos - totalGastos;
+
+      document.getElementById('proy-total-ingresos').innerText = formatMoney(totalIngresos);
+      document.getElementById('proy-total-gastos').innerText = formatMoney(totalGastos);
+      document.getElementById('proy-nos-queda').innerText = formatMoney(nosQueda);
+    }
+
+    function addProyGastoRow() {
+      const mesSelect = document.getElementById('proy-select-mes').value;
+      let mesData = proyeccionesData.find(p => p.mes === mesSelect);
+      if (!mesData) {
+        mesData = { mes: mesSelect, sueldoBrian: 0, sacBrian: 0, sueldoVirginia: 0, sacVirginia: 0, gastosFijos: [] };
+        proyeccionesData.push(mesData);
+      }
+      mesData.gastosFijos.push({ concepto: "", precio: 0 });
+      renderProyeccion();
+    }
+
+    function removeProyGastoRow(idx) {
+      const mesSelect = document.getElementById('proy-select-mes').value;
+      let mesData = proyeccionesData.find(p => p.mes === mesSelect);
+      if (mesData && mesData.gastosFijos) {
+        mesData.gastosFijos.splice(idx, 1);
+        renderProyeccion();
+      }
+    }
+
+    function updateProyGastoItem(idx, key, value) {
+      const mesSelect = document.getElementById('proy-select-mes').value;
+      let mesData = proyeccionesData.find(p => p.mes === mesSelect);
+      if (mesData && mesData.gastosFijos[idx]) {
+        mesData.gastosFijos[idx][key] = key === 'precio' ? parseAmountInput(value) : value;
+        renderProyeccion();
+      }
+    }
+
+    function saveProyeccionCurrent() {
+      const mesSelect = document.getElementById('proy-select-mes').value;
+      let mesData = proyeccionesData.find(p => p.mes === mesSelect) || { mes: mesSelect, gastosFijos: [] };
+
+      mesData.sueldoBrian = parseAmountInput(document.getElementById('p-sueldo-brian').value);
+      mesData.sacBrian = parseAmountInput(document.getElementById('p-sac-brian').value);
+      mesData.sueldoVirginia = parseAmountInput(document.getElementById('p-sueldo-virginia').value);
+      mesData.sacVirginia = parseAmountInput(document.getElementById('p-sac-virginia').value);
+
+      syncBackend({
+        action: "saveProyeccion",
+        mes: mesData.mes,
+        sueldoBrian: mesData.sueldoBrian,
+        sacBrian: mesData.sacBrian,
+        sueldoVirginia: mesData.sueldoVirginia,
+        sacVirginia: mesData.sacVirginia,
+        gastosFijos: mesData.gastosFijos || []
+      });
+      alert(`Proyección de ${mesData.mes} guardada exitosamente.`);
     }
 
     window.onload = init;
