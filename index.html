@@ -591,10 +591,10 @@
     function formatLiveCurrencyInput(input) {
       let rawVal = input.value;
       
-      // FIX 1.2: Convierte punto en coma automáticamente SÓLO si es un decimal final o cercano al final
+      // Convierte punto en coma automáticamente SÓLO si es un decimal final o cercano al final
       rawVal = rawVal.replace(/\.(?=\d{0,2}$)/, ',');
 
-      // FIX 3: Permitir símbolo negativo al principio
+      // Permitir símbolo negativo al principio
       let isNegative = rawVal.trim().startsWith('-');
       
       let parts = rawVal.split(',');
@@ -618,7 +618,7 @@
       if (!val) return 0;
       let clean = val.toString().trim();
       let isNeg = clean.startsWith('-');
-      // FIX 1 y 3: Dejamos comas, números y eliminamos el resto, convertimos coma a punto para Float
+      // Dejamos comas, números y eliminamos el resto, convertimos coma a punto para Float
       clean = clean.replace(/[^\d,]/g, '').replace(',', '.'); 
       let parsed = parseFloat(clean); 
       if (isNaN(parsed)) return 0;
@@ -1236,7 +1236,7 @@
 
     // ================= LÓGICA DEL MÓDULO DE PROYECCIÓN (MACRO) =================
 
-    // FIX 2: Función para generar IDs únicos
+    // Función para generar IDs únicos
     function generateId() {
        return 'g-' + Math.random().toString(36).substr(2, 9) + Date.now().toString(36);
     }
@@ -1255,7 +1255,7 @@
           }
           proyeccionesData = data.proyecciones || [];
 
-          // FIX 2: Auto-asignar IDs a los gastos existentes para mantener todo sincronizado
+          // Auto-asignar IDs a los gastos existentes para mantener todo sincronizado
           let conceptMap = {}; 
           proyeccionesData.forEach(mes => {
             ['gastosBrian', 'gastosVirginia'].forEach(key => {
@@ -1439,15 +1439,10 @@
       container.innerHTML = "";
 
       list.forEach((gasto, idx) => {
-        let isReplicated = gasto.replicate === true;
         let catId = gasto.categoria || "otros";
-
         let catOptionsHtml = CATEGORIAS_GASTOS.map(c => `<option value="${c.id}" ${c.id === catId ? 'selected' : ''}>${c.name}</option>`).join('');
-
-        // FIX 3: Permitir mostrar valores negativos formateados en el input
         let displayPrecio = gasto.precio === 0 ? '' : (gasto.precio < 0 ? '-' : '') + new Intl.NumberFormat('es-AR').format(Math.abs(gasto.precio));
 
-        // FIX 2: Reemplazo el idx en las llamadas a funciones por el gasto.id
         let row = `
           <div class="bg-slate-900/90 p-2 rounded-lg border border-slate-800 space-y-2">
             <!-- Fila 1: Categoria, Concepto, Borrar y Flechas -->
@@ -1464,11 +1459,11 @@
               <button onclick="removeGastoRow('${user}', '${gasto.id}')" class="text-red-400 p-1.5 bg-slate-800 border border-slate-700 rounded">🗑️</button>
             </div>
             
-            <!-- Fila 2: Replicar y Monto -->
+            <!-- Fila 2: Botón de Replicado Manual y Monto -->
             <div class="flex justify-between items-center gap-2 pl-4">
-              <button onclick="toggleReplicateGasto('${user}', '${gasto.id}')" class="flex items-center gap-1.5 text-[10px] ${isReplicated ? 'text-emerald-400 font-bold' : 'text-slate-500'}">
-                <span class="p-1 rounded border ${isReplicated ? 'bg-emerald-950 border-emerald-500 text-emerald-300' : 'bg-slate-800 border-slate-700 text-slate-400'}">🔁</span>
-                <span>${isReplicated ? 'Replicado todo el año' : 'Sólo este mes'}</span>
+              <button type="button" onclick="replicateGastoValue('${user}', '${gasto.id}')" class="flex items-center gap-1.5 text-[10px] text-blue-400 hover:text-blue-300 transition-colors" title="Copiar este monto a todos los meses">
+                <span class="p-1 rounded border border-blue-800 bg-blue-900/30">🔁</span>
+                <span>Copiar al resto del año</span>
               </button>
               <input type="text" inputmode="decimal" value="${displayPrecio}" placeholder="Monto ($)" onfocus="handleInputFocus(this)" onblur="handleInputBlur(this)" oninput="formatLiveCurrencyInput(this); updateGastoItem('${user}', '${gasto.id}', 'precio', this.value)" class="w-32 bg-slate-800 border border-slate-700 p-1.5 rounded text-xs text-white font-bold text-right outline-none">
             </div>
@@ -1477,7 +1472,6 @@
       });
     }
 
-    // FIX 2: Mover gasto por ID (Aplica el mismo orden exacto a todos los meses)
     function moveGastoOrder(user, id, direction) {
       const mesSelect = document.getElementById('proy-select-mes').value;
       let mesData = getOrCreateMesData(mesSelect);
@@ -1516,36 +1510,30 @@
       calcProyTotales();
     }
 
-    // FIX 2: Toggle Replicar mediante ID
-    function toggleReplicateGasto(user, id) {
+    // NUEVA FUNCIÓN: Replíca únicamente el precio bajo demanda explícita
+    function replicateGastoValue(user, id) {
       const mesSelect = document.getElementById('proy-select-mes').value;
       let mesData = getOrCreateMesData(mesSelect);
       let listKey = user === 'Brian' ? 'gastosBrian' : 'gastosVirginia';
-      let gasto = mesData[listKey].find(g => g.id === id);
-      if(!gasto) return;
+      let currGasto = mesData[listKey].find(g => g.id === id);
+      if(!currGasto) return;
 
-      gasto.replicate = !gasto.replicate;
+      let confirmMsg = `¿Copiar el monto de ${formatMoney(Math.abs(currGasto.precio))} a todos los demás meses?`;
+      if(!confirm(confirmMsg)) return;
 
       ALL_MESES.forEach(mName => {
         if (mName !== mesSelect) {
           let mData = getOrCreateMesData(mName);
           let target = mData[listKey].find(g => g.id === id);
           if (target) {
-            target.replicate = gasto.replicate; // Actualiza el switch en los demás
-            if (gasto.replicate) {
-              target.precio = gasto.precio; // Si se tilda, copia la plata
-            } else {
-              target.precio = 0; // Si se destilda, pone cero en los demás (pero mantiene su posición)
-            }
+            target.precio = currGasto.precio; 
           }
         }
       });
 
-      renderGastosList(user, mesData[listKey]);
-      calcProyTotales();
+      alert("✅ Valor replicado a los 11 meses restantes.\nRecordá presionar 'Guardar' para subir los cambios a la base de datos.");
     }
 
-    // FIX 2: Agregar por ID
     function addGastoRow(user) {
       const mesSelect = document.getElementById('proy-select-mes').value;
       let key = user === 'Brian' ? 'gastosBrian' : 'gastosVirginia';
@@ -1553,7 +1541,7 @@
 
       ALL_MESES.forEach(mName => {
         let mData = getOrCreateMesData(mName);
-        mData[key].push({ id: newId, concepto: "", precio: 0, categoria: "otros", replicate: true });
+        mData[key].push({ id: newId, concepto: "", precio: 0, categoria: "otros" });
       });
 
       let mesData = getOrCreateMesData(mesSelect);
@@ -1561,7 +1549,6 @@
       calcProyTotales();
     }
 
-    // FIX 2: Eliminar por ID
     function removeGastoRow(user, id) {
       let key = user === 'Brian' ? 'gastosBrian' : 'gastosVirginia';
 
@@ -1577,7 +1564,6 @@
       calcProyTotales();
     }
 
-    // FIX 2: Actualizar ítem por ID
     function updateGastoItem(user, id, keyStr, value) {
       const mesSelect = document.getElementById('proy-select-mes').value;
       let listKey = user === 'Brian' ? 'gastosBrian' : 'gastosVirginia';
@@ -1589,18 +1575,18 @@
 
       currGasto[keyStr] = parsedValue;
 
-      ALL_MESES.forEach(mName => {
-        if(mName === mesSelect) return;
-        let mData = getOrCreateMesData(mName);
-        let targetGasto = mData[listKey].find(g => g.id === id);
-        if (targetGasto) {
-          if (keyStr === 'concepto' || keyStr === 'categoria') {
-             targetGasto[keyStr] = parsedValue; // Nombre y categoría SIEMPRE se sincronizan
-          } else if (keyStr === 'precio' && currGasto.replicate) {
-             targetGasto[keyStr] = parsedValue; // Precio solo se sincroniza si está replicado
+      // Si cambia el nombre o la categoría, se actualiza en todos lados para no perder la estructura del Gasto Fijo.
+      // Pero si cambia el PRECIO, NO afecta a los otros meses.
+      if (keyStr === 'concepto' || keyStr === 'categoria') {
+        ALL_MESES.forEach(mName => {
+          if(mName === mesSelect) return;
+          let mData = getOrCreateMesData(mName);
+          let targetGasto = mData[listKey].find(g => g.id === id);
+          if (targetGasto) {
+             targetGasto[keyStr] = parsedValue;
           }
-        }
-      });
+        });
+      }
       calcProyTotales();
     }
 
@@ -1613,7 +1599,6 @@
       return found;
     }
 
-    // FIX 3: Lógica Totalizadora para sumar Gastos de Terceros Positivamente
     function calcProyTotales() {
       let extraB = parseAmountInput(document.getElementById('p-extra-brian').value);
       let extraV = parseAmountInput(document.getElementById('p-extra-virginia').value);
