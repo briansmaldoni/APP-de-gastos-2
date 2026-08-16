@@ -22,6 +22,7 @@
     body { background-color: var(--c-bg); color: #f8fafc; font-family: system-ui, sans-serif; transition: background-color 0.4s ease; }
     .glass { background: var(--c-panel); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.08); transition: background 0.4s ease, border-color 0.4s ease; }
     
+    /* Píldora Elegante para Totales Macro */
     .glass-pill { background: rgba(255, 255, 255, 0.04); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.08); box-shadow: 0 4px 15px rgba(0,0,0,0.1); border-radius: 9999px; transition: all 0.3s ease; }
 
     .t-primary { color: var(--c-primary); transition: color 0.4s; }
@@ -261,7 +262,7 @@
         <span class="proy-servicios font-extrabold text-indigo-300 text-sm whitespace-nowrap">$ 0,00</span>
       </div>
       <div class="glass-pill flex justify-between items-center px-4 py-3">
-        <span class="text-[10px] text-slate-300 font-semibold uppercase tracking-wide truncate">🤝 Deuda de Terceros:</span>
+        <span class="text-[10px] text-slate-300 font-semibold uppercase tracking-wide truncate">🤝 Gastos de Terceros:</span>
         <span class="proy-terceros font-extrabold text-amber-400 text-sm whitespace-nowrap">$ 0,00</span>
       </div>
       <div class="glass-pill flex justify-between items-center px-4 py-3">
@@ -426,6 +427,116 @@
     </div>
   </div>
 
+  <!-- RESTO DE MODALES DE LA APP DIARIA -->
+  <div id="hb-quick-modal" onclick="if(event.target === this) closeHBUpdate()" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-[60] flex items-center justify-center p-4">
+    <div class="glass w-full max-w-sm p-5 rounded-2xl border border-hb shadow-xl">
+      <label class="text-xs t-hb font-bold block mb-3 text-center uppercase tracking-wide">Ingresar Nuevo Saldo (HB)</label>
+      <input type="text" id="input-hb-update" inputmode="decimal" placeholder="Ej: 500000,50" onfocus="handleInputFocus(this)" onblur="handleInputBlur(this)" oninput="formatLiveCurrencyInput(this)" class="w-full bg-slate-900 border border-slate-700 p-3 rounded-lg text-white text-lg font-bold mb-4 text-center input-focus-hb">
+      <div class="flex gap-2">
+        <button onclick="saveHBUpdate()" class="flex-1 bg-hb hover:brightness-110 text-white py-2.5 rounded-lg text-sm font-bold shadow">Guardar</button>
+        <button onclick="closeHBUpdate()" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 py-2.5 rounded-lg text-sm border border-slate-700">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="modal-rollover" class="hidden fixed inset-0 bg-slate-950/90 backdrop-blur-md z-[80] flex items-center justify-center p-4">
+    <div class="glass w-full max-w-sm rounded-2xl border border-purple-500/50 p-5 flex flex-col text-center shadow-2xl">
+      <span class="text-3xl mb-2">🌅</span>
+      <h2 class="text-base font-bold text-white mb-1">¡Nuevo Día Detectado!</h2>
+      <p class="text-xs text-slate-300 mb-3">Ayer te sobraron <strong id="rollover-amount" class="t-bolsa font-black text-sm">$ 0,00</strong> de tu presupuesto.</p>
+      <p class="text-[11px] text-slate-400 mb-5">¿Qué te gustaría hacer con ese dinero sobrante?</p>
+
+      <div class="space-y-2">
+        <button onclick="confirmRollover(true)" class="w-full bg-bolsa hover:brightness-110 text-white font-bold text-xs py-3 rounded-xl shadow-lg border border-purple-400/30">
+          📥 Guardar sobrante en la Bolsa (Ahorro)
+        </button>
+        <button onclick="confirmRollover(false)" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold text-xs py-3 rounded-xl border border-slate-700">
+          🔄 Repartir entre los días que quedan
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div id="modal-config" onclick="if(event.target === this) closeConfigModal()" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-md z-[70] flex items-center justify-center p-4">
+    <div class="glass w-full max-w-sm rounded-2xl border border-slate-600 p-4 flex flex-col shadow-2xl">
+      <div class="flex justify-between items-center border-b border-slate-800 pb-2 mb-3">
+        <h2 class="text-base font-bold text-white">⚙️ Preferencias</h2>
+        <button onclick="closeConfigModal()" class="w-7 h-7 rounded-full bg-slate-800 text-slate-400 font-bold text-xs hover:bg-slate-700 border border-slate-700">✕</button>
+      </div>
+
+      <div class="flex border-b border-slate-700 mb-4 text-xs font-bold">
+        <button onclick="switchCfgTab('cfg-fecha')" id="btn-cfg-fecha" class="flex-1 py-2 text-blue-400 border-b-2 border-blue-400 transition-all">Fecha Cobro</button>
+        <button onclick="switchCfgTab('cfg-tema')" id="btn-cfg-tema" class="flex-1 py-2 text-slate-500 transition-all">Estilo Visual</button>
+      </div>
+
+      <div id="cfg-fecha" class="space-y-4">
+        <label class="flex items-start gap-2 text-sm text-slate-300">
+          <input type="checkbox" id="cfg-auto-date" onchange="toggleAutoDate()" class="w-4 h-4 mt-1 accent-blue-500">
+          <div>
+             <span class="font-bold text-white block">Automático (Recomendado)</span>
+             <span class="text-[10px] text-slate-400 block mt-0.5">Calcula feriados oficiales automáticamente.</span>
+          </div>
+        </label>
+        <div id="cfg-manual-box" class="hidden p-3 bg-slate-900 border border-slate-700 rounded-lg">
+          <label class="text-xs text-slate-400 block mb-1">Fijar fecha manualmente:</label>
+          <input type="date" id="cfg-manual-date" class="w-full bg-slate-800 border border-slate-700 p-2 rounded text-white text-sm outline-none">
+        </div>
+      </div>
+
+      <div id="cfg-tema" class="hidden space-y-3">
+        <div>
+          <label class="text-xs text-slate-400 block mb-1">Elegir un Tema (<span id="user-theme-label" class="text-blue-400 font-bold">Brian</span>):</label>
+          <select id="cfg-preset" onchange="applyPreset()" class="w-full bg-slate-900 border border-slate-700 p-2 rounded text-white text-sm outline-none custom-scroll">
+          </select>
+        </div>
+        <div id="cfg-colors-box" class="hidden grid grid-cols-2 gap-3 p-3 bg-slate-900 border border-slate-700 rounded-lg">
+           <div><label class="text-[10px] text-slate-400 block mb-1">Principal</label><input type="color" id="col-primary" class="w-full h-8 cursor-pointer rounded border border-slate-600 bg-slate-800"></div>
+           <div><label class="text-[10px] text-slate-400 block mb-1">Bolsa</label><input type="color" id="col-bolsa" class="w-full h-8 cursor-pointer rounded border border-slate-600 bg-slate-800"></div>
+           <div><label class="text-[10px] text-slate-400 block mb-1">Home Bank</label><input type="color" id="col-hb" class="w-full h-8 cursor-pointer rounded border border-slate-600 bg-slate-800"></div>
+           <div><label class="text-[10px] text-slate-400 block mb-1">Fondo App</label><input type="color" id="col-bg" class="w-full h-8 cursor-pointer rounded border border-slate-600 bg-slate-800"></div>
+           <label class="col-span-2 flex items-center gap-2 text-xs text-slate-300 mt-1">
+             <input type="checkbox" id="col-islight" onchange="applyPreset()" class="w-4 h-4 accent-blue-500"> Tema Claro (Letras Oscuras)
+           </label>
+        </div>
+      </div>
+
+      <button onclick="saveConfiguration()" class="mt-5 w-full bg-blue-600 hover:bg-blue-500 text-white py-2.5 rounded-lg text-sm font-bold shadow">Guardar Cambios</button>
+    </div>
+  </div>
+
+  <div id="modal-calendario" onclick="if(event.target === this) closeCalendarModal()" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-md z-[50] flex items-center justify-center p-4">
+    <div class="glass w-full max-w-md max-h-[85vh] rounded-2xl border border-indigo-500/30 p-4 flex flex-col shadow-2xl">
+      <div class="flex justify-between items-center border-b border-slate-800 pb-3 mb-3">
+        <div>
+          <h2 class="text-base font-bold text-slate-100">📅 Presupuesto por Día</h2>
+          <p class="text-[11px] text-indigo-400 font-semibold" id="modal-days-subtitle">Días Restantes</p>
+        </div>
+        <button onclick="closeCalendarModal()" class="w-8 h-8 rounded-full bg-slate-800 text-slate-400 font-bold text-sm hover:bg-slate-700 border border-slate-700">✕</button>
+      </div>
+      <div id="modal-calendario-body" class="space-y-2 overflow-y-auto pr-1 custom-scroll flex-1"></div>
+      <button onclick="closeCalendarModal()" class="mt-4 w-full bg-slate-800 hover:bg-slate-700 text-slate-200 py-2.5 rounded-xl font-bold text-xs border border-slate-700">Cerrar Ventana</button>
+    </div>
+  </div>
+
+  <div id="modal-editar" onclick="if(event.target === this) closeEditModal()" class="hidden fixed inset-0 bg-slate-950/90 backdrop-blur-md z-[60] flex items-center justify-center p-4">
+    <div class="glass w-full max-w-sm rounded-2xl border border-slate-600 p-5 shadow-2xl">
+      <h2 class="text-lg font-bold text-white mb-1">Editar Movimiento</h2>
+      <p id="edit-mov-tipo" class="text-xs text-slate-400 mb-4"></p>
+      <input type="hidden" id="edit-id">
+      
+      <label class="text-xs text-slate-400 block mb-1">Concepto:</label>
+      <input type="text" id="edit-concepto" class="w-full bg-slate-900 border border-slate-700 p-3 rounded-lg text-white text-sm mb-3 outline-none focus:border-amber-500">
+      
+      <label class="text-xs text-slate-400 block mb-1">Monto (Valor Absoluto):</label>
+      <input type="text" id="edit-monto" inputmode="decimal" onfocus="handleInputFocus(this)" onblur="handleInputBlur(this)" oninput="formatLiveCurrencyInput(this)" class="w-full bg-slate-900 border border-slate-700 p-3 rounded-lg text-white font-bold mb-5 outline-none focus:border-amber-500">
+      
+      <div class="flex gap-2">
+        <button onclick="saveEdit()" class="flex-1 bg-amber-600 hover:bg-amber-500 text-white py-2.5 rounded-lg text-sm font-bold shadow">Guardar Cambios</button>
+        <button onclick="closeEditModal()" class="flex-1 bg-slate-700 hover:bg-slate-600 text-slate-300 py-2.5 rounded-lg text-sm border border-slate-600">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
   <!-- SCRIPT GENERAL DE LA APLICACIÓN -->
   <script>
     const API_URL = "https://script.google.com/macros/s/AKfycbxqMkqNgYqcdliQkmz4foC-g6RvI9OGOw-Kai3fnltL-A9dpZC4frGYDsX7TIMxzW0R/exec"; 
@@ -438,16 +549,7 @@
     let dolarUSD = 1200;
     let sueldoBaseBrian = 1559009.85;
     let sueldoBaseVirginia = 0;
-    let serviciosGlobales = [
-      { concepto: "Netflix", moneda: "ARS", cant: 1, precio: 13588.49 },
-      { concepto: "Adobe", moneda: "ARS", cant: 1, precio: 21695.30 },
-      { concepto: "Mercado Pago", moneda: "ARS", cant: 1, precio: 8990.00 },
-      { concepto: "YouTube Premium", moneda: "USD", cant: 1, precio: 6.99 },
-      { concepto: "One", moneda: "USD", cant: 1, precio: 2.00 },
-      { concepto: "Internet", moneda: "ARS", cant: 1, precio: 37810.00 },
-      { concepto: "Celulares", moneda: "ARS", cant: 2, precio: 741.00 },
-      { concepto: "Rappi", moneda: "ARS", cant: 1, precio: 9990.00 }
-    ];
+    let serviciosGlobales = [];
 
     const ALL_MESES = [
       "Enero", "Febrero", "Marzo", "Abril", "Mayo [Premio]", "Junio [SAC]",
@@ -466,7 +568,7 @@
     let pendingRolloverAmount = 0;
     let pendingRolloverDate = "";
 
-    // FORMATO DE NÚMEROS INTELIGENTE
+    // CONTROL DE FOCO EN INPUTS PARA LIMPIAR EL '0' AUTOMÁTICAMENTE
     function handleInputFocus(input) {
       let val = input.value.toString().trim();
       if (val === '0' || val === '0.00' || val === '0,00' || val === '$ 0,00' || val === '$ 0.00' || val === '-') {
@@ -481,16 +583,18 @@
       }
     }
 
+    // FORMATEADOR INTELIGENTE (Punto decimal / Miles)
     function formatLiveCurrencyInput(input) {
       let val = input.value;
       let isNegative = val.startsWith('-');
       
+      // Si el usuario ingresa un punto y no hay comas previas, lo convierte a coma para decimal
       if (val.endsWith('.')) {
         val = val.slice(0, -1) + ',';
       } else if (val.includes('.') && !val.includes(',')) {
-        let lastDot = val.lastIndexOf('.');
-        if (val.length - lastDot <= 3) {
-          val = val.substring(0, lastDot) + ',' + val.substring(lastDot + 1);
+        let parts = val.split('.');
+        if (parts.length === 2) {
+           val = parts[0] + ',' + parts[1];
         }
       }
 
@@ -521,10 +625,10 @@
       if (!val) return 0;
       let clean = val.toString().trim();
       let isNegative = clean.startsWith('-');
-      clean = clean.replace(/\./g, '').replace(',', '.').replace(/[^0-9.]/g, '');
+      clean = clean.replace(/\./g, '').replace(',', '.').replace(/[^0-9.-]/g, '');
       let parsed = parseFloat(clean);
       if (isNaN(parsed)) return 0;
-      return isNegative ? -Math.abs(parsed) : Math.abs(parsed);
+      return parsed; // ACEPTAMOS NEGATIVOS
     }
 
     // DRAWER Y VISTAS
@@ -604,7 +708,7 @@
     }
 
     async function init() {
-      cargarDesdeCache();
+      populateThemeSelect(); cargarDesdeCache();
       const todayStr = toLocalISODate(new Date());
       document.getElementById('u-fecha').value = todayStr; document.getElementById('d-fecha').value = todayStr; document.getElementById('a-fecha').value = todayStr;
       setupEnterNavigation(); 
@@ -616,26 +720,43 @@
       currentUser = user; localStorage.setItem('cfg_user', user);
       const lblUser = document.getElementById('active-user');
       const btnB = document.getElementById('user-brian'); const btnV = document.getElementById('user-virginia');
+      const lblUserTheme = document.getElementById('user-theme-label');
 
       if(user === "Brian") {
         lblUser.innerHTML = `<span class="text-blue-400 font-black">Brian</span>`; 
+        if(lblUserTheme) { lblUserTheme.innerText = "Brian"; lblUserTheme.className = "text-blue-400 font-bold"; }
         btnB.className = "px-4 py-1.5 text-xs rounded-full bg-blue-600 text-white font-bold border border-blue-500 shadow transition-all";
         btnV.className = "px-4 py-1.5 text-xs rounded-full bg-slate-800 text-slate-400 border border-slate-700 hover:bg-slate-700 transition-all";
       } else {
         lblUser.innerHTML = `<span class="text-fuchsia-400 font-black">Virginia</span>`; 
+        if(lblUserTheme) { lblUserTheme.innerText = "Virginia"; lblUserTheme.className = "text-fuchsia-400 font-bold"; }
         btnV.className = "px-4 py-1.5 text-xs rounded-full bg-fuchsia-600 text-white font-bold border border-fuchsia-500 shadow transition-all";
         btnB.className = "px-4 py-1.5 text-xs rounded-full bg-slate-800 text-slate-400 border border-slate-700 hover:bg-slate-700 transition-all";
       }
-      guardarEnCache();
+      applySavedConfig(); guardarEnCache();
     }
 
     function openConfigModal() {
       document.getElementById('modal-config').classList.remove('hidden');
       const isAuto = !state.config.paydate;
       document.getElementById('cfg-auto-date').checked = isAuto; document.getElementById('cfg-manual-date').value = isAuto ? "" : state.config.paydate; toggleAutoDate();
+
+      let tStr = (currentUser === "Brian") ? state.config.themeBrian : state.config.themeVirginia;
+      if(!tStr) { document.getElementById('cfg-preset').value = "dark-emerald"; applyPreset(); }
+      else if(tStr.startsWith("{")) {
+         let tObj = JSON.parse(tStr);
+         if(tObj.preset && getThemeValues(tObj.preset)) { document.getElementById('cfg-preset').value = tObj.preset; applyPreset(); }
+         else {
+           document.getElementById('cfg-preset').value = "custom";
+           document.getElementById('col-primary').value = tObj.primary || "#10b981"; document.getElementById('col-bolsa').value = tObj.bolsa || "#a855f7";
+           document.getElementById('col-hb').value = tObj.hb || "#3b82f6"; document.getElementById('col-bg').value = tObj.bg || "#0f172a";
+           document.getElementById('col-islight').checked = tObj.isLight || false;
+           applyPreset();
+         }
+      }
     }
     
-    function closeConfigModal() { document.getElementById('modal-config').classList.add('hidden'); }
+    function closeConfigModal() { document.getElementById('modal-config').classList.add('hidden'); applySavedConfig(); }
     function switchCfgTab(tabId) {
       document.getElementById('cfg-fecha').classList.add('hidden'); document.getElementById('cfg-tema').classList.add('hidden'); document.getElementById(tabId).classList.remove('hidden');
       document.getElementById('btn-cfg-fecha').className = tabId === 'cfg-fecha' ? "flex-1 py-2 text-blue-400 border-b-2 border-blue-400 transition-all" : "flex-1 py-2 text-slate-500 transition-all";
@@ -644,12 +765,46 @@
 
     function toggleAutoDate() { const isAuto = document.getElementById('cfg-auto-date').checked; document.getElementById('cfg-manual-box').classList.toggle('hidden', isAuto); }
 
+    function applyPreset() {
+      const preset = document.getElementById('cfg-preset').value; const cBox = document.getElementById('cfg-colors-box');
+      if (preset === "custom") {
+         cBox.classList.remove('hidden');
+         updateDOMTheme({ primary: document.getElementById('col-primary').value, bolsa: document.getElementById('col-bolsa').value, hb: document.getElementById('col-hb').value, bg: document.getElementById('col-bg').value, panel: "#1e293bb3", isLight: document.getElementById('col-islight').checked });
+      } else {
+         cBox.classList.add('hidden'); updateDOMTheme(getThemeValues(preset));
+      }
+    }
+
+    function updateDOMTheme(colors) {
+      if(!colors) return;
+      document.documentElement.style.setProperty('--c-primary', colors.primary); document.documentElement.style.setProperty('--c-bolsa', colors.bolsa);
+      document.documentElement.style.setProperty('--c-hb', colors.hb); document.documentElement.style.setProperty('--c-bg', colors.bg); document.documentElement.style.setProperty('--c-panel', colors.panel || "#1e293bb3");
+      const body = document.getElementById('app-body');
+      if(colors.isLight) { body.classList.remove('dark'); body.classList.add('theme-light'); } else { body.classList.add('dark'); body.classList.remove('theme-light'); }
+    }
+
+    function applySavedConfig() {
+      let tStr = (currentUser === "Brian") ? state.config.themeBrian : state.config.themeVirginia;
+      if(tStr && tStr.startsWith("{")) { 
+         let tObj = JSON.parse(tStr); 
+         if(tObj.preset && getThemeValues(tObj.preset)) updateDOMTheme(getThemeValues(tObj.preset)); 
+         else updateDOMTheme(tObj);
+      } else { updateDOMTheme(getThemeValues('dark-emerald')); }
+    }
+
     function saveConfiguration() {
       const isAuto = document.getElementById('cfg-auto-date').checked;
       const paydate = isAuto ? "" : document.getElementById('cfg-manual-date').value;
+      const preset = document.getElementById('cfg-preset').value;
+      let themeData = { preset: preset };
+      if(preset === "custom") { themeData = { primary: document.getElementById('col-primary').value, bolsa: document.getElementById('col-bolsa').value, hb: document.getElementById('col-hb').value, bg: document.getElementById('col-bg').value, panel: "#1e293bb3", isLight: document.getElementById('col-islight').checked }; }
+
+      let themeJson = JSON.stringify(themeData);
       state.config.paydate = paydate; 
-      guardarEnCache();
-      syncBackend({ action: "updateConfig", user: currentUser, paydate: paydate });
+      if(currentUser === "Brian") state.config.themeBrian = themeJson; else state.config.themeVirginia = themeJson;
+      
+      applySavedConfig(); guardarEnCache();
+      syncBackend({ action: "updateConfig", user: currentUser, paydate: paydate, theme: themeJson });
       document.getElementById('modal-config').classList.add('hidden'); render();
     }
 
@@ -748,7 +903,7 @@
         state.movements = data.movements || []; 
         state.config = data.config || { paydate: "", themeBrian: "", themeVirginia: "", lastProcessedDate: "" };
         
-        guardarEnCache(); render();
+        applySavedConfig(); guardarEnCache(); render();
         checkDayRollover();
       } catch (e) { console.error("Error", e); }
       finally { 
@@ -993,7 +1148,6 @@
           }
           proyeccionesData = data.proyecciones || [];
           
-          // Generar IDs únicos para ítems que no tengan para que la réplica y reordenamiento funcionen
           proyeccionesData.forEach(p => {
              (p.gastosBrian || []).forEach(g => { if (!g.id) g.id = Math.random().toString(36).substr(2, 9); });
              (p.gastosVirginia || []).forEach(g => { if (!g.id) g.id = Math.random().toString(36).substr(2, 9); });
@@ -1164,6 +1318,9 @@
         let catId = gasto.categoria || "otros";
 
         let catOptionsHtml = CATEGORIAS_GASTOS.map(c => `<option value="${c.id}" ${c.id === catId ? 'selected' : ''}>${c.name}</option>`).join('');
+        
+        let formattedMonto = gasto.precio !== 0 ? new Intl.NumberFormat('es-AR').format(gasto.precio) : '';
+        if (gasto.precio < 0) formattedMonto = '-' + new Intl.NumberFormat('es-AR').format(Math.abs(gasto.precio));
 
         let row = `
           <div class="bg-slate-900/90 p-2 rounded-lg border border-slate-800 space-y-2">
@@ -1187,7 +1344,7 @@
                 <span class="p-1 rounded border ${isReplicated ? 'bg-emerald-950 border-emerald-500 text-emerald-300' : 'bg-slate-800 border-slate-700 text-slate-400'}">🔁</span>
                 <span>${isReplicated ? 'Replicado todo el año' : 'Sólo este mes'}</span>
               </button>
-              <input type="text" inputmode="decimal" value="${gasto.precio !== 0 ? new Intl.NumberFormat('es-AR').format(gasto.precio) : ''}" placeholder="Monto ($)" onfocus="handleInputFocus(this)" onblur="handleInputBlur(this)" oninput="formatLiveCurrencyInput(this); updateGastoItem('${user}', ${idx}, 'precio', this.value)" class="w-28 bg-slate-800 border border-slate-700 p-1.5 rounded text-xs text-white font-bold text-right outline-none">
+              <input type="text" inputmode="decimal" value="${formattedMonto}" placeholder="Monto ($)" onfocus="handleInputFocus(this)" onblur="handleInputBlur(this)" oninput="formatLiveCurrencyInput(this); updateGastoItem('${user}', ${idx}, 'precio', this.value)" class="w-32 bg-slate-800 border border-slate-700 p-1.5 rounded text-xs text-white font-bold text-right outline-none">
             </div>
           </div>`;
         container.innerHTML += row;
@@ -1203,12 +1360,10 @@
       let targetIdx = idx + direction;
       if (targetIdx < 0 || targetIdx >= list.length) return;
 
-      // Swap actual
       let temp = list[idx];
       list[idx] = list[targetIdx];
       list[targetIdx] = temp;
 
-      // Swap en todos los demas meses (para mantener sincronía de estructura)
       ALL_MESES.forEach(mName => {
         if (mName !== mesSelect) {
           let mData = getOrCreateMesData(mName);
@@ -1268,12 +1423,11 @@
       let key = user === 'Brian' ? 'gastosBrian' : 'gastosVirginia';
       
       let uid = Math.random().toString(36).substr(2, 9);
-      let baseGasto = { id: uid, concepto: "", precio: 0, categoria: "otros", replicate: false };
-
-      // Se agrega estructuralmente a TODOS los meses
+      
+      // Siempre se crea en todos los meses por defecto
       ALL_MESES.forEach(mName => {
         let mData = getOrCreateMesData(mName);
-        mData[key].push({...baseGasto});
+        mData[key].push({ id: uid, concepto: "", precio: 0, categoria: "otros", replicate: false });
       });
 
       renderGastosList(user, mesData[key]);
@@ -1306,7 +1460,6 @@
       gasto[field] = (field === 'precio') ? parseAmountInput(value) : value;
 
       if (field === 'concepto' || field === 'categoria') {
-         // Se propaga a todos los meses obligatoriamente para mantener la estructura idéntica
          ALL_MESES.forEach(mName => {
             if (mName !== mesSelect) {
                let mData = getOrCreateMesData(mName);
@@ -1315,7 +1468,6 @@
             }
          });
       } else if (field === 'precio') {
-         // Solo propaga el precio a los otros meses si Replicar está activado
          if (gasto.replicate) {
              ALL_MESES.forEach(mName => {
                 if (mName !== mesSelect) {
