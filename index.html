@@ -275,20 +275,20 @@
           🔄 Actualizar Extras
         </button>
       </div>
-      <p class="text-[10px] text-slate-400 italic">Los sueldos base fijados se agregan automáticamente.</p>
+      <p class="text-[10px] text-slate-400 italic">Los sueldos base se suman automáticamente.</p>
       
       <!-- Brian Extra -->
       <div class="bg-slate-900/60 p-2.5 rounded-lg border border-blue-900/40 space-y-2">
         <div class="flex justify-between items-center">
           <span class="text-xs font-bold text-blue-400">Brian (Ingreso Extra)</span>
-          <select id="p-tipo-extra-brian" onchange="autoCalcSAC('Brian')" class="bg-slate-800 text-[10px] text-indigo-300 border border-slate-700 rounded px-1 py-0.5">
+          <select id="p-tipo-extra-brian" onchange="onExtraTypeChange('Brian')" class="bg-slate-800 text-[10px] text-indigo-300 border border-slate-700 rounded px-1 py-0.5">
             <option value="SAC">SAC (Aguinaldo)</option>
             <option value="Premio">Premio / Bono</option>
             <option value="Otro">Otro Ingreso</option>
           </select>
         </div>
         <div class="grid grid-cols-2 gap-2 text-xs">
-          <input type="text" id="p-concepto-extra-brian" placeholder="Detalle (ej. SAC 1er sem)" class="bg-slate-800 border border-slate-700 p-1.5 rounded text-white text-xs">
+          <input type="text" id="p-concepto-extra-brian" placeholder="Detalle" class="bg-slate-800 border border-slate-700 p-1.5 rounded text-white text-xs">
           <input type="text" id="p-extra-brian" inputmode="decimal" placeholder="Monto ($)" oninput="calcProyTotales()" class="bg-slate-800 border border-slate-700 p-1.5 rounded font-bold text-white text-right text-xs">
         </div>
       </div>
@@ -297,14 +297,14 @@
       <div class="bg-slate-900/60 p-2.5 rounded-lg border border-fuchsia-900/40 space-y-2">
         <div class="flex justify-between items-center">
           <span class="text-xs font-bold text-fuchsia-400">Virginia (Ingreso Extra)</span>
-          <select id="p-tipo-extra-virginia" onchange="autoCalcSAC('Virginia')" class="bg-slate-800 text-[10px] text-indigo-300 border border-slate-700 rounded px-1 py-0.5">
+          <select id="p-tipo-extra-virginia" onchange="onExtraTypeChange('Virginia')" class="bg-slate-800 text-[10px] text-indigo-300 border border-slate-700 rounded px-1 py-0.5">
             <option value="SAC">SAC (Aguinaldo)</option>
             <option value="Premio">Premio / Bono</option>
             <option value="Otro">Otro Ingreso</option>
           </select>
         </div>
         <div class="grid grid-cols-2 gap-2 text-xs">
-          <input type="text" id="p-concepto-extra-virginia" placeholder="Detalle (ej. Bono anual)" class="bg-slate-800 border border-slate-700 p-1.5 rounded text-white text-xs">
+          <input type="text" id="p-concepto-extra-virginia" placeholder="Detalle" class="bg-slate-800 border border-slate-700 p-1.5 rounded text-white text-xs">
           <input type="text" id="p-extra-virginia" inputmode="decimal" placeholder="Monto ($)" oninput="calcProyTotales()" class="bg-slate-800 border border-slate-700 p-1.5 rounded font-bold text-white text-right text-xs">
         </div>
       </div>
@@ -355,13 +355,11 @@
         <button onclick="closeServiciosModal()" class="w-7 h-7 rounded-full bg-slate-800 text-slate-400 font-bold text-xs hover:bg-slate-700 border border-slate-700">✕</button>
       </div>
 
-      <!-- Pestañas del Modal -->
       <div class="flex border-b border-slate-700 text-xs font-bold">
         <button onclick="switchServTab('tab-serv-lista')" id="btn-serv-lista" class="flex-1 py-2 text-indigo-400 border-b-2 border-indigo-400 transition-all">Servicios / Subscripciones</button>
         <button onclick="switchServTab('tab-serv-sueldos')" id="btn-serv-sueldos" class="flex-1 py-2 text-slate-500 transition-all">Sueldos Base</button>
       </div>
 
-      <!-- Pestaña 1: Servicios & Dólar -->
       <div id="tab-serv-lista" class="space-y-3">
         <div class="bg-slate-900/80 p-2.5 rounded-xl border border-slate-700 flex justify-between items-center">
           <div>
@@ -388,7 +386,6 @@
         </button>
       </div>
 
-      <!-- Pestaña 2: Sueldos Base -->
       <div id="tab-serv-sueldos" class="hidden space-y-3 py-2">
         <p class="text-xs text-slate-400">Ingresá los sueldos base actualizados. Aplicarán como base a todas las proyecciones.</p>
         
@@ -542,6 +539,19 @@
       { concepto: "Rappi", moneda: "ARS", cant: 1, precio: 9990.00 }
     ];
 
+    const ALL_MESES = [
+      "Enero", "Febrero", "Marzo", "Abril", "Mayo [Premio]", "Junio [SAC]",
+      "Julio", "Agosto [Premio]", "Septiembre", "Octubre", "Noviembre [Premio]", "Diciembre [SAC]"
+    ];
+
+    const CATEGORIAS_GASTOS = [
+      { id: "transporte", name: "🚌 Transporte", color: "bg-blue-950/80 border-blue-700/60 text-blue-300" },
+      { id: "tarjeta", name: "💳 Tarjetas & Créditos", color: "bg-purple-950/80 border-purple-700/60 text-purple-300" },
+      { id: "salud", name: "🏥 Salud & Bienestar", color: "bg-emerald-950/80 border-emerald-700/60 text-emerald-300" },
+      { id: "hogar", name: "🏠 Hogar & Servicios", color: "bg-amber-950/80 border-amber-700/60 text-amber-300" },
+      { id: "otros", name: "📌 Varios / Otros", color: "bg-slate-800 border-slate-700 text-slate-300" }
+    ];
+
     let feriadosOficiales = ["2026-01-01", "2026-03-24", "2026-04-02", "2026-05-01", "2026-05-25", "2026-06-20", "2026-07-09", "2026-08-17", "2026-10-12", "2026-11-20", "2026-12-25"];
     let pendingRolloverAmount = 0;
     let pendingRolloverDate = "";
@@ -593,7 +603,7 @@
       } catch(e) { console.log("Feriados Offline"); }
     }
 
-    // TODOS LOS TEMAS VISUALES ORIGINALES
+    // TODOS LOS TEMAS VISUALES ORIGINALES INTACTOS
     const THEME_GROUPS = [
       {
         label: "Oscuros / Modernos",
@@ -1258,7 +1268,7 @@
       return total;
     }
 
-    function autoCalcSAC(user) {
+    function onExtraTypeChange(user) {
       const selectTipo = document.getElementById(user === 'Brian' ? 'p-tipo-extra-brian' : 'p-tipo-extra-virginia').value;
       const inputExtra = document.getElementById(user === 'Brian' ? 'p-extra-brian' : 'p-extra-virginia');
       const inputConcepto = document.getElementById(user === 'Brian' ? 'p-concepto-extra-brian' : 'p-concepto-extra-virginia');
@@ -1269,24 +1279,44 @@
         inputConcepto.value = "SAC (Medio Aguinaldo)";
       } else if (selectTipo === "Premio") {
         inputConcepto.value = "Premio / Bono";
+      } else {
+        inputConcepto.value = "Otro Ingreso Extra";
       }
       calcProyTotales();
     }
 
     function renderProyeccion() {
       const mesSelect = document.getElementById('proy-select-mes').value;
+      let mesData = proyeccionesData.find(p => p.mes === mesSelect);
 
-      let mesData = proyeccionesData.find(p => p.mes === mesSelect) || {
-        mes: mesSelect, extraBrian: 0, tipoExtraBrian: "SAC", conceptoExtraBrian: "SAC",
-        extraVirginia: 0, tipoExtraVirginia: "SAC", conceptoExtraVirginia: "SAC",
-        gastosBrian: [], gastosVirginia: []
-      };
+      // Si es la primera vez que se accede a este mes, settear tipos por defecto según el mes
+      if (!mesData) {
+        let defaultTipo = "Otro";
+        if (mesSelect.includes("[SAC]")) defaultTipo = "SAC";
+        else if (mesSelect.includes("[Premio]")) defaultTipo = "Premio";
 
-      document.getElementById('p-tipo-extra-brian').value = mesData.tipoExtraBrian || "SAC";
+        let defaultExtraB = defaultTipo === "SAC" ? (sueldoBaseBrian * 0.5).toFixed(2) : 0;
+        let defaultExtraV = defaultTipo === "SAC" ? (sueldoBaseVirginia * 0.5).toFixed(2) : 0;
+
+        mesData = {
+          mes: mesSelect,
+          extraBrian: defaultExtraB,
+          tipoExtraBrian: defaultTipo,
+          conceptoExtraBrian: defaultTipo === "SAC" ? "SAC" : (defaultTipo === "Premio" ? "Premio / Bono" : ""),
+          extraVirginia: defaultExtraV,
+          tipoExtraVirginia: defaultTipo,
+          conceptoExtraVirginia: defaultTipo === "SAC" ? "SAC" : (defaultTipo === "Premio" ? "Premio / Bono" : ""),
+          gastosBrian: [],
+          gastosVirginia: []
+        };
+        proyeccionesData.push(mesData);
+      }
+
+      document.getElementById('p-tipo-extra-brian').value = mesData.tipoExtraBrian || "Otro";
       document.getElementById('p-concepto-extra-brian').value = mesData.conceptoExtraBrian || "";
       document.getElementById('p-extra-brian').value = mesData.extraBrian || 0;
 
-      document.getElementById('p-tipo-extra-virginia').value = mesData.tipoExtraVirginia || "SAC";
+      document.getElementById('p-tipo-extra-virginia').value = mesData.tipoExtraVirginia || "Otro";
       document.getElementById('p-concepto-extra-virginia').value = mesData.conceptoExtraVirginia || "";
       document.getElementById('p-extra-virginia').value = mesData.extraVirginia || 0;
 
@@ -1301,21 +1331,75 @@
       container.innerHTML = "";
 
       list.forEach((gasto, idx) => {
+        let isReplicated = gasto.replicate === true;
+        let catId = gasto.categoria || "otros";
+
+        let catOptionsHtml = CATEGORIAS_GASTOS.map(c => `<option value="${c.id}" ${c.id === catId ? 'selected' : ''}>${c.name}</option>`).join('');
+
         let row = `
-          <div class="flex gap-2 items-center bg-slate-900/80 p-2 rounded-lg border border-slate-800">
-            <input type="text" value="${gasto.concepto || ''}" placeholder="Concepto" onchange="updateGastoItem('${user}', ${idx}, 'concepto', this.value)" class="flex-1 bg-slate-800 border border-slate-700 p-1.5 rounded text-xs text-white">
-            <input type="text" inputmode="decimal" value="${gasto.precio || 0}" placeholder="Monto ($)" oninput="updateGastoItem('${user}', ${idx}, 'precio', this.value)" class="w-24 bg-slate-800 border border-slate-700 p-1.5 rounded text-xs text-white font-bold text-right">
-            <button onclick="removeGastoRow('${user}', ${idx})" class="text-red-400 p-1 hover:text-red-300">🗑️</button>
+          <div class="bg-slate-900/90 p-2 rounded-lg border border-slate-800 space-y-1.5">
+            <div class="flex gap-1.5 items-center">
+              <select onchange="updateGastoItem('${user}', ${idx}, 'categoria', this.value)" class="bg-slate-800 text-[10px] text-slate-300 border border-slate-700 rounded p-1">
+                ${catOptionsHtml}
+              </select>
+              <input type="text" value="${gasto.concepto || ''}" placeholder="Concepto" onchange="updateGastoItem('${user}', ${idx}, 'concepto', this.value)" class="flex-1 bg-slate-800 border border-slate-700 p-1.5 rounded text-xs text-white">
+              <button onclick="toggleReplicateGasto('${user}', ${idx})" title="${isReplicated ? 'Replicado en todos los meses' : 'Sólo este mes'}" class="p-1 text-xs rounded border ${isReplicated ? 'bg-emerald-950 border-emerald-500 text-emerald-300 font-bold' : 'bg-slate-800 border-slate-700 text-slate-500'}">
+                🔁
+              </button>
+              <button onclick="removeGastoRow('${user}', ${idx})" class="text-red-400 p-1">🗑️</button>
+            </div>
+            <div class="flex justify-between items-center text-[10px]">
+              <span class="${isReplicated ? 'text-emerald-400 font-semibold' : 'text-slate-500'}">${isReplicated ? '🔁 Replicado en todos los meses' : '📌 Exclusivo de este mes'}</span>
+              <input type="text" inputmode="decimal" value="${gasto.precio || 0}" placeholder="Monto ($)" oninput="updateGastoItem('${user}', ${idx}, 'precio', this.value)" class="w-28 bg-slate-800 border border-slate-700 p-1 rounded text-xs text-white font-bold text-right">
+            </div>
           </div>`;
         container.innerHTML += row;
       });
+    }
+
+    function toggleReplicateGasto(user, idx) {
+      const mesSelect = document.getElementById('proy-select-mes').value;
+      let mesData = getOrCreateMesData(mesSelect);
+      let listKey = user === 'Brian' ? 'gastosBrian' : 'gastosVirginia';
+      let gasto = mesData[listKey][idx];
+
+      gasto.replicate = !gasto.replicate;
+
+      if (gasto.replicate) {
+        // Replicar a todos los meses
+        ALL_MESES.forEach(mName => {
+          let mData = getOrCreateMesData(mName);
+          let mList = mData[listKey];
+          let found = mList.find(g => g.concepto === gasto.concepto);
+          if (!found) {
+            mList.push({ concepto: gasto.concepto, precio: gasto.precio, categoria: gasto.categoria || "otros", replicate: true });
+          } else {
+            found.precio = gasto.precio;
+            found.categoria = gasto.categoria || "otros";
+            found.replicate = true;
+          }
+        });
+      }
+
+      renderGastosList(user, mesData[listKey]);
+      calcProyTotales();
     }
 
     function addGastoRow(user) {
       const mesSelect = document.getElementById('proy-select-mes').value;
       let mesData = getOrCreateMesData(mesSelect);
       let key = user === 'Brian' ? 'gastosBrian' : 'gastosVirginia';
-      mesData[key].push({ concepto: "", precio: 0 });
+      mesData[key].push({ concepto: "", precio: 0, categoria: "otros", replicate: true });
+
+      // Replicar por defecto
+      ALL_MESES.forEach(mName => {
+        let mData = getOrCreateMesData(mName);
+        let mList = mData[key];
+        if (!mList.find(g => g.concepto === "")) {
+          mList.push({ concepto: "", precio: 0, categoria: "otros", replicate: true });
+        }
+      });
+
       renderGastosList(user, mesData[key]);
       calcProyTotales();
     }
@@ -1324,7 +1408,20 @@
       const mesSelect = document.getElementById('proy-select-mes').value;
       let mesData = getOrCreateMesData(mesSelect);
       let key = user === 'Brian' ? 'gastosBrian' : 'gastosVirginia';
+      let concepto = mesData[key][idx].concepto;
+      let wasReplicated = mesData[key][idx].replicate;
+
       mesData[key].splice(idx, 1);
+
+      if (wasReplicated && concepto) {
+        ALL_MESES.forEach(mName => {
+          let mData = getOrCreateMesData(mName);
+          let mList = mData[key];
+          let i = mList.findIndex(g => g.concepto === concepto);
+          if (i !== -1) mList.splice(i, 1);
+        });
+      }
+
       renderGastosList(user, mesData[key]);
       calcProyTotales();
     }
@@ -1333,8 +1430,24 @@
       const mesSelect = document.getElementById('proy-select-mes').value;
       let mesData = getOrCreateMesData(mesSelect);
       let listKey = user === 'Brian' ? 'gastosBrian' : 'gastosVirginia';
-      if (mesData[listKey][idx]) {
-        mesData[listKey][idx][key] = key === 'precio' ? parseAmountInput(value) : value;
+      let gasto = mesData[listKey][idx];
+
+      if (gasto) {
+        let oldConcepto = gasto.concepto;
+        gasto[key] = key === 'precio' ? parseAmountInput(value) : value;
+
+        // Si está marcado para replicar, propagar el cambio a todos los meses
+        if (gasto.replicate) {
+          ALL_MESES.forEach(mName => {
+            let mData = getOrCreateMesData(mName);
+            let mList = mData[listKey];
+            let targetGasto = mList.find(g => g.concepto === oldConcepto || g.concepto === gasto.concepto);
+            if (targetGasto) {
+              targetGasto[key] = gasto[key];
+              targetGasto.replicate = true;
+            }
+          });
+        }
         calcProyTotales();
       }
     }
@@ -1342,7 +1455,7 @@
     function getOrCreateMesData(mes) {
       let found = proyeccionesData.find(p => p.mes === mes);
       if (!found) {
-        found = { mes: mes, extraBrian: 0, tipoExtraBrian: "SAC", conceptoExtraBrian: "SAC", extraVirginia: 0, tipoExtraVirginia: "SAC", conceptoExtraVirginia: "SAC", gastosBrian: [], gastosVirginia: [] };
+        found = { mes: mes, extraBrian: 0, tipoExtraBrian: "Otro", conceptoExtraBrian: "", extraVirginia: 0, tipoExtraVirginia: "Otro", conceptoExtraVirginia: "", gastosBrian: [], gastosVirginia: [] };
         proyeccionesData.push(found);
       }
       return found;
@@ -1385,17 +1498,20 @@
       mesData.tipoExtraVirginia = document.getElementById('p-tipo-extra-virginia').value;
       mesData.conceptoExtraVirginia = document.getElementById('p-concepto-extra-virginia').value;
 
-      syncBackend({
-        action: "saveProyeccionMes",
-        mes: mesData.mes,
-        extraBrian: mesData.extraBrian,
-        tipoExtraBrian: mesData.tipoExtraBrian,
-        conceptoExtraBrian: mesData.conceptoExtraBrian,
-        extraVirginia: mesData.extraVirginia,
-        tipoExtraVirginia: mesData.tipoExtraVirginia,
-        conceptoExtraVirginia: mesData.conceptoExtraVirginia,
-        gastosBrian: mesData.gastosBrian || [],
-        gastosVirginia: mesData.gastosVirginia || []
+      // Si hay gastos replicados, guardarlos en todos los meses
+      proyeccionesData.forEach(pData => {
+        syncBackend({
+          action: "saveProyeccionMes",
+          mes: pData.mes,
+          extraBrian: pData.extraBrian,
+          tipoExtraBrian: pData.tipoExtraBrian,
+          conceptoExtraBrian: pData.conceptoExtraBrian,
+          extraVirginia: pData.extraVirginia,
+          tipoExtraVirginia: pData.tipoExtraVirginia,
+          conceptoExtraVirginia: pData.conceptoExtraVirginia,
+          gastosBrian: pData.gastosBrian || [],
+          gastosVirginia: pData.gastosVirginia || []
+        });
       });
       calcProyTotales();
     }
