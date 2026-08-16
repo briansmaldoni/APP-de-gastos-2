@@ -636,6 +636,14 @@
         btnP.className = "w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm bg-indigo-600 text-white shadow";
         btnD.className = "w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm text-slate-400 hover:bg-slate-800 transition-all";
         fetchProyecciones();
+        
+        setTimeout(() => {
+          const container = document.getElementById('month-swipe-container');
+          if(container) {
+             let activeBtn = container.querySelector('.bg-indigo-600');
+             if (activeBtn) activeBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+          }
+        }, 50);
       }
       toggleDrawer();
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -652,7 +660,6 @@
          let cache = JSON.parse(cacheStr);
          state.config = cache.config || { paydate: "", themeBrian: "", themeVirginia: "", lastProcessedDate: "" };
          
-         // FILTRO ANTI-BUGS PARA FECHAS DEL CACHE
          if (state.config.paydate && state.config.paydate.length > 10) state.config.paydate = state.config.paydate.substring(0, 10);
          if (state.config.lastProcessedDate && state.config.lastProcessedDate.length > 10) state.config.lastProcessedDate = state.config.lastProcessedDate.substring(0, 10);
 
@@ -791,7 +798,6 @@
       return new Date(year, month, day);
     }
 
-    // Calcula las fechas restantes desde HOY con soporte correcto de ciclos
     function getRemainingDates() {
       const today = new Date();
       let payDateStr = state.config.paydate; let payDate;
@@ -812,7 +818,6 @@
       return dates;
     }
 
-    // MÁQUINA DEL TIEMPO: Reconstruye las fechas restantes de un ciclo pasado (AHORA ESTÁ PROTEGIDA)
     function getRemainingDatesFrom(startDateStr) {
       let parts = startDateStr.split('-');
       let startDate = new Date(parts[0], parts[1] - 1, parts[2]);
@@ -822,7 +827,6 @@
         let pParts = payDateStr.split('-'); 
         payDate = new Date(pParts[0], pParts[1] - 1, pParts[2]);
         
-        // Ciclo automático para fechas manuales: avanzamos el mes HASTA superar la fecha evaluada
         while (toLocalISODate(startDate) >= toLocalISODate(payDate)) {
           payDate.setMonth(payDate.getMonth() + 1);
         }
@@ -1002,7 +1006,6 @@
       }); 
     }
 
-    // LÓGICA CORREGIDA DEL RE-CÁLCULO DEL PASADO PARA EL CARTEL DE NUEVO DÍA
     function checkDayRollover() {
       const todayStr = toLocalISODate(new Date());
       const lastProcessed = state.config.lastProcessedDate;
