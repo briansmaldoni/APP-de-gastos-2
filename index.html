@@ -22,7 +22,6 @@
     body { background-color: var(--c-bg); color: #f8fafc; font-family: system-ui, sans-serif; transition: background-color 0.4s ease; }
     .glass { background: var(--c-panel); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.08); transition: background 0.4s ease, border-color 0.4s ease; }
     
-    /* Nueva Píldora Elegante para Totales Macro */
     .glass-pill { background: rgba(255, 255, 255, 0.04); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.08); box-shadow: 0 4px 15px rgba(0,0,0,0.1); border-radius: 9999px; transition: all 0.3s ease; }
 
     .t-primary { color: var(--c-primary); transition: color 0.4s; }
@@ -335,8 +334,8 @@
       </div>
     </div>
 
-    <!-- RESUMEN FINAL EN PÍLDORAS ESTÉTICAS (INFERIOR) -->
-    <div class="space-y-2 pt-2 border-t border-slate-800/80">
+    <!-- RESUMEN FINAL EN PÍLDORAS ESTÉTICAS (INFERIOR - 4 BURBUJAS) -->
+    <div class="space-y-2.5 pt-3 border-t border-slate-800/80">
       <div class="glass-pill flex justify-between items-center px-4 py-3">
         <span class="text-[10px] text-slate-300 font-semibold uppercase tracking-wide truncate">⚡ Servicios Globales:</span>
         <span id="subtotal-servicios-globales-bottom" class="font-extrabold text-indigo-300 text-sm whitespace-nowrap">$ 0,00</span>
@@ -1433,17 +1432,21 @@
       let targetIdx = idx + direction;
       if (targetIdx < 0 || targetIdx >= list.length) return;
 
+      // Intercambiar solo en el mes activo
       let temp = list[idx];
       list[idx] = list[targetIdx];
       list[targetIdx] = temp;
 
+      // Intercambiar en los demás meses SIN volver a intercambiar en mesSelect
       ALL_MESES.forEach(mName => {
-        let mData = getOrCreateMesData(mName);
-        let mList = mData[listKey];
-        if (mList && mList.length > targetIdx) {
-          let t = mList[idx];
-          mList[idx] = mList[targetIdx];
-          mList[targetIdx] = t;
+        if (mName !== mesSelect) {
+          let mData = getOrCreateMesData(mName);
+          let mList = mData[listKey];
+          if (mList && mList.length > targetIdx && mList.length > idx) {
+            let t = mList[idx];
+            mList[idx] = mList[targetIdx];
+            mList[targetIdx] = t;
+          }
         }
       });
 
@@ -1571,9 +1574,7 @@
       document.getElementById('subtotal-brian').innerText = formatMoney(totalBrian);
       document.getElementById('subtotal-virginia').innerText = formatMoney(totalVirginia);
       
-      const lblServTop = document.getElementById('subtotal-servicios-globales-top');
       const lblServBottom = document.getElementById('subtotal-servicios-globales-bottom');
-      if (lblServTop) lblServTop.innerText = formatMoney(totalServicios);
       if (lblServBottom) lblServBottom.innerText = formatMoney(totalServicios);
 
       document.querySelectorAll('.proy-total-ingresos').forEach(el => el.innerText = formatMoney(totalIngresos));
@@ -1605,7 +1606,7 @@
       setTimeout(() => {
         if (btnElement) {
           btnElement.innerText = "🔄 Guardado OK";
-          setTimeout(() => { btnElement.innerText = "🔄 Actualizar"; }, 1500);
+          setTimeout(() => { btnElement.innerText = "🔄 Guardar"; }, 1500);
         }
       }, 1000);
 
