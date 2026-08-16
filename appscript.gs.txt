@@ -1,0 +1,194 @@
+function doGet(e) {
+  try {
+    var sheet = SpreadsheetApp.getActiveSpreadsheet();
+    var action = e.parameter.action || "getDiario";
+
+    if (action === "getDiario") {
+      var config = sheet.getSheetByName("Config");
+      var movSheet = sheet.getSheetByName("Movimientos");
+
+      var hb = config ? (config.getRange("A2").getValue() || 0) : 0;
+      var bs = config ? (config.getRange("B2").getValue() || 0) : 0;
+      var customPaydate = config ? (config.getRange("C2").getValue() || "") : "";
+      var themeBrian = config ? (config.getRange("D2").getValue() || "") : "";
+      var themeVirginia = config ? (config.getRange("E2").getValue() || "") : "";
+      var lastProcessedDate = config ? (config.getRange("F2").getValue() || "") : "";
+
+      var movs = [];
+      if (movSheet) {
+        var movsData = movSheet.getDataRange().getValues();
+        if (movsData.length > 1) {
+          for (var i = 1; i < movsData.length; i++) {
+            movs.push({
+              fecha: movsData[i][0], usuario: movsData[i][1], tipo: movsData[i][2],
+              monto: movsData[i][3], concepto: movsData[i][4], target: movsData[i][5], fechas_afectadas: movsData[i][6]
+            });
+          }
+        }
+      }
+      return ContentService.createTextOutput(JSON.stringify({ 
+        status: "ok", hb: hb, bs: bs, 
+        config: { paydate: customPaydate, themeBrian: themeBrian, themeVirginia: themeVirginia, lastProcessedDate: lastProcessedDate }, 
+        movements: movs 
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+
+    else if (action === "getProyecciones") {
+      var configProySheet = sheet.getSheetByName("Config_Proyeccion");
+      var dolarUSD = 1200;
+      var sueldoBaseBrian = 1559009.85;
+      var sueldoBaseVirginia = 0;
+      var serviciosGlobales = [];
+
+      if (configProySheet) {
+        dolarUSD = configProySheet.getRange("A2").getValue() || 1200;
+        sueldoBaseBrian = configProySheet.getRange("B2").getValue() || 1559009.85;
+        sueldoBaseVirginia = configProySheet.getRange("C2").getValue() || 0;
+        var servVal = configProySheet.getRange("D2").getValue();
+        if (servVal) {
+          try { serviciosGlobales = JSON.parse(servVal); } catch(err) {}
+        }
+      }
+
+      var proySheet = sheet.getSheetByName("Proyecciones");
+      var proyecciones = [];
+      if (proySheet) {
+        var data = proySheet.getDataRange().getValues();
+        if (data.length > 1) {
+          for (var i = 1; i < data.length; i++) {
+            if (data[i][0]) {
+              proyecciones.push({
+                mes: String(data[i][0]),
+                extraBrian: data[i][1] || 0,
+                tipoExtraBrian: data[i][2] || "Otro",
+                conceptoExtraBrian: data[i][3] || "",
+                extraVirginia: data[i][4] || 0,
+                tipoExtraVirginia: data[i][5] || "Otro",
+                conceptoExtraVirginia: data[i][6] || "",
+                gastosBrian: data[i][7] ? JSON.parse(data[i][7]) : [],
+                gastosVirginia: data[i][8] ? JSON.parse(data[i][8]) : []
+              });
+            }
+          }
+        }
+      }
+
+      return ContentService.createTextOutput(JSON.stringify({ 
+        status: "ok", 
+        dolarUSD: dolarUSD,
+        sueldoBaseBrian: sueldoBaseBrian,
+        sueldoBaseVirginia: sueldoBaseVirginia,
+        serviciosGlobales: serviciosGlobales,
+        proyecciones: proyecciones 
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+
+  } catch(error) { 
+    return ContentService.createTextOutput(JSON.stringify({ status: "error", message: error.toString() })).setMimeType(ContentService.MimeType.JSON); 
+  }
+}
+
+function doPost(e) {
+  try {
+    var sheet = SpreadsheetApp.getActiveSpreadsheet();
+    
+    // VALIDACIÓN DE SEGURIDAD PARA SABER SI RECIBE DATOS
+    if (!e || !e.postData || !e.postData.contents) {
+      return ContentService.createTextOutput(JSON.stringify({ status: "error", message: "No data received" })).setMimeType(ContentService.MimeType.JSON);
+    }
+
+    var params = JSON.parse(e.postData.contents);
+    var configSheet = sheet.getSheetByName("Config");
+    var movSheet = sheet.getSheetByName("Movimientos");
+
+    if (params.action === "updateHB") { 
+      if (configSheet) configSheet.getRange("A2").setValue(params.hb); 
+    }
+    else if (params.action === "updateConfig") {
+      if (configSheet) {
+        if (params.paydate !== undefined) configSheet.getRange("C2").setValue(params.paydate || "");
+        if (params.lastProcessedDate !== undefined) configSheet.getRange("F2").setValue(params.lastProcessedDate || "");
+        if (params.user === "Brian" && params.theme !== undefined) configSheet.getRange("D2").setValue(params.theme || "");
+        else if (params.user === "Virginia" && params.theme !== undefined) configSheet.getRange("E2").setValue(params.theme || "");
+      }
+    }
+    else if (params.action === "addMovement") {
+      if (movSheet) {
+        movSheet.appendRow([ params.id, params.user, params.type, params.amount, params.concept, params.target, JSON.stringify(params.dates) ]);
+      }
+      if (configSheet) {
+        if(params.newHB !== undefined) configSheet.getRange("A2").setValue(params.newHB);
+        if(params.newBS !== undefined) configSheet.getRange("B2").setValue(params.newBS);
+        if(params.lastProcessedDate !== undefined) configSheet.getRange("F2").setValue(params.lastProcessedDate);
+      }
+    }
+    else if (params.action === "editMovement" || params.action === "deleteMovement") {
+      if (movSheet) {
+        var data = movSheet.getDataRange().getValues();
+        for(var i = 1; i < data.length; i++) {
+          if(data[i][0] === params.id) {
+            if (params.action === "deleteMovement") { movSheet.deleteRow(i + 1); } 
+            else { movSheet.getRange(i + 1, 4).setValue(params.amount); movSheet.getRange(i + 1, 5).setValue(params.concept); }
+            break;
+          }
+        }
+      }
+      if (configSheet) {
+        if(params.newHB !== undefined) configSheet.getRange("A2").setValue(params.newHB);
+        if(params.newBS !== undefined) configSheet.getRange("B2").setValue(params.newBS);
+      }
+    }
+    
+    // --- ACCIONES PROYECCIÓN ---
+    else if (params.action === "saveConfigServicios") {
+      var configProySheet = sheet.getSheetByName("Config_Proyeccion");
+      if (!configProySheet) {
+        configProySheet = sheet.insertSheet("Config_Proyeccion");
+        configProySheet.appendRow(["Dolar_USD", "Sueldo_Brian", "Sueldo_Virginia", "Servicios_JSON"]);
+      }
+      // Escritura en bloque para mayor velocidad
+      configProySheet.getRange(2, 1, 1, 4).setValues([[
+        params.dolarUSD, 
+        params.sueldoBaseBrian, 
+        params.sueldoBaseVirginia, 
+        JSON.stringify(params.serviciosGlobales)
+      ]]);
+    }
+    else if (params.action === "saveProyeccionesAll") {
+      var proySheet = sheet.getSheetByName("Proyecciones");
+      if (!proySheet) {
+        proySheet = sheet.insertSheet("Proyecciones");
+      }
+      
+      var list = params.proyecciones || [];
+      
+      // Armamos la matriz entera en memoria (MUY RÁPIDO)
+      var matrix = [
+        ["Mes", "Extra Brian", "Tipo Extra B", "Concepto Extra B", "Extra Virginia", "Tipo Extra V", "Concepto Extra V", "Gastos Brian JSON", "Gastos Virginia JSON"]
+      ];
+      
+      for (var i = 0; i < list.length; i++) {
+        var p = list[i];
+        matrix.push([
+          String(p.mes),
+          p.extraBrian || 0,
+          p.tipoExtraBrian || "",
+          p.conceptoExtraBrian || "",
+          p.extraVirginia || 0,
+          p.tipoExtraVirginia || "",
+          p.conceptoExtraVirginia || "",
+          JSON.stringify(p.gastosBrian || []),
+          JSON.stringify(p.gastosVirginia || [])
+        ]);
+      }
+
+      // Borramos todo y pegamos la matriz de 1 solo golpe
+      proySheet.clear();
+      proySheet.getRange(1, 1, matrix.length, matrix[0].length).setValues(matrix);
+    }
+
+    return ContentService.createTextOutput(JSON.stringify({ status: "success" })).setMimeType(ContentService.MimeType.JSON);
+  } catch(error) { 
+    return ContentService.createTextOutput(JSON.stringify({ status: "error", message: error.toString() })).setMimeType(ContentService.MimeType.JSON); 
+  }
+}
