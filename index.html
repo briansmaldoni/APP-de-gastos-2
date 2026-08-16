@@ -591,8 +591,8 @@
     function formatLiveCurrencyInput(input) {
       let rawVal = input.value;
       
-      // FIX 1: Convierte punto en coma automáticamente
-      rawVal = rawVal.replace(/\./g, ',');
+      // FIX 1.2: Convierte punto en coma automáticamente SÓLO si es un decimal final o cercano al final
+      rawVal = rawVal.replace(/\.(?=\d{0,2}$)/, ',');
 
       // FIX 3: Permitir símbolo negativo al principio
       let isNegative = rawVal.trim().startsWith('-');
