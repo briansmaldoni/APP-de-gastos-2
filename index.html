@@ -22,7 +22,6 @@
     body { background-color: var(--c-bg); color: #f8fafc; font-family: system-ui, sans-serif; transition: background-color 0.4s ease; }
     .glass { background: var(--c-panel); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.08); transition: background 0.4s ease, border-color 0.4s ease; }
     
-    /* Nueva Píldora Elegante para Totales Macro */
     .glass-pill { background: rgba(255, 255, 255, 0.04); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.08); box-shadow: 0 4px 15px rgba(0,0,0,0.1); border-radius: 9999px; transition: all 0.3s ease; }
 
     .t-primary { color: var(--c-primary); transition: color 0.4s; }
@@ -265,6 +264,10 @@
         <span class="text-[10px] text-slate-300 font-semibold uppercase tracking-wide truncate">📌 Gastos Fijos Totales:</span>
         <span class="proy-total-gastos font-extrabold text-rose-400 text-sm whitespace-nowrap">$ 0,00</span>
       </div>
+      <div class="glass-pill flex justify-between items-center px-4 py-3 border border-amber-500/30">
+        <span class="text-[10px] text-amber-200 font-bold uppercase tracking-wide truncate">🤝 Gastos de Terceros:</span>
+        <span class="proy-total-terceros font-extrabold text-amber-400 text-sm whitespace-nowrap">$ 0,00</span>
+      </div>
       <div class="glass-pill flex justify-between items-center px-4 py-3 border border-indigo-500/30">
         <span class="text-[10px] text-indigo-200 font-extrabold uppercase tracking-wide truncate">💰 Nos Queda:</span>
         <span class="proy-nos-queda font-black text-indigo-400 text-sm whitespace-nowrap">$ 0,00</span>
@@ -348,6 +351,10 @@
       <div class="glass-pill flex justify-between items-center px-4 py-3">
         <span class="text-[10px] text-slate-300 font-semibold uppercase tracking-wide truncate">📌 Gastos Fijos Totales:</span>
         <span class="proy-total-gastos font-extrabold text-rose-400 text-sm whitespace-nowrap">$ 0,00</span>
+      </div>
+      <div class="glass-pill flex justify-between items-center px-4 py-3 border border-amber-500/30">
+        <span class="text-[10px] text-amber-200 font-bold uppercase tracking-wide truncate">🤝 Gastos de Terceros:</span>
+        <span class="proy-total-terceros font-extrabold text-amber-400 text-sm whitespace-nowrap">$ 0,00</span>
       </div>
       <div class="glass-pill flex justify-between items-center px-4 py-3 border border-indigo-500/30">
         <span class="text-[10px] text-indigo-200 font-extrabold uppercase tracking-wide truncate">💰 Nos Queda:</span>
@@ -575,31 +582,47 @@
 
     function handleInputBlur(input) {
       let val = input.value.toString().trim();
-      if (val === '') {
+      if (val === '' || val === '-') {
         input.value = '0';
       }
     }
 
-    // FORMATEADOR EN VIVO MIENTRAS SE TIPEA (CON MILES)
+    // FORMATEADOR EN VIVO MIENTRAS SE TIPEA (CON MILES Y SIGNOS)
     function formatLiveCurrencyInput(input) {
-      let cursorPosition = input.selectionStart;
       let rawVal = input.value;
       
-      let parts = rawVal.replace(/\./g, '').split(',');
-      let integerPart = parts[0].replace(/\D/g, '');
+      // FIX 1: Convierte punto en coma automáticamente
+      rawVal = rawVal.replace(/\./g, ',');
+
+      // FIX 3: Permitir símbolo negativo al principio
+      let isNegative = rawVal.trim().startsWith('-');
+      
+      let parts = rawVal.split(',');
+      let integerPart = parts[0].replace(/\D/g, ''); // Limpiar cualquier cosa que no sea número
       
       if (integerPart === '') {
-        input.value = parts.length > 1 ? '0,' + parts[1] : '';
+        input.value = (isNegative ? '-' : '') + (parts.length > 1 ? '0,' + parts[1].replace(/\D/g, '') : '');
         return;
       }
       
       let formattedInteger = new Intl.NumberFormat('es-AR').format(parseInt(integerPart));
-      let finalVal = formattedInteger;
+      let finalVal = (isNegative ? '-' : '') + formattedInteger;
       if (parts.length > 1) {
-        finalVal += ',' + parts[1].slice(0, 2);
+        finalVal += ',' + parts[1].replace(/\D/g, '').slice(0, 2);
       }
       
       input.value = finalVal;
+    }
+
+    function parseAmountInput(val) {
+      if (!val) return 0;
+      let clean = val.toString().trim();
+      let isNeg = clean.startsWith('-');
+      // FIX 1 y 3: Dejamos comas, números y eliminamos el resto, convertimos coma a punto para Float
+      clean = clean.replace(/[^\d,]/g, '').replace(',', '.'); 
+      let parsed = parseFloat(clean); 
+      if (isNaN(parsed)) return 0;
+      return isNeg ? -parsed : parsed;
     }
 
     // DRAWER Y VISTAS
@@ -755,11 +778,7 @@
       if (isNaN(amount) || amount === null) amount = 0;
       return `$ ${new Intl.NumberFormat('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(amount)}`;
     }
-    function parseAmountInput(val) {
-      if (!val) return 0;
-      let clean = val.toString().trim().replace(/\s/g, '').replace(/\./g, '').replace(',', '.');
-      let parsed = parseFloat(clean); return isNaN(parsed) ? 0 : parsed;
-    }
+
     function toLocalISODate(d) {
       const z = n => ('0' + n).slice(-2); return d.getFullYear() + '-' + z(d.getMonth() + 1) + '-' + z(d.getDate());
     }
@@ -994,7 +1013,6 @@
       }
     }
 
-    // FUNCIÓN DE GUARDADO CORREGIDA (Sin modo oculto no-cors)
     async function syncBackend(payload) {
       document.getElementById('btn-top-sync').classList.add('hidden');
       document.getElementById('sync-status').classList.remove('hidden');
@@ -1217,6 +1235,12 @@
     }
 
     // ================= LÓGICA DEL MÓDULO DE PROYECCIÓN (MACRO) =================
+
+    // FIX 2: Función para generar IDs únicos
+    function generateId() {
+       return 'g-' + Math.random().toString(36).substr(2, 9) + Date.now().toString(36);
+    }
+
     async function fetchProyecciones() {
       try {
         const cacheBuster = "?action=getProyecciones&t=" + new Date().getTime();
@@ -1230,6 +1254,26 @@
             serviciosGlobales = data.serviciosGlobales;
           }
           proyeccionesData = data.proyecciones || [];
+
+          // FIX 2: Auto-asignar IDs a los gastos existentes para mantener todo sincronizado
+          let conceptMap = {}; 
+          proyeccionesData.forEach(mes => {
+            ['gastosBrian', 'gastosVirginia'].forEach(key => {
+              if(mes[key]) {
+                mes[key].forEach(g => {
+                  if (!g.id) {
+                    if (g.concepto && conceptMap[g.concepto]) {
+                      g.id = conceptMap[g.concepto];
+                    } else {
+                      g.id = generateId();
+                      if (g.concepto) conceptMap[g.concepto] = g.id;
+                    }
+                  }
+                });
+              }
+            });
+          });
+
           renderProyeccion();
         }
       } catch (e) { console.error("Error cargando proyecciones", e); }
@@ -1400,156 +1444,164 @@
 
         let catOptionsHtml = CATEGORIAS_GASTOS.map(c => `<option value="${c.id}" ${c.id === catId ? 'selected' : ''}>${c.name}</option>`).join('');
 
+        // FIX 3: Permitir mostrar valores negativos formateados en el input
+        let displayPrecio = gasto.precio === 0 ? '' : (gasto.precio < 0 ? '-' : '') + new Intl.NumberFormat('es-AR').format(Math.abs(gasto.precio));
+
+        // FIX 2: Reemplazo el idx en las llamadas a funciones por el gasto.id
         let row = `
           <div class="bg-slate-900/90 p-2 rounded-lg border border-slate-800 space-y-2">
             <!-- Fila 1: Categoria, Concepto, Borrar y Flechas -->
             <div class="flex gap-1.5 items-center">
               <div class="flex flex-col gap-0.5">
-                <button onclick="moveGastoOrder('${user}', ${idx}, -1)" ${idx === 0 ? 'disabled class="opacity-20"' : ''} title="Subir orden" class="text-[10px] bg-slate-800 hover:bg-slate-700 p-0.5 rounded border border-slate-700 leading-none">▲</button>
-                <button onclick="moveGastoOrder('${user}', ${idx}, 1)" ${idx === list.length - 1 ? 'disabled class="opacity-20"' : ''} title="Bajar orden" class="text-[10px] bg-slate-800 hover:bg-slate-700 p-0.5 rounded border border-slate-700 leading-none">▼</button>
+                <button onclick="moveGastoOrder('${user}', '${gasto.id}', -1)" ${idx === 0 ? 'disabled class="opacity-20"' : ''} title="Subir orden" class="text-[10px] bg-slate-800 hover:bg-slate-700 p-0.5 rounded border border-slate-700 leading-none">▲</button>
+                <button onclick="moveGastoOrder('${user}', '${gasto.id}', 1)" ${idx === list.length - 1 ? 'disabled class="opacity-20"' : ''} title="Bajar orden" class="text-[10px] bg-slate-800 hover:bg-slate-700 p-0.5 rounded border border-slate-700 leading-none">▼</button>
               </div>
 
-              <select onchange="updateGastoItem('${user}', ${idx}, 'categoria', this.value)" class="bg-slate-800 text-[10px] text-slate-300 border border-slate-700 rounded p-1 outline-none">
+              <select onchange="updateGastoItem('${user}', '${gasto.id}', 'categoria', this.value)" class="bg-slate-800 text-[10px] text-slate-300 border border-slate-700 rounded p-1 outline-none">
                 ${catOptionsHtml}
               </select>
-              <input type="text" value="${gasto.concepto || ''}" placeholder="Concepto" onchange="updateGastoItem('${user}', ${idx}, 'concepto', this.value)" class="flex-1 bg-slate-800 border border-slate-700 p-1.5 rounded text-xs text-white outline-none min-w-0">
-              <button onclick="removeGastoRow('${user}', ${idx})" class="text-red-400 p-1.5 bg-slate-800 border border-slate-700 rounded">🗑️</button>
+              <input type="text" value="${gasto.concepto || ''}" placeholder="Concepto" onchange="updateGastoItem('${user}', '${gasto.id}', 'concepto', this.value)" class="flex-1 bg-slate-800 border border-slate-700 p-1.5 rounded text-xs text-white outline-none min-w-0">
+              <button onclick="removeGastoRow('${user}', '${gasto.id}')" class="text-red-400 p-1.5 bg-slate-800 border border-slate-700 rounded">🗑️</button>
             </div>
             
             <!-- Fila 2: Replicar y Monto -->
             <div class="flex justify-between items-center gap-2 pl-4">
-              <button onclick="toggleReplicateGasto('${user}', ${idx})" class="flex items-center gap-1.5 text-[10px] ${isReplicated ? 'text-emerald-400 font-bold' : 'text-slate-500'}">
+              <button onclick="toggleReplicateGasto('${user}', '${gasto.id}')" class="flex items-center gap-1.5 text-[10px] ${isReplicated ? 'text-emerald-400 font-bold' : 'text-slate-500'}">
                 <span class="p-1 rounded border ${isReplicated ? 'bg-emerald-950 border-emerald-500 text-emerald-300' : 'bg-slate-800 border-slate-700 text-slate-400'}">🔁</span>
                 <span>${isReplicated ? 'Replicado todo el año' : 'Sólo este mes'}</span>
               </button>
-              <input type="text" inputmode="decimal" value="${new Intl.NumberFormat('es-AR').format(gasto.precio || 0)}" placeholder="Monto ($)" onfocus="handleInputFocus(this)" onblur="handleInputBlur(this)" oninput="formatLiveCurrencyInput(this); updateGastoItem('${user}', ${idx}, 'precio', this.value)" class="w-32 bg-slate-800 border border-slate-700 p-1.5 rounded text-xs text-white font-bold text-right outline-none">
+              <input type="text" inputmode="decimal" value="${displayPrecio}" placeholder="Monto ($)" onfocus="handleInputFocus(this)" onblur="handleInputBlur(this)" oninput="formatLiveCurrencyInput(this); updateGastoItem('${user}', '${gasto.id}', 'precio', this.value)" class="w-32 bg-slate-800 border border-slate-700 p-1.5 rounded text-xs text-white font-bold text-right outline-none">
             </div>
           </div>`;
         container.innerHTML += row;
       });
     }
 
-    function moveGastoOrder(user, idx, direction) {
+    // FIX 2: Mover gasto por ID (Aplica el mismo orden exacto a todos los meses)
+    function moveGastoOrder(user, id, direction) {
       const mesSelect = document.getElementById('proy-select-mes').value;
       let mesData = getOrCreateMesData(mesSelect);
       let listKey = user === 'Brian' ? 'gastosBrian' : 'gastosVirginia';
-      let list = mesData[listKey];
+      let activeList = mesData[listKey];
 
+      let idx = activeList.findIndex(g => g.id === id);
       let targetIdx = idx + direction;
-      if (targetIdx < 0 || targetIdx >= list.length) return;
+      if (targetIdx < 0 || targetIdx >= activeList.length) return;
 
-      // Intercambiar solo en el mes activo
-      let temp = list[idx];
-      list[idx] = list[targetIdx];
-      list[targetIdx] = temp;
+      // Intercambiar en el mes activo
+      let temp = activeList[idx];
+      activeList[idx] = activeList[targetIdx];
+      activeList[targetIdx] = temp;
 
-      // Intercambiar en los demás meses SIN volver a intercambiar en mesSelect
+      // Generar el mapa del nuevo orden
+      let orderedIds = activeList.map(g => g.id);
+
+      // Reordenar estrictamente el resto de los meses usando ese mapa
       ALL_MESES.forEach(mName => {
         if (mName !== mesSelect) {
           let mData = getOrCreateMesData(mName);
-          let mList = mData[listKey];
-          if (mList && mList.length > targetIdx && mList.length > idx) {
-            let t = mList[idx];
-            mList[idx] = mList[targetIdx];
-            mList[targetIdx] = t;
+          if(mData[listKey]) {
+            mData[listKey].sort((a, b) => {
+              let indexA = orderedIds.indexOf(a.id);
+              let indexB = orderedIds.indexOf(b.id);
+              if(indexA === -1) indexA = 9999;
+              if(indexB === -1) indexB = 9999;
+              return indexA - indexB;
+            });
           }
         }
       });
 
-      renderGastosList(user, list);
+      renderGastosList(user, activeList);
       calcProyTotales();
     }
 
-    function toggleReplicateGasto(user, idx) {
+    // FIX 2: Toggle Replicar mediante ID
+    function toggleReplicateGasto(user, id) {
       const mesSelect = document.getElementById('proy-select-mes').value;
       let mesData = getOrCreateMesData(mesSelect);
       let listKey = user === 'Brian' ? 'gastosBrian' : 'gastosVirginia';
-      let gasto = mesData[listKey][idx];
+      let gasto = mesData[listKey].find(g => g.id === id);
+      if(!gasto) return;
 
       gasto.replicate = !gasto.replicate;
 
-      if (gasto.replicate) {
-        ALL_MESES.forEach(mName => {
+      ALL_MESES.forEach(mName => {
+        if (mName !== mesSelect) {
           let mData = getOrCreateMesData(mName);
-          let mList = mData[listKey];
-          let found = mList.find(g => g.concepto === gasto.concepto);
-          if (!found) {
-            mList.push({ concepto: gasto.concepto, precio: gasto.precio, categoria: gasto.categoria || "otros", replicate: true });
-          } else {
-            found.precio = gasto.precio;
-            found.categoria = gasto.categoria || "otros";
-            found.replicate = true;
+          let target = mData[listKey].find(g => g.id === id);
+          if (target) {
+            target.replicate = gasto.replicate; // Actualiza el switch en los demás
+            if (gasto.replicate) {
+              target.precio = gasto.precio; // Si se tilda, copia la plata
+            } else {
+              target.precio = 0; // Si se destilda, pone cero en los demás (pero mantiene su posición)
+            }
           }
-        });
-      }
+        }
+      });
 
       renderGastosList(user, mesData[listKey]);
       calcProyTotales();
     }
 
+    // FIX 2: Agregar por ID
     function addGastoRow(user) {
       const mesSelect = document.getElementById('proy-select-mes').value;
-      let mesData = getOrCreateMesData(mesSelect);
       let key = user === 'Brian' ? 'gastosBrian' : 'gastosVirginia';
-      mesData[key].push({ concepto: "", precio: 0, categoria: "otros", replicate: true });
+      let newId = generateId();
 
       ALL_MESES.forEach(mName => {
         let mData = getOrCreateMesData(mName);
-        let mList = mData[key];
-        if (!mList.find(g => g.concepto === "")) {
-          mList.push({ concepto: "", precio: 0, categoria: "otros", replicate: true });
-        }
+        mData[key].push({ id: newId, concepto: "", precio: 0, categoria: "otros", replicate: true });
       });
 
+      let mesData = getOrCreateMesData(mesSelect);
       renderGastosList(user, mesData[key]);
       calcProyTotales();
     }
 
-    function removeGastoRow(user, idx) {
-      const mesSelect = document.getElementById('proy-select-mes').value;
-      let mesData = getOrCreateMesData(mesSelect);
+    // FIX 2: Eliminar por ID
+    function removeGastoRow(user, id) {
       let key = user === 'Brian' ? 'gastosBrian' : 'gastosVirginia';
-      let concepto = mesData[key][idx].concepto;
-      let wasReplicated = mesData[key][idx].replicate;
 
-      mesData[key].splice(idx, 1);
+      ALL_MESES.forEach(mName => {
+        let mData = getOrCreateMesData(mName);
+        let idx = mData[key].findIndex(g => g.id === id);
+        if (idx !== -1) mData[key].splice(idx, 1);
+      });
 
-      if (wasReplicated && concepto) {
-        ALL_MESES.forEach(mName => {
-          let mData = getOrCreateMesData(mName);
-          let mList = mData[key];
-          let i = mList.findIndex(g => g.concepto === concepto);
-          if (i !== -1) mList.splice(i, 1);
-        });
-      }
-
+      const mesSelect = document.getElementById('proy-select-mes').value;
+      let mesData = getOrCreateMesData(mesSelect);
       renderGastosList(user, mesData[key]);
       calcProyTotales();
     }
 
-    function updateGastoItem(user, idx, key, value) {
+    // FIX 2: Actualizar ítem por ID
+    function updateGastoItem(user, id, keyStr, value) {
       const mesSelect = document.getElementById('proy-select-mes').value;
-      let mesData = getOrCreateMesData(mesSelect);
       let listKey = user === 'Brian' ? 'gastosBrian' : 'gastosVirginia';
-      let gasto = mesData[listKey][idx];
+      
+      let parsedValue = keyStr === 'precio' ? parseAmountInput(value) : value;
+      let mesData = getOrCreateMesData(mesSelect);
+      let currGasto = mesData[listKey].find(g => g.id === id);
+      if(!currGasto) return;
 
-      if (gasto) {
-        let oldConcepto = gasto.concepto;
-        gasto[key] = key === 'precio' ? parseAmountInput(value) : value;
+      currGasto[keyStr] = parsedValue;
 
-        if (gasto.replicate) {
-          ALL_MESES.forEach(mName => {
-            let mData = getOrCreateMesData(mName);
-            let mList = mData[listKey];
-            let targetGasto = mList.find(g => g.concepto === oldConcepto || g.concepto === gasto.concepto);
-            if (targetGasto) {
-              targetGasto[key] = gasto[key];
-              targetGasto.replicate = true;
-            }
-          });
+      ALL_MESES.forEach(mName => {
+        if(mName === mesSelect) return;
+        let mData = getOrCreateMesData(mName);
+        let targetGasto = mData[listKey].find(g => g.id === id);
+        if (targetGasto) {
+          if (keyStr === 'concepto' || keyStr === 'categoria') {
+             targetGasto[keyStr] = parsedValue; // Nombre y categoría SIEMPRE se sincronizan
+          } else if (keyStr === 'precio' && currGasto.replicate) {
+             targetGasto[keyStr] = parsedValue; // Precio solo se sincroniza si está replicado
+          }
         }
-        calcProyTotales();
-      }
+      });
+      calcProyTotales();
     }
 
     function getOrCreateMesData(mes) {
@@ -1561,32 +1613,46 @@
       return found;
     }
 
+    // FIX 3: Lógica Totalizadora para sumar Gastos de Terceros Positivamente
     function calcProyTotales() {
       let extraB = parseAmountInput(document.getElementById('p-extra-brian').value);
       let extraV = parseAmountInput(document.getElementById('p-extra-virginia').value);
-
-      let totalIngresos = sueldoBaseBrian + sueldoBaseVirginia + extraB + extraV;
-
       const mesSelect = document.getElementById('proy-select-mes').value;
       let mesData = getOrCreateMesData(mesSelect);
 
-      let totalBrian = (mesData.gastosBrian || []).reduce((acc, g) => acc + (parseFloat(g.precio) || 0), 0);
-      let totalVirginia = (mesData.gastosVirginia || []).reduce((acc, g) => acc + (parseFloat(g.precio) || 0), 0);
-      let totalServicios = getServiciosTotalCalculated();
+      let totalBrianNormal = 0; let tercerosBrian = 0;
+      (mesData.gastosBrian || []).forEach(g => {
+        let p = parseFloat(g.precio) || 0;
+        if (p < 0) tercerosBrian += Math.abs(p); else totalBrianNormal += p;
+      });
 
-      let totalGastosFijos = totalBrian + totalVirginia + totalServicios;
+      let totalVirginiaNormal = 0; let tercerosVirginia = 0;
+      (mesData.gastosVirginia || []).forEach(g => {
+        let p = parseFloat(g.precio) || 0;
+        if (p < 0) tercerosVirginia += Math.abs(p); else totalVirginiaNormal += p;
+      });
+
+      let totalServicios = getServiciosTotalCalculated();
+      let totalTerceros = tercerosBrian + tercerosVirginia;
+
+      // El total de gastos es TODO (Salidas propias + salidas de deudores)
+      let totalGastosFijos = totalBrianNormal + totalVirginiaNormal + totalServicios + totalTerceros;
+      
+      // El total de ingresos es TODO (Entradas propias + entradas de deudores)
+      let totalIngresos = sueldoBaseBrian + sueldoBaseVirginia + extraB + extraV + totalTerceros;
+      
       let nosQueda = totalIngresos - totalGastosFijos;
 
-      document.getElementById('subtotal-brian').innerText = formatMoney(totalBrian);
-      document.getElementById('subtotal-virginia').innerText = formatMoney(totalVirginia);
+      // Las tarjetas de subtotales por persona reflejan el total del bloque sumado en absoluto
+      document.getElementById('subtotal-brian').innerText = formatMoney(totalBrianNormal + tercerosBrian);
+      document.getElementById('subtotal-virginia').innerText = formatMoney(totalVirginiaNormal + tercerosVirginia);
       
-      const lblServTop = document.getElementById('subtotal-servicios-globales-top');
       const lblServBottom = document.getElementById('subtotal-servicios-globales-bottom');
-      if (lblServTop) lblServTop.innerText = formatMoney(totalServicios);
       if (lblServBottom) lblServBottom.innerText = formatMoney(totalServicios);
 
       document.querySelectorAll('.proy-total-ingresos').forEach(el => el.innerText = formatMoney(totalIngresos));
       document.querySelectorAll('.proy-total-gastos').forEach(el => el.innerText = formatMoney(totalGastosFijos));
+      document.querySelectorAll('.proy-total-terceros').forEach(el => el.innerText = formatMoney(totalTerceros));
       document.querySelectorAll('.proy-nos-queda').forEach(el => el.innerText = formatMoney(nosQueda));
     }
 
