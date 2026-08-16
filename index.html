@@ -65,7 +65,6 @@
     .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
     .dark .custom-scroll::-webkit-scrollbar-thumb { background: #334155; }
 
-    /* Hide scrollbar for the month swipe selector */
     #month-swipe-container::-webkit-scrollbar { display: none; }
     #month-swipe-container { -ms-overflow-style: none; scrollbar-width: none; }
     
@@ -236,7 +235,6 @@
     <!-- Selector de Mes Interactivo y Deslizable -->
     <div class="glass p-2 rounded-xl border border-slate-700 flex justify-between items-center gap-2">
       <div class="flex items-center gap-1 w-full overflow-hidden">
-        <!-- Ícono Desplegable Nativo -->
         <div class="relative shrink-0 flex items-center justify-center">
            <select id="proy-select-mes" onchange="changeMonth(this.value)" class="absolute inset-0 opacity-0 cursor-pointer w-full h-full">
              <option value="Enero">Enero</option>
@@ -255,9 +253,7 @@
            <button class="bg-slate-800 hover:bg-slate-700 text-slate-300 p-2 rounded-lg border border-slate-700 font-bold text-xs transition-colors">📅</button>
         </div>
         
-        <!-- Carrusel Deslizable -->
         <div id="month-swipe-container" class="flex-1 overflow-x-auto flex gap-1.5 scroll-smooth custom-scroll pb-1 items-center px-1">
-           <!-- Javascript inyecta los botones aquí -->
         </div>
       </div>
 
@@ -793,15 +789,20 @@
       return new Date(year, month, day);
     }
 
-    // Calcula las fechas restantes desde HOY
+    // Calcula las fechas restantes desde HOY con soporte correcto de ciclos
     function getRemainingDates() {
       const today = new Date();
       let payDateStr = state.config.paydate; let payDate;
       if (payDateStr && payDateStr !== "") {
         let parts = payDateStr.split('-'); payDate = new Date(parts[0], parts[1] - 1, parts[2]);
+        if (toLocalISODate(today) >= toLocalISODate(payDate)) {
+          payDate = new Date(parts[0], parseInt(parts[1]), parts[2]);
+        }
       } else {
         payDate = getSecondBusinessDay(today.getFullYear(), today.getMonth());
-        if (today >= payDate) payDate = getSecondBusinessDay(today.getFullYear(), today.getMonth() + 1);
+        if (toLocalISODate(today) >= toLocalISODate(payDate)) {
+          payDate = getSecondBusinessDay(today.getFullYear(), today.getMonth() + 1);
+        }
       }
       let dates = []; let currentDate = new Date(today);
       while(toLocalISODate(currentDate) < toLocalISODate(payDate)) { dates.push(toLocalISODate(currentDate)); currentDate.setDate(currentDate.getDate() + 1); }
@@ -809,17 +810,23 @@
       return dates;
     }
 
-    // MÁQUINA DEL TIEMPO: Calcula las fechas restantes desde una fecha del PASADO
+    // MÁQUINA DEL TIEMPO: Reconstruye las fechas restantes de un ciclo pasado
     function getRemainingDatesFrom(startDateStr) {
       let parts = startDateStr.split('-');
       let startDate = new Date(parts[0], parts[1] - 1, parts[2]);
       
       let payDateStr = state.config.paydate; let payDate;
       if (payDateStr && payDateStr !== "") {
-        let pParts = payDateStr.split('-'); payDate = new Date(pParts[0], pParts[1] - 1, pParts[2]);
+        let pParts = payDateStr.split('-'); 
+        payDate = new Date(pParts[0], pParts[1] - 1, pParts[2]);
+        if (toLocalISODate(startDate) >= toLocalISODate(payDate)) {
+          payDate = new Date(pParts[0], parseInt(pParts[1]), pParts[2]);
+        }
       } else {
         payDate = getSecondBusinessDay(startDate.getFullYear(), startDate.getMonth());
-        if (startDate >= payDate) payDate = getSecondBusinessDay(startDate.getFullYear(), startDate.getMonth() + 1);
+        if (toLocalISODate(startDate) >= toLocalISODate(payDate)) {
+          payDate = getSecondBusinessDay(startDate.getFullYear(), startDate.getMonth() + 1);
+        }
       }
       let dates = []; let currentDate = new Date(startDate);
       while(toLocalISODate(currentDate) < toLocalISODate(payDate)) { dates.push(toLocalISODate(currentDate)); currentDate.setDate(currentDate.getDate() + 1); }
@@ -1018,11 +1025,9 @@
                 if(affectedDates.length > 0) { 
                    let montoParcial = parseFloat(m.monto) / affectedDates.length; 
                    affectedDates.forEach(ad => { 
-                     // Sumamos todos los gastos que afectan el periodo desde ayer hasta el pago
                      if (pastDates.includes(ad)) { 
                          gastosEnPeriodoPasado += montoParcial; 
                      }
-                     // Extraemos especificamente el gasto de ese dia exacto
                      if (ad === lastProcessed) {
                          gastoExactoAyer += montoParcial;
                      }
@@ -1032,14 +1037,12 @@
             }
          });
 
-         // Capital líquido original que tenías ayer a la mañana = Saldo actual + Todo lo gastado en el periodo
          let poolAyer = liquidHB + gastosEnPeriodoPasado;
          let baseDailyBudgetAyer = pastDates.length > 0 ? poolAyer / pastDates.length : 0;
          
-         // El sobrante real es lo que podías gastar ayer menos lo que gastaste realmente ayer
          const unspentPreviousDay = baseDailyBudgetAyer - gastoExactoAyer;
 
-         if (unspentPreviousDay > 0.05) { // Ignoramos centavos basura
+         if (unspentPreviousDay > 0.05) { 
             pendingRolloverAmount = unspentPreviousDay;
             pendingRolloverDate = lastProcessed;
             document.getElementById('rollover-amount').innerText = formatMoney(unspentPreviousDay);
