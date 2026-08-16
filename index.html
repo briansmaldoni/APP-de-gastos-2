@@ -65,6 +65,7 @@
     .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
     .dark .custom-scroll::-webkit-scrollbar-thumb { background: #334155; }
 
+    /* Hide scrollbar for the month swipe selector */
     #month-swipe-container::-webkit-scrollbar { display: none; }
     #month-swipe-container { -ms-overflow-style: none; scrollbar-width: none; }
     
@@ -572,12 +573,10 @@
     let pendingRolloverAmount = 0;
     let pendingRolloverDate = "";
 
-    // MANEJO DE SCROLL GLOBAL
     if ('scrollRestoration' in history) {
       history.scrollRestoration = 'manual';
     }
 
-    // CONTROL DE FOCO EN INPUTS PARA LIMPIAR EL '0' AUTOMÁTICAMENTE
     function handleInputFocus(input) {
       let val = input.value.toString().trim();
       if (val === '0' || val === '0.00' || val === '0,00' || val === '$ 0,00' || val === '$ 0.00') {
@@ -592,7 +591,6 @@
       }
     }
 
-    // FORMATEADOR EN VIVO MIENTRAS SE TIPEA (CON MILES Y SIGNOS)
     function formatLiveCurrencyInput(input) {
       let rawVal = input.value;
       rawVal = rawVal.replace(/\.(?=\d{0,2}$)/, ',');
@@ -621,7 +619,6 @@
       return isNeg ? -parsed : parsed;
     }
 
-    // DRAWER Y VISTAS
     function toggleDrawer() { document.getElementById('drawer-menu').classList.toggle('hidden'); }
 
     function switchView(view) {
@@ -654,6 +651,11 @@
       if (cacheStr) {
          let cache = JSON.parse(cacheStr);
          state.config = cache.config || { paydate: "", themeBrian: "", themeVirginia: "", lastProcessedDate: "" };
+         
+         // FILTRO ANTI-BUGS PARA FECHAS DEL CACHE
+         if (state.config.paydate && state.config.paydate.length > 10) state.config.paydate = state.config.paydate.substring(0, 10);
+         if (state.config.lastProcessedDate && state.config.lastProcessedDate.length > 10) state.config.lastProcessedDate = state.config.lastProcessedDate.substring(0, 10);
+
          setUser(cache.user || 'Brian');
       } else {
          const savedUser = localStorage.getItem('cfg_user');
@@ -810,7 +812,7 @@
       return dates;
     }
 
-    // MÁQUINA DEL TIEMPO: Reconstruye las fechas restantes de un ciclo pasado
+    // MÁQUINA DEL TIEMPO: Reconstruye las fechas restantes de un ciclo pasado (AHORA ESTÁ PROTEGIDA)
     function getRemainingDatesFrom(startDateStr) {
       let parts = startDateStr.split('-');
       let startDate = new Date(parts[0], parts[1] - 1, parts[2]);
@@ -819,8 +821,10 @@
       if (payDateStr && payDateStr !== "") {
         let pParts = payDateStr.split('-'); 
         payDate = new Date(pParts[0], pParts[1] - 1, pParts[2]);
-        if (toLocalISODate(startDate) >= toLocalISODate(payDate)) {
-          payDate = new Date(pParts[0], parseInt(pParts[1]), pParts[2]);
+        
+        // Ciclo automático para fechas manuales: avanzamos el mes HASTA superar la fecha evaluada
+        while (toLocalISODate(startDate) >= toLocalISODate(payDate)) {
+          payDate.setMonth(payDate.getMonth() + 1);
         }
       } else {
         payDate = getSecondBusinessDay(startDate.getFullYear(), startDate.getMonth());
@@ -972,7 +976,6 @@
     function toggleAjusteFields() { const extra = document.getElementById('a-extra-fields'); const val = document.getElementById('a-tipo').value; if (val === "7" || val === "8") extra.classList.remove('hidden'); else extra.classList.add('hidden'); }
     function clearForm(formId) { document.getElementById(formId).reset(); document.getElementById('u-fecha').value = toLocalISODate(new Date()); document.getElementById('d-fecha').value = toLocalISODate(new Date()); document.getElementById('u-fecha').disabled = false; toggleAjusteFields(); }
     
-    // NAVEGACIÓN INTELIGENTE (ENTER / SIGUIENTE) PARA MÓDULO DIARIO CON CURSOR AL FINAL
     function setupEnterNavigation() { 
       document.querySelectorAll('form').forEach(form => { 
         const inputs = Array.from(form.querySelectorAll('input:not([type="hidden"]), select, button[type="submit"]')); 
@@ -1011,7 +1014,6 @@
       }
 
       if (todayStr > lastProcessed) {
-         // Reconstruimos el entorno matemático de AYER
          const pastDates = getRemainingDatesFrom(lastProcessed);
          const liquidHB = state.hb - state.bs;
          
@@ -1090,6 +1092,10 @@
         state.hb = parseFloat(data.hb) || 0; state.bs = parseFloat(data.bs) || 0;
         state.movements = data.movements || []; 
         state.config = data.config || { paydate: "", themeBrian: "", themeVirginia: "", lastProcessedDate: "" };
+
+        // FILTRO ANTI-BUGS PARA FECHAS DEL BACKEND
+        if (state.config.paydate && state.config.paydate.length > 10) state.config.paydate = state.config.paydate.substring(0, 10);
+        if (state.config.lastProcessedDate && state.config.lastProcessedDate.length > 10) state.config.lastProcessedDate = state.config.lastProcessedDate.substring(0, 10);
         
         applySavedConfig(); guardarEnCache(); render();
         checkDayRollover();
@@ -1327,7 +1333,6 @@
        return 'g-' + Math.random().toString(36).substr(2, 9) + Date.now().toString(36);
     }
 
-    // MANEJADOR DE EVENTO ENTER EN GASTOS FIJOS CON CURSOR AL FINAL
     function handleGastoMontoKeydown(e, el) {
       if (e.key === 'Enter') {
         e.preventDefault();
@@ -1351,7 +1356,6 @@
       }
     }
 
-    // SELECTOR DE MESES DESLIZABLE
     function renderMonthSwipeSelector() {
       const container = document.getElementById('month-swipe-container');
       container.innerHTML = "";
@@ -1789,7 +1793,7 @@
       setTimeout(() => {
         if (btnElement) {
           btnElement.innerText = "🔄 Guardado OK";
-          setTimeout(() => { btnElement.innerText = "🔄 Actualizar"; }, 1500);
+          setTimeout(() => { btnElement.innerText = "🔄 Actualizar Extras"; }, 1500);
         }
       }, 1000);
 
