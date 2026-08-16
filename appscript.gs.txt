@@ -1,174 +1,212 @@
+function setupInitialDatabase() {
+  var sheet = SpreadsheetApp.getActiveSpreadsheet();
+  
+  // 1. Crear y estructurar hoja Config si no existe
+  var configSheet = sheet.getSheetByName("Config");
+  if (!configSheet) {
+    configSheet = sheet.insertSheet("Config");
+    configSheet.appendRow(["HB", "BS", "Paydate", "ThemeBrian", "ThemeVirginia", "LastProcessedDate"]);
+    configSheet.appendRow([0, 0, "", "", "", ""]);
+  }
+  
+  // 2. Crear y estructurar hoja Movimientos si no existe
+  var movSheet = sheet.getSheetByName("Movimientos");
+  if (!movSheet) {
+    movSheet = sheet.insertSheet("Movimientos");
+    movSheet.appendRow(["ID", "Usuario", "Tipo", "Monto", "Concepto", "Target", "Fechas_Afectadas"]);
+  }
+  
+  // 3. Crear y estructurar hoja Config_Proyeccion si no existe
+  var configProySheet = sheet.getSheetByName("Config_Proyeccion");
+  if (!configProySheet) {
+    configProySheet = sheet.insertSheet("Config_Proyeccion");
+    configProySheet.appendRow(["Dolar_USD", "Sueldo_Brian", "Sueldo_Virginia", "Servicios_JSON"]);
+    configProySheet.appendRow([1200, 1559009.85, 0, "[]"]);
+  }
+  
+  // 4. Crear y estructurar hoja Proyecciones si no existe
+  var proySheet = sheet.getSheetByName("Proyecciones");
+  if (!proySheet) {
+    proySheet = sheet.insertSheet("Proyecciones");
+    proySheet.appendRow(["Mes", "Extra Brian", "Tipo Extra B", "Concepto Extra B", "Extra Virginia", "Tipo Extra V", "Concepto Extra V", "Gastos Brian JSON", "Gastos Virginia JSON"]);
+  }
+}
+
 function doGet(e) {
   try {
+    setupInitialDatabase(); // Asegura la estructura en cada lectura
     var sheet = SpreadsheetApp.getActiveSpreadsheet();
-    var action = e.parameter.action || "getDiario";
+    var action = e ? e.parameter.action : "getDiario";
+    if (!action) action = "getDiario";
 
+    // --- ACCIÓN 1: OBTENER DIARIO ---
     if (action === "getDiario") {
-      var config = sheet.getSheetByName("Config");
+      var configSheet = sheet.getSheetByName("Config");
       var movSheet = sheet.getSheetByName("Movimientos");
 
-      var hb = config ? (config.getRange("A2").getValue() || 0) : 0;
-      var bs = config ? (config.getRange("B2").getValue() || 0) : 0;
-      var customPaydate = config ? (config.getRange("C2").getValue() || "") : "";
-      var themeBrian = config ? (config.getRange("D2").getValue() || "") : "";
-      var themeVirginia = config ? (config.getRange("E2").getValue() || "") : "";
-      var lastProcessedDate = config ? (config.getRange("F2").getValue() || "") : "";
+      var cfgData = configSheet.getRange("A2:F2").getValues()[0] || [0, 0, "", "", "", ""];
+      var hb = cfgData[0] || 0;
+      var bs = cfgData[1] || 0;
+      var customPaydate = cfgData[2] || "";
+      var themeBrian = cfgData[3] || "";
+      var themeVirginia = cfgData[4] || "";
+      var lastProcessedDate = cfgData[5] || "";
 
       var movs = [];
-      if (movSheet) {
-        var movsData = movSheet.getDataRange().getValues();
-        if (movsData.length > 1) {
-          for (var i = 1; i < movsData.length; i++) {
+      var lastRow = movSheet.getLastRow();
+      if (lastRow > 1) {
+        var movsData = movSheet.getRange(2, 1, lastRow - 1, 7).getValues();
+        for (var i = 0; i < movsData.length; i++) {
+          if (movsData[i][0]) {
             movs.push({
-              fecha: movsData[i][0], usuario: movsData[i][1], tipo: movsData[i][2],
-              monto: movsData[i][3], concepto: movsData[i][4], target: movsData[i][5], fechas_afectadas: movsData[i][6]
+              fecha: movsData[i][0],
+              usuario: movsData[i][1],
+              tipo: movsData[i][2],
+              monto: movsData[i][3],
+              concepto: movsData[i][4],
+              target: movsData[i][5],
+              fechas_afectadas: movsData[i][6]
             });
           }
         }
       }
-      return ContentService.createTextOutput(JSON.stringify({ 
-        status: "ok", hb: hb, bs: bs, 
-        config: { paydate: customPaydate, themeBrian: themeBrian, themeVirginia: themeVirginia, lastProcessedDate: lastProcessedDate }, 
-        movements: movs 
-      })).setMimeType(ContentService.MimeType.JSON);
+
+      return createJsonResponse({
+        status: "ok",
+        hb: hb,
+        bs: bs,
+        config: {
+          paydate: customPaydate,
+          themeBrian: themeBrian,
+          themeVirginia: themeVirginia,
+          lastProcessedDate: lastProcessedDate
+        },
+        movements: movs
+      });
     }
 
+    // --- ACCIÓN 2: OBTENER PROYECCIONES ---
     else if (action === "getProyecciones") {
       var configProySheet = sheet.getSheetByName("Config_Proyeccion");
-      var dolarUSD = 1200;
-      var sueldoBaseBrian = 1559009.85;
-      var sueldoBaseVirginia = 0;
-      var serviciosGlobales = [];
-
-      if (configProySheet) {
-        dolarUSD = configProySheet.getRange("A2").getValue() || 1200;
-        sueldoBaseBrian = configProySheet.getRange("B2").getValue() || 1559009.85;
-        sueldoBaseVirginia = configProySheet.getRange("C2").getValue() || 0;
-        var servVal = configProySheet.getRange("D2").getValue();
-        if (servVal) {
-          try { serviciosGlobales = JSON.parse(servVal); } catch(err) {}
-        }
-      }
+      var cfgProyData = configProySheet.getRange("A2:D2").getValues()[0] || [1200, 1559009.85, 0, "[]"];
+      
+      var dolarUSD = cfgProyData[0] || 1200;
+      var sueldoBaseBrian = cfgProyData[1] || 1559009.85;
+      var sueldoBaseVirginia = cfgProyData[2] || 0;
+      var serviciosGlobales = parseJsonArray(cfgProyData[3]);
 
       var proySheet = sheet.getSheetByName("Proyecciones");
       var proyecciones = [];
-      if (proySheet) {
-        var data = proySheet.getDataRange().getValues();
-        if (data.length > 1) {
-          for (var i = 1; i < data.length; i++) {
-            if (data[i][0]) {
-              proyecciones.push({
-                mes: String(data[i][0]),
-                extraBrian: data[i][1] || 0,
-                tipoExtraBrian: data[i][2] || "Otro",
-                conceptoExtraBrian: data[i][3] || "",
-                extraVirginia: data[i][4] || 0,
-                tipoExtraVirginia: data[i][5] || "Otro",
-                conceptoExtraVirginia: data[i][6] || "",
-                gastosBrian: data[i][7] ? JSON.parse(data[i][7]) : [],
-                gastosVirginia: data[i][8] ? JSON.parse(data[i][8]) : []
-              });
-            }
+      var lastRowProy = proySheet.getLastRow();
+      
+      if (lastRowProy > 1) {
+        var data = proySheet.getRange(2, 1, lastRowProy - 1, 9).getValues();
+        for (var j = 0; j < data.length; j++) {
+          if (data[j][0]) {
+            proyecciones.push({
+              mes: String(data[j][0]),
+              extraBrian: data[j][1] || 0,
+              tipoExtraBrian: data[j][2] || "Otro",
+              conceptoExtraBrian: data[j][3] || "",
+              extraVirginia: data[j][4] || 0,
+              tipoExtraVirginia: data[j][5] || "Otro",
+              conceptoExtraVirginia: data[j][6] || "",
+              gastosBrian: parseJsonArray(data[j][7]),
+              gastosVirginia: parseJsonArray(data[j][8])
+            });
           }
         }
       }
 
-      return ContentService.createTextOutput(JSON.stringify({ 
-        status: "ok", 
+      return createJsonResponse({
+        status: "ok",
         dolarUSD: dolarUSD,
         sueldoBaseBrian: sueldoBaseBrian,
         sueldoBaseVirginia: sueldoBaseVirginia,
         serviciosGlobales: serviciosGlobales,
-        proyecciones: proyecciones 
-      })).setMimeType(ContentService.MimeType.JSON);
+        proyecciones: proyecciones
+      });
     }
 
-  } catch(error) { 
-    return ContentService.createTextOutput(JSON.stringify({ status: "error", message: error.toString() })).setMimeType(ContentService.MimeType.JSON); 
+  } catch (error) {
+    return createJsonResponse({ status: "error", message: error.toString() });
   }
 }
 
 function doPost(e) {
   try {
+    setupInitialDatabase(); // Asegura la estructura antes de escribir
     var sheet = SpreadsheetApp.getActiveSpreadsheet();
-    
-    // VALIDACIÓN DE SEGURIDAD PARA SABER SI RECIBE DATOS
+
     if (!e || !e.postData || !e.postData.contents) {
-      return ContentService.createTextOutput(JSON.stringify({ status: "error", message: "No data received" })).setMimeType(ContentService.MimeType.JSON);
+      return createJsonResponse({ status: "error", message: "No data received" });
     }
 
     var params = JSON.parse(e.postData.contents);
     var configSheet = sheet.getSheetByName("Config");
     var movSheet = sheet.getSheetByName("Movimientos");
 
-    if (params.action === "updateHB") { 
-      if (configSheet) configSheet.getRange("A2").setValue(params.hb); 
+    if (params.action === "updateHB") {
+      configSheet.getRange("A2").setValue(params.hb);
     }
     else if (params.action === "updateConfig") {
-      if (configSheet) {
-        if (params.paydate !== undefined) configSheet.getRange("C2").setValue(params.paydate || "");
-        if (params.lastProcessedDate !== undefined) configSheet.getRange("F2").setValue(params.lastProcessedDate || "");
-        if (params.user === "Brian" && params.theme !== undefined) configSheet.getRange("D2").setValue(params.theme || "");
-        else if (params.user === "Virginia" && params.theme !== undefined) configSheet.getRange("E2").setValue(params.theme || "");
-      }
+      if (params.paydate !== undefined) configSheet.getRange("C2").setValue(params.paydate || "");
+      if (params.lastProcessedDate !== undefined) configSheet.getRange("F2").setValue(params.lastProcessedDate || "");
+      if (params.user === "Brian" && params.theme !== undefined) configSheet.getRange("D2").setValue(params.theme || "");
+      else if (params.user === "Virginia" && params.theme !== undefined) configSheet.getRange("E2").setValue(params.theme || "");
     }
     else if (params.action === "addMovement") {
-      if (movSheet) {
-        movSheet.appendRow([ params.id, params.user, params.type, params.amount, params.concept, params.target, JSON.stringify(params.dates) ]);
-      }
-      if (configSheet) {
-        if(params.newHB !== undefined) configSheet.getRange("A2").setValue(params.newHB);
-        if(params.newBS !== undefined) configSheet.getRange("B2").setValue(params.newBS);
-        if(params.lastProcessedDate !== undefined) configSheet.getRange("F2").setValue(params.lastProcessedDate);
-      }
+      movSheet.appendRow([
+        params.id,
+        params.user,
+        params.type,
+        params.amount,
+        params.concept,
+        params.target,
+        JSON.stringify(params.dates)
+      ]);
+      
+      if (params.newHB !== undefined) configSheet.getRange("A2").setValue(params.newHB);
+      if (params.newBS !== undefined) configSheet.getRange("B2").setValue(params.newBS);
+      if (params.lastProcessedDate !== undefined) configSheet.getRange("F2").setValue(params.lastProcessedDate);
     }
     else if (params.action === "editMovement" || params.action === "deleteMovement") {
-      if (movSheet) {
-        var data = movSheet.getDataRange().getValues();
-        for(var i = 1; i < data.length; i++) {
-          if(data[i][0] === params.id) {
-            if (params.action === "deleteMovement") { movSheet.deleteRow(i + 1); } 
-            else { movSheet.getRange(i + 1, 4).setValue(params.amount); movSheet.getRange(i + 1, 5).setValue(params.concept); }
+      var lastRowMov = movSheet.getLastRow();
+      if (lastRowMov > 1) {
+        var ids = movSheet.getRange(2, 1, lastRowMov - 1, 1).getValues();
+        for (var m = 0; m < ids.length; m++) {
+          if (ids[m][0] === params.id) {
+            var targetRow = m + 2;
+            if (params.action === "deleteMovement") {
+              movSheet.deleteRow(targetRow);
+            } else {
+              movSheet.getRange(targetRow, 4, 1, 2).setValues([[params.amount, params.concept]]);
+            }
             break;
           }
         }
       }
-      if (configSheet) {
-        if(params.newHB !== undefined) configSheet.getRange("A2").setValue(params.newHB);
-        if(params.newBS !== undefined) configSheet.getRange("B2").setValue(params.newBS);
-      }
+      if (params.newHB !== undefined) configSheet.getRange("A2").setValue(params.newHB);
+      if (params.newBS !== undefined) configSheet.getRange("B2").setValue(params.newBS);
     }
-    
-    // --- ACCIONES PROYECCIÓN ---
     else if (params.action === "saveConfigServicios") {
       var configProySheet = sheet.getSheetByName("Config_Proyeccion");
-      if (!configProySheet) {
-        configProySheet = sheet.insertSheet("Config_Proyeccion");
-        configProySheet.appendRow(["Dolar_USD", "Sueldo_Brian", "Sueldo_Virginia", "Servicios_JSON"]);
-      }
-      // Escritura en bloque para mayor velocidad
       configProySheet.getRange(2, 1, 1, 4).setValues([[
-        params.dolarUSD, 
-        params.sueldoBaseBrian, 
-        params.sueldoBaseVirginia, 
+        params.dolarUSD,
+        params.sueldoBaseBrian,
+        params.sueldoBaseVirginia,
         JSON.stringify(params.serviciosGlobales)
       ]]);
     }
     else if (params.action === "saveProyeccionesAll") {
       var proySheet = sheet.getSheetByName("Proyecciones");
-      if (!proySheet) {
-        proySheet = sheet.insertSheet("Proyecciones");
-      }
-      
       var list = params.proyecciones || [];
-      
-      // Armamos la matriz entera en memoria (MUY RÁPIDO)
       var matrix = [
         ["Mes", "Extra Brian", "Tipo Extra B", "Concepto Extra B", "Extra Virginia", "Tipo Extra V", "Concepto Extra V", "Gastos Brian JSON", "Gastos Virginia JSON"]
       ];
-      
-      for (var i = 0; i < list.length; i++) {
-        var p = list[i];
+
+      for (var pIdx = 0; pIdx < list.length; pIdx++) {
+        var p = list[pIdx];
         matrix.push([
           String(p.mes),
           p.extraBrian || 0,
@@ -182,13 +220,22 @@ function doPost(e) {
         ]);
       }
 
-      // Borramos todo y pegamos la matriz de 1 solo golpe
-      proySheet.clear();
+      proySheet.clearContents();
       proySheet.getRange(1, 1, matrix.length, matrix[0].length).setValues(matrix);
     }
 
-    return ContentService.createTextOutput(JSON.stringify({ status: "success" })).setMimeType(ContentService.MimeType.JSON);
-  } catch(error) { 
-    return ContentService.createTextOutput(JSON.stringify({ status: "error", message: error.toString() })).setMimeType(ContentService.MimeType.JSON); 
+    return createJsonResponse({ status: "success" });
+  } catch (error) {
+    return createJsonResponse({ status: "error", message: error.toString() });
   }
+}
+
+function createJsonResponse(data) {
+  return ContentService.createTextOutput(JSON.stringify(data))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+function parseJsonArray(str) {
+  if (!str) return [];
+  try { return JSON.parse(str); } catch (e) { return []; }
 }
