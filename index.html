@@ -64,6 +64,10 @@
     .custom-scroll::-webkit-scrollbar-track { background: transparent; }
     .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
     .dark .custom-scroll::-webkit-scrollbar-thumb { background: #334155; }
+
+    /* Hide scrollbar for the month swipe selector */
+    #month-swipe-container::-webkit-scrollbar { display: none; }
+    #month-swipe-container { -ms-overflow-style: none; scrollbar-width: none; }
     
     @keyframes spin { 100% { transform: rotate(360deg); } }
     .syncing-spin { animation: spin 1s linear infinite; }
@@ -229,28 +233,36 @@
 
   <!-- ================= MÓDULO 2: PROYECCIÓN DE GASTOS (MACRO) ================= -->
   <section id="view-proyeccion" class="hidden space-y-4 pb-12">
-    <!-- Selector de Mes + Botón de Config. Servicios/Sueldos -->
-    <div class="glass p-3 rounded-xl border border-slate-700 flex justify-between items-center gap-2">
-      <div class="flex items-center gap-2">
-        <label class="text-xs font-bold uppercase tracking-wider text-slate-400">Mes:</label>
-        <select id="proy-select-mes" onchange="renderProyeccion()" class="bg-slate-900 border border-slate-700 text-white text-xs font-bold px-2 py-1.5 rounded-lg outline-none">
-          <option value="Enero">Enero</option>
-          <option value="Febrero">Febrero</option>
-          <option value="Marzo">Marzo</option>
-          <option value="Abril">Abril</option>
-          <option value="Mayo [Premio]">Mayo [Premio]</option>
-          <option value="Junio [SAC]">Junio [SAC]</option>
-          <option value="Julio">Julio</option>
-          <option value="Agosto [Premio]">Agosto [Premio]</option>
-          <option value="Septiembre">Septiembre</option>
-          <option value="Octubre">Octubre</option>
-          <option value="Noviembre [Premio]">Noviembre [Premio]</option>
-          <option value="Diciembre [SAC]">Diciembre [SAC]</option>
-        </select>
+    <!-- Selector de Mes Interactivo y Deslizable -->
+    <div class="glass p-2 rounded-xl border border-slate-700 flex justify-between items-center gap-2">
+      <div class="flex items-center gap-1 w-full overflow-hidden">
+        <!-- Ícono Desplegable Nativo -->
+        <div class="relative shrink-0 flex items-center justify-center">
+           <select id="proy-select-mes" onchange="changeMonth(this.value)" class="absolute inset-0 opacity-0 cursor-pointer w-full h-full">
+             <option value="Enero">Enero</option>
+             <option value="Febrero">Febrero</option>
+             <option value="Marzo">Marzo</option>
+             <option value="Abril">Abril</option>
+             <option value="Mayo [Premio]">Mayo [Premio]</option>
+             <option value="Junio [SAC]">Junio [SAC]</option>
+             <option value="Julio">Julio</option>
+             <option value="Agosto [Premio]">Agosto [Premio]</option>
+             <option value="Septiembre">Septiembre</option>
+             <option value="Octubre">Octubre</option>
+             <option value="Noviembre [Premio]">Noviembre [Premio]</option>
+             <option value="Diciembre [SAC]">Diciembre [SAC]</option>
+           </select>
+           <button class="bg-slate-800 hover:bg-slate-700 text-slate-300 p-2 rounded-lg border border-slate-700 font-bold text-xs transition-colors">📅</button>
+        </div>
+        
+        <!-- Carrusel Deslizable -->
+        <div id="month-swipe-container" class="flex-1 overflow-x-auto flex gap-1.5 scroll-smooth custom-scroll pb-1 items-center px-1">
+           <!-- Javascript inyecta los botones aquí -->
+        </div>
       </div>
 
-      <button onclick="openServiciosModal()" class="bg-slate-800 hover:bg-slate-700 text-indigo-300 border border-slate-700 font-bold text-xs px-2.5 py-1.5 rounded-lg shadow flex items-center gap-1">
-        ⚙️ Servicios/Sueldos
+      <button onclick="openServiciosModal()" class="bg-slate-800 hover:bg-slate-700 text-indigo-300 border border-slate-700 font-bold text-xs px-2.5 py-2 rounded-lg shadow flex items-center gap-1 shrink-0">
+        ⚙️ Servicios
       </button>
     </div>
 
@@ -281,7 +293,7 @@
           <span>💼 Extras del Mes</span>
         </h3>
         <button onclick="saveProyeccionCurrent(this)" class="btn-update-action text-[9px] bg-indigo-600/30 hover:bg-indigo-600/60 text-indigo-300 border border-indigo-500/40 px-2 py-0.5 rounded font-bold transition-all">
-          🔄 Actualizar Extras
+          🔄 Guardar Cambios
         </button>
       </div>
 
@@ -293,7 +305,7 @@
           <option value="Otro">Otro</option>
         </select>
         <input type="text" id="p-concepto-extra-brian" placeholder="Detalle" class="bg-slate-800 border border-slate-700 p-1 rounded text-white text-[11px] flex-1 outline-none min-w-0">
-        <input type="text" id="p-extra-brian" inputmode="decimal" placeholder="$ 0" onfocus="handleInputFocus(this)" onblur="handleInputBlur(this)" oninput="formatLiveCurrencyInput(this); calcProyTotales();" class="bg-slate-800 border border-slate-700 p-1 rounded font-bold text-white text-right text-xs w-24 shrink-0 outline-none">
+        <input type="text" id="p-extra-brian" inputmode="decimal" placeholder="$ 0" onfocus="handleInputFocus(this)" onblur="handleInputBlur(this)" oninput="formatLiveCurrencyInput(this); calcProyTotales();" class="gasto-monto-input bg-slate-800 border border-slate-700 p-1 rounded font-bold text-white text-right text-xs w-24 shrink-0 outline-none">
       </div>
 
       <div class="flex gap-2 items-center bg-slate-900/60 p-1.5 rounded-lg border border-fuchsia-900/30 text-xs">
@@ -304,7 +316,7 @@
           <option value="Otro">Otro</option>
         </select>
         <input type="text" id="p-concepto-extra-virginia" placeholder="Detalle" class="bg-slate-800 border border-slate-700 p-1 rounded text-white text-[11px] flex-1 outline-none min-w-0">
-        <input type="text" id="p-extra-virginia" inputmode="decimal" placeholder="$ 0" onfocus="handleInputFocus(this)" onblur="handleInputBlur(this)" oninput="formatLiveCurrencyInput(this); calcProyTotales();" class="bg-slate-800 border border-slate-700 p-1 rounded font-bold text-white text-right text-xs w-24 shrink-0 outline-none">
+        <input type="text" id="p-extra-virginia" inputmode="decimal" placeholder="$ 0" onfocus="handleInputFocus(this)" onblur="handleInputBlur(this)" oninput="formatLiveCurrencyInput(this); calcProyTotales();" class="gasto-monto-input bg-slate-800 border border-slate-700 p-1 rounded font-bold text-white text-right text-xs w-24 shrink-0 outline-none">
       </div>
     </div>
 
@@ -319,7 +331,7 @@
       </div>
       <div id="container-gastos-brian" class="space-y-2"></div>
       <div class="text-right text-xs font-bold text-slate-400 pt-1">
-        Subtotal Brian: <span id="subtotal-brian" class="text-white whitespace-nowrap">$ 0,00</span>
+        Subtotal Brian (Real): <span id="subtotal-brian" class="text-white whitespace-nowrap">$ 0,00</span>
       </div>
     </div>
 
@@ -334,7 +346,7 @@
       </div>
       <div id="container-gastos-virginia" class="space-y-2"></div>
       <div class="text-right text-xs font-bold text-slate-400 pt-1">
-        Subtotal Virginia: <span id="subtotal-virginia" class="text-white whitespace-nowrap">$ 0,00</span>
+        Subtotal Virginia (Real): <span id="subtotal-virginia" class="text-white whitespace-nowrap">$ 0,00</span>
       </div>
     </div>
 
@@ -540,6 +552,7 @@
     let state = { hb: 0, bs: 0, movements: [], config: { paydate: "", themeBrian: "", themeVirginia: "", lastProcessedDate: "" } };
     
     // Variables Módulo Macro
+    let currentProyMonth = "Enero"; // Se asignará dinámicamente
     let proyeccionesData = [];
     let dolarUSD = 1200;
     let sueldoBaseBrian = 1559009.85;
@@ -572,6 +585,11 @@
     let pendingRolloverAmount = 0;
     let pendingRolloverDate = "";
 
+    // MANEJO DE SCROLL GLOBAL
+    if ('scrollRestoration' in history) {
+      history.scrollRestoration = 'manual';
+    }
+
     // CONTROL DE FOCO EN INPUTS PARA LIMPIAR EL '0' AUTOMÁTICAMENTE
     function handleInputFocus(input) {
       let val = input.value.toString().trim();
@@ -590,27 +608,19 @@
     // FORMATEADOR EN VIVO MIENTRAS SE TIPEA (CON MILES Y SIGNOS)
     function formatLiveCurrencyInput(input) {
       let rawVal = input.value;
-      
-      // Convierte punto en coma automáticamente SÓLO si es un decimal final o cercano al final
       rawVal = rawVal.replace(/\.(?=\d{0,2}$)/, ',');
-
-      // Permitir símbolo negativo al principio
       let isNegative = rawVal.trim().startsWith('-');
-      
       let parts = rawVal.split(',');
-      let integerPart = parts[0].replace(/\D/g, ''); // Limpiar cualquier cosa que no sea número
-      
+      let integerPart = parts[0].replace(/\D/g, ''); 
       if (integerPart === '') {
         input.value = (isNegative ? '-' : '') + (parts.length > 1 ? '0,' + parts[1].replace(/\D/g, '') : '');
         return;
       }
-      
       let formattedInteger = new Intl.NumberFormat('es-AR').format(parseInt(integerPart));
       let finalVal = (isNegative ? '-' : '') + formattedInteger;
       if (parts.length > 1) {
         finalVal += ',' + parts[1].replace(/\D/g, '').slice(0, 2);
       }
-      
       input.value = finalVal;
     }
 
@@ -618,7 +628,6 @@
       if (!val) return 0;
       let clean = val.toString().trim();
       let isNeg = clean.startsWith('-');
-      // Dejamos comas, números y eliminamos el resto, convertimos coma a punto para Float
       clean = clean.replace(/[^\d,]/g, '').replace(',', '.'); 
       let parsed = parseFloat(clean); 
       if (isNaN(parsed)) return 0;
@@ -645,6 +654,7 @@
         fetchProyecciones();
       }
       toggleDrawer();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     function guardarEnCache() {
@@ -810,10 +820,16 @@
 
     async function init() {
       populateThemeSelect(); cargarDesdeCache();
+      
+      const curMonthIdx = new Date().getMonth();
+      currentProyMonth = ALL_MESES[curMonthIdx];
+      renderMonthSwipeSelector();
+
       const todayStr = toLocalISODate(new Date());
       document.getElementById('u-fecha').value = todayStr; document.getElementById('d-fecha').value = todayStr; document.getElementById('a-fecha').value = todayStr;
       setupEnterNavigation(); 
       await cargarFeriadosAPI(); 
+      window.scrollTo(0,0);
       fetchData(true); 
     }
 
@@ -939,7 +955,26 @@
     function redirectDivisibleToUnico(checkbox) { if (checkbox.checked) { checkbox.checked = false; switchTab('tab-unico'); document.getElementById('u-bolsa').checked = true; toggleBolsaUnico(document.getElementById('u-bolsa')); } }
     function toggleAjusteFields() { const extra = document.getElementById('a-extra-fields'); const val = document.getElementById('a-tipo').value; if (val === "7" || val === "8") extra.classList.remove('hidden'); else extra.classList.add('hidden'); }
     function clearForm(formId) { document.getElementById(formId).reset(); document.getElementById('u-fecha').value = toLocalISODate(new Date()); document.getElementById('d-fecha').value = toLocalISODate(new Date()); document.getElementById('u-fecha').disabled = false; toggleAjusteFields(); }
-    function setupEnterNavigation() { document.querySelectorAll('form').forEach(form => { const inputs = Array.from(form.querySelectorAll('input, select, button[type="submit"]')); inputs.forEach((input, index) => { input.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); if (index < inputs.length - 1) inputs[index + 1].focus(); } }); }); }); }
+    
+    // NAVEGACIÓN INTELIGENTE (ENTER / SIGUIENTE) PARA MÓDULO DIARIO
+    function setupEnterNavigation() { 
+      document.querySelectorAll('form').forEach(form => { 
+        const inputs = Array.from(form.querySelectorAll('input:not([type="hidden"]), select, button[type="submit"]')); 
+        inputs.forEach((input, index) => { 
+          input.addEventListener('keydown', (e) => { 
+            if (e.key === 'Enter') { 
+              e.preventDefault(); 
+              if (index < inputs.length - 1) { 
+                 inputs[index + 1].focus(); 
+              }
+              if (inputs[index + 1] && inputs[index + 1].type === 'submit') {
+                 inputs[index + 1].scrollIntoView({ behavior: 'smooth', block: 'center' });
+              }
+            } 
+          }); 
+        }); 
+      }); 
+    }
 
     function checkDayRollover() {
       const todayStr = toLocalISODate(new Date());
@@ -1241,6 +1276,50 @@
        return 'g-' + Math.random().toString(36).substr(2, 9) + Date.now().toString(36);
     }
 
+    // MANEJADOR DE EVENTO ENTER EN GASTOS FIJOS
+    function handleGastoMontoKeydown(e, el) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        let inputs = Array.from(document.querySelectorAll('.gasto-monto-input'));
+        let idx = inputs.indexOf(el);
+        if (idx !== -1 && idx < inputs.length - 1) {
+            inputs[idx + 1].focus();
+        } else {
+            let btns = document.querySelectorAll('.btn-update-action');
+            if (btns.length > 0) {
+                let lastBtn = btns[btns.length - 1]; // Tomar el último botón Guardar
+                lastBtn.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                lastBtn.focus();
+            }
+        }
+      }
+    }
+
+    // SELECTOR DE MESES DESLIZABLE
+    function renderMonthSwipeSelector() {
+      const container = document.getElementById('month-swipe-container');
+      container.innerHTML = "";
+      ALL_MESES.forEach(m => {
+        let isActive = m === currentProyMonth;
+        let cls = isActive 
+          ? "bg-indigo-600 text-white font-bold border-indigo-500 shadow-md" 
+          : "bg-slate-800 text-slate-400 font-semibold border-slate-700 hover:bg-slate-700";
+        container.innerHTML += `<button onclick="changeMonth('${m}')" class="shrink-0 px-3 py-1.5 rounded-lg border text-[11px] transition-all ${cls}">${m}</button>`;
+      });
+      document.getElementById('proy-select-mes').value = currentProyMonth;
+
+      setTimeout(() => {
+        let activeBtn = container.querySelector('.bg-indigo-600');
+        if (activeBtn) activeBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+      }, 100);
+    }
+
+    function changeMonth(m) {
+      currentProyMonth = m;
+      renderMonthSwipeSelector();
+      renderProyeccion();
+    }
+
     async function fetchProyecciones() {
       try {
         const cacheBuster = "?action=getProyecciones&t=" + new Date().getTime();
@@ -1255,7 +1334,7 @@
           }
           proyeccionesData = data.proyecciones || [];
 
-          // Auto-asignar IDs a los gastos existentes para mantener todo sincronizado
+          // Auto-asignar IDs a los gastos existentes
           let conceptMap = {}; 
           proyeccionesData.forEach(mes => {
             ['gastosBrian', 'gastosVirginia'].forEach(key => {
@@ -1395,7 +1474,7 @@
     }
 
     function renderProyeccion() {
-      const mesSelect = document.getElementById('proy-select-mes').value;
+      const mesSelect = currentProyMonth;
       let mesData = proyeccionesData.find(p => p.mes === mesSelect);
 
       if (!mesData) {
@@ -1465,7 +1544,7 @@
                 <span class="p-1 rounded border border-blue-800 bg-blue-900/30">🔁</span>
                 <span>Copiar al resto del año</span>
               </button>
-              <input type="text" inputmode="decimal" value="${displayPrecio}" placeholder="Monto ($)" onfocus="handleInputFocus(this)" onblur="handleInputBlur(this)" oninput="formatLiveCurrencyInput(this); updateGastoItem('${user}', '${gasto.id}', 'precio', this.value)" class="w-32 bg-slate-800 border border-slate-700 p-1.5 rounded text-xs text-white font-bold text-right outline-none">
+              <input type="text" inputmode="decimal" value="${displayPrecio}" placeholder="Monto ($)" onfocus="handleInputFocus(this)" onblur="handleInputBlur(this)" oninput="formatLiveCurrencyInput(this); updateGastoItem('${user}', '${gasto.id}', 'precio', this.value)" onkeydown="handleGastoMontoKeydown(event, this)" class="gasto-monto-input w-32 bg-slate-800 border border-slate-700 p-1.5 rounded text-xs text-white font-bold text-right outline-none">
             </div>
           </div>`;
         container.innerHTML += row;
@@ -1473,7 +1552,7 @@
     }
 
     function moveGastoOrder(user, id, direction) {
-      const mesSelect = document.getElementById('proy-select-mes').value;
+      const mesSelect = currentProyMonth;
       let mesData = getOrCreateMesData(mesSelect);
       let listKey = user === 'Brian' ? 'gastosBrian' : 'gastosVirginia';
       let activeList = mesData[listKey];
@@ -1482,15 +1561,12 @@
       let targetIdx = idx + direction;
       if (targetIdx < 0 || targetIdx >= activeList.length) return;
 
-      // Intercambiar en el mes activo
       let temp = activeList[idx];
       activeList[idx] = activeList[targetIdx];
       activeList[targetIdx] = temp;
 
-      // Generar el mapa del nuevo orden
       let orderedIds = activeList.map(g => g.id);
 
-      // Reordenar estrictamente el resto de los meses usando ese mapa
       ALL_MESES.forEach(mName => {
         if (mName !== mesSelect) {
           let mData = getOrCreateMesData(mName);
@@ -1510,9 +1586,8 @@
       calcProyTotales();
     }
 
-    // NUEVA FUNCIÓN: Replíca únicamente el precio bajo demanda explícita
     function replicateGastoValue(user, id) {
-      const mesSelect = document.getElementById('proy-select-mes').value;
+      const mesSelect = currentProyMonth;
       let mesData = getOrCreateMesData(mesSelect);
       let listKey = user === 'Brian' ? 'gastosBrian' : 'gastosVirginia';
       let currGasto = mesData[listKey].find(g => g.id === id);
@@ -1535,7 +1610,7 @@
     }
 
     function addGastoRow(user) {
-      const mesSelect = document.getElementById('proy-select-mes').value;
+      const mesSelect = currentProyMonth;
       let key = user === 'Brian' ? 'gastosBrian' : 'gastosVirginia';
       let newId = generateId();
 
@@ -1558,14 +1633,14 @@
         if (idx !== -1) mData[key].splice(idx, 1);
       });
 
-      const mesSelect = document.getElementById('proy-select-mes').value;
+      const mesSelect = currentProyMonth;
       let mesData = getOrCreateMesData(mesSelect);
       renderGastosList(user, mesData[key]);
       calcProyTotales();
     }
 
     function updateGastoItem(user, id, keyStr, value) {
-      const mesSelect = document.getElementById('proy-select-mes').value;
+      const mesSelect = currentProyMonth;
       let listKey = user === 'Brian' ? 'gastosBrian' : 'gastosVirginia';
       
       let parsedValue = keyStr === 'precio' ? parseAmountInput(value) : value;
@@ -1575,8 +1650,6 @@
 
       currGasto[keyStr] = parsedValue;
 
-      // Si cambia el nombre o la categoría, se actualiza en todos lados para no perder la estructura del Gasto Fijo.
-      // Pero si cambia el PRECIO, NO afecta a los otros meses.
       if (keyStr === 'concepto' || keyStr === 'categoria') {
         ALL_MESES.forEach(mName => {
           if(mName === mesSelect) return;
@@ -1599,10 +1672,11 @@
       return found;
     }
 
+    // CÁLCULOS MATEMÁTICOS CORREGIDOS (Solo suma positivos en Gastos, negativos van a Ingresos y Terceros)
     function calcProyTotales() {
       let extraB = parseAmountInput(document.getElementById('p-extra-brian').value);
       let extraV = parseAmountInput(document.getElementById('p-extra-virginia').value);
-      const mesSelect = document.getElementById('proy-select-mes').value;
+      const mesSelect = currentProyMonth;
       let mesData = getOrCreateMesData(mesSelect);
 
       let totalBrianNormal = 0; let tercerosBrian = 0;
@@ -1620,17 +1694,17 @@
       let totalServicios = getServiciosTotalCalculated();
       let totalTerceros = tercerosBrian + tercerosVirginia;
 
-      // El total de gastos es TODO (Salidas propias + salidas de deudores)
-      let totalGastosFijos = totalBrianNormal + totalVirginiaNormal + totalServicios + totalTerceros;
+      // Gastos Fijos Totales: SOLO suma los montos positivos (reales)
+      let totalGastosFijos = totalBrianNormal + totalVirginiaNormal + totalServicios;
       
-      // El total de ingresos es TODO (Entradas propias + entradas de deudores)
+      // Ingresos Totales: Suma Sueldos + Extras + La plata de deudores (que está en totalTerceros)
       let totalIngresos = sueldoBaseBrian + sueldoBaseVirginia + extraB + extraV + totalTerceros;
       
       let nosQueda = totalIngresos - totalGastosFijos;
 
-      // Las tarjetas de subtotales por persona reflejan el total del bloque sumado en absoluto
-      document.getElementById('subtotal-brian').innerText = formatMoney(totalBrianNormal + tercerosBrian);
-      document.getElementById('subtotal-virginia').innerText = formatMoney(totalVirginiaNormal + tercerosVirginia);
+      // Los subtotales visuales de Brian y Virginia ahora solo reflejan la plata que de verdad sale de ellos
+      document.getElementById('subtotal-brian').innerText = formatMoney(totalBrianNormal);
+      document.getElementById('subtotal-virginia').innerText = formatMoney(totalVirginiaNormal);
       
       const lblServBottom = document.getElementById('subtotal-servicios-globales-bottom');
       if (lblServBottom) lblServBottom.innerText = formatMoney(totalServicios);
@@ -1646,7 +1720,7 @@
         btnElement.innerText = "⏳ Guardando...";
       }
 
-      const mesSelect = document.getElementById('proy-select-mes').value;
+      const mesSelect = currentProyMonth;
       let mesData = getOrCreateMesData(mesSelect);
 
       mesData.extraBrian = parseAmountInput(document.getElementById('p-extra-brian').value);
@@ -1665,7 +1739,7 @@
       setTimeout(() => {
         if (btnElement) {
           btnElement.innerText = "🔄 Guardado OK";
-          setTimeout(() => { btnElement.innerText = "🔄 Actualizar"; }, 1500);
+          setTimeout(() => { btnElement.innerText = "🔄 Actualizar Extras"; }, 1500);
         }
       }, 1000);
 
