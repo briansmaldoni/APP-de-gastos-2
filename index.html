@@ -97,7 +97,6 @@
   <!-- ENCABEZADO Y NAVEGACIÓN GLOBAL -->
   <div class="flex justify-between items-center mb-4 relative">
     <div class="flex gap-1.5 items-center shrink-0">
-      <!-- BOTÓN MENÚ HAMBURGUESA -->
       <button onclick="toggleDrawer()" class="px-2.5 py-1.5 text-base rounded-full bg-slate-800 border border-slate-700 hover:bg-slate-700 transition-all shadow" title="Menú Principal">☰</button>
       <button id="user-brian" onclick="setUser('Brian')" class="px-3 py-1.5 text-xs rounded-full transition-all shadow">Brian</button>
       <button id="user-virginia" onclick="setUser('Virginia')" class="px-3 py-1.5 text-xs rounded-full transition-all shadow">Virginia</button>
@@ -119,7 +118,6 @@
 
   <!-- ================= MÓDULO 1: PRESUPUESTO DIARIO (MICRO) ================= -->
   <section id="view-diario" class="space-y-4">
-    <!-- Dashboard Central -->
     <div class="grid grid-cols-2 gap-3 mb-4">
       <div class="glass p-4 rounded-xl col-span-2 text-center border-l-4 border-primary bg-primary-light relative overflow-hidden shadow-lg flex flex-col items-center justify-center">
         <div class="flex justify-between w-full items-start px-1 mb-1">
@@ -160,14 +158,13 @@
       </div>
     </div>
 
-    <!-- Pestañas de Modos de Carga -->
     <div class="flex border-b border-slate-800 mb-4 text-xs font-bold">
       <button onclick="switchTab('tab-unico')" id="btn-tab-unico" class="flex-1 py-3 t-primary border-b-2 border-primary transition-all text-center">Gasto Único</button>
       <button onclick="switchTab('tab-divisible')" id="btn-tab-divisible" class="flex-1 py-3 text-slate-500 transition-all text-center">Divisible</button>
       <button onclick="switchTab('tab-ajuste')" id="btn-tab-ajuste" class="flex-1 py-3 text-slate-500 transition-all text-center">Ajustes</button>
     </div>
 
-    <!-- Formulario 1: Gasto Único -->
+    <!-- Forms Diario -->
     <form id="tab-unico" class="space-y-3 nav-form" onsubmit="submitUnico(event)">
       <input type="text" id="u-monto" inputmode="decimal" placeholder="Monto del gasto ($)" required class="w-full bg-slate-800/60 border border-slate-700 p-3 rounded-lg text-white font-bold input-focus">
       <input type="date" id="u-fecha" class="w-full bg-slate-800/60 border border-slate-700 p-3 rounded-lg text-white text-sm input-focus">
@@ -181,7 +178,6 @@
       </div>
     </form>
 
-    <!-- Formulario 2: Gasto Divisible -->
     <form id="tab-divisible" class="space-y-3 nav-form hidden" onsubmit="submitDivisible(event)">
       <input type="text" id="d-monto" inputmode="decimal" placeholder="Monto Total a dividir ($)" required class="w-full bg-slate-800/60 border border-slate-700 p-3 rounded-lg text-white font-bold input-focus">
       <input type="number" id="d-dias" placeholder="Días a dividir (Vacío = hasta fin de ciclo)" class="w-full bg-slate-800/60 border border-slate-700 p-3 rounded-lg text-white text-sm input-focus">
@@ -197,7 +193,6 @@
       </div>
     </form>
 
-    <!-- Formulario 3: Ajustes -->
     <form id="tab-ajuste" class="space-y-3 nav-form hidden" onsubmit="submitAjuste(event)">
       <input type="text" id="a-monto" inputmode="decimal" placeholder="Monto del movimiento ($)" required class="w-full bg-slate-800/60 border border-slate-700 p-3 rounded-lg text-white font-bold input-focus">
       <input type="text" id="a-concepto" placeholder="Concepto o justificación" required class="w-full bg-slate-800/60 border border-slate-700 p-3 rounded-lg text-white text-sm input-focus">
@@ -222,7 +217,6 @@
       </div>
     </form>
 
-    <!-- Historial de Movimientos -->
     <div class="mt-6 pb-10">
       <div class="flex justify-between items-center border-b border-slate-800 pb-2 mb-3">
         <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400">📃 Últimos Movimientos</h3>
@@ -233,23 +227,29 @@
 
   <!-- ================= MÓDULO 2: PROYECCIÓN DE GASTOS (MACRO) ================= -->
   <section id="view-proyeccion" class="hidden space-y-4 pb-12">
-    <!-- Selector de Mes -->
-    <div class="glass p-3 rounded-xl border border-slate-700 flex justify-between items-center">
-      <label class="text-xs font-bold uppercase tracking-wider text-slate-400">Mes Proyectado:</label>
-      <select id="proy-select-mes" onchange="renderProyeccion()" class="bg-slate-900 border border-slate-700 text-white text-sm font-bold px-3 py-1.5 rounded-lg outline-none">
-        <option value="Agosto">Agosto</option>
-        <option value="Septiembre P">Septiembre P</option>
-        <option value="Octubre P">Octubre P</option>
-        <option value="Noviembre">Noviembre</option>
-        <option value="Diciembre">Diciembre</option>
-        <option value="Enero P">Enero P</option>
-        <option value="Febrero">Febrero</option>
-        <option value="Marzo p">Marzo p</option>
-        <option value="Abril p">Abril p</option>
-        <option value="Mayo">Mayo</option>
-        <option value="Junio">Junio</option>
-        <option value="Julio P">Julio P</option>
-      </select>
+    <!-- Selector de Mes + Botón de Config. Servicios -->
+    <div class="glass p-3 rounded-xl border border-slate-700 flex justify-between items-center gap-2">
+      <div class="flex items-center gap-2">
+        <label class="text-xs font-bold uppercase tracking-wider text-slate-400">Mes:</label>
+        <select id="proy-select-mes" onchange="renderProyeccion()" class="bg-slate-900 border border-slate-700 text-white text-xs font-bold px-2.5 py-1.5 rounded-lg outline-none">
+          <option value="Enero">Enero</option>
+          <option value="Febrero">Febrero</option>
+          <option value="Marzo">Marzo</option>
+          <option value="Abril">Abril</option>
+          <option value="Mayo">Mayo</option>
+          <option value="Junio [SAC]">Junio [SAC]</option>
+          <option value="Julio">Julio</option>
+          <option value="Agosto">Agosto</option>
+          <option value="Septiembre [Premio]">Septiembre [Premio]</option>
+          <option value="Octubre">Octubre</option>
+          <option value="Noviembre">Noviembre</option>
+          <option value="Diciembre [SAC]">Diciembre [SAC]</option>
+        </select>
+      </div>
+
+      <button onclick="openServiciosModal()" class="bg-slate-800 hover:bg-slate-700 text-indigo-300 border border-slate-700 font-bold text-xs px-3 py-1.5 rounded-lg shadow flex items-center gap-1">
+        ⚙️ Servicios
+      </button>
     </div>
 
     <!-- Resumen Macro -->
@@ -259,7 +259,7 @@
         <span id="proy-total-ingresos" class="text-base font-extrabold text-emerald-400 block mt-1">$ 0,00</span>
       </div>
       <div class="glass p-3 rounded-xl border-l-2 border-rose-500 shadow-md">
-        <span class="text-[10px] text-slate-400 uppercase font-bold block">Gastos Fijos</span>
+        <span class="text-[10px] text-slate-400 uppercase font-bold block">Gastos Fijos Totales</span>
         <span id="proy-total-gastos" class="text-base font-extrabold text-rose-400 block mt-1">$ 0,00</span>
       </div>
       <div class="glass p-4 rounded-xl col-span-2 text-center border-l-4 border-indigo-500 shadow-lg">
@@ -268,46 +268,127 @@
       </div>
     </div>
 
-    <!-- Formulario / Desglose de Ingresos -->
+    <!-- Sección Ingresos (Brian + Virginia) -->
     <div class="glass p-4 rounded-xl border border-slate-700/80 space-y-3">
-      <h3 class="text-xs font-bold uppercase tracking-wider text-slate-300 border-b border-slate-800 pb-2">💼 Ingresos Proyectados</h3>
-      <div class="grid grid-cols-2 gap-2 text-xs">
-        <div>
-          <label class="text-[10px] text-slate-400">Sueldo Brian</label>
-          <input type="text" id="p-sueldo-brian" inputmode="decimal" class="w-full bg-slate-900 border border-slate-700 p-2 rounded font-bold text-white mt-1">
+      <h3 class="text-xs font-bold uppercase tracking-wider text-slate-300 border-b border-slate-800 pb-2 flex justify-between items-center">
+        <span>💼 Ingresos del Mes</span>
+      </h3>
+      
+      <!-- Brian -->
+      <div class="bg-slate-900/60 p-2.5 rounded-lg border border-blue-900/40 space-y-2">
+        <span class="text-xs font-bold text-blue-400 block">Brian</span>
+        <div class="grid grid-cols-2 gap-2 text-xs">
+          <div>
+            <label class="text-[9px] text-slate-400">Sueldo Base</label>
+            <input type="text" id="p-sueldo-brian" inputmode="decimal" onchange="calcProyTotales()" class="w-full bg-slate-800 border border-slate-700 p-1.5 rounded font-bold text-white mt-0.5">
+          </div>
+          <div>
+            <div class="flex justify-between items-center">
+              <label class="text-[9px] text-slate-400">Ingreso Extra</label>
+              <select id="p-tipo-extra-brian" onchange="toggleExtraType('Brian')" class="bg-slate-800 text-[9px] text-indigo-300 border border-slate-700 rounded px-1">
+                <option value="SAC">SAC</option>
+                <option value="Premio">Premio/Bono</option>
+              </select>
+            </div>
+            <input type="text" id="p-extra-brian" inputmode="decimal" onchange="calcProyTotales()" class="w-full bg-slate-800 border border-slate-700 p-1.5 rounded font-bold text-white mt-0.5">
+          </div>
         </div>
-        <div>
-          <label class="text-[10px] text-slate-400">SAC Brian</label>
-          <input type="text" id="p-sac-brian" inputmode="decimal" class="w-full bg-slate-900 border border-slate-700 p-2 rounded font-bold text-white mt-1">
-        </div>
-        <div>
-          <label class="text-[10px] text-slate-400">Sueldo Virginia</label>
-          <input type="text" id="p-sueldo-virginia" inputmode="decimal" class="w-full bg-slate-900 border border-slate-700 p-2 rounded font-bold text-white mt-1">
-        </div>
-        <div>
-          <label class="text-[10px] text-slate-400">SAC Virginia</label>
-          <input type="text" id="p-sac-virginia" inputmode="decimal" class="w-full bg-slate-900 border border-slate-700 p-2 rounded font-bold text-white mt-1">
+      </div>
+
+      <!-- Virginia -->
+      <div class="bg-slate-900/60 p-2.5 rounded-lg border border-fuchsia-900/40 space-y-2">
+        <span class="text-xs font-bold text-fuchsia-400 block">Virginia</span>
+        <div class="grid grid-cols-2 gap-2 text-xs">
+          <div>
+            <label class="text-[9px] text-slate-400">Sueldo Base</label>
+            <input type="text" id="p-sueldo-virginia" inputmode="decimal" onchange="calcProyTotales()" class="w-full bg-slate-800 border border-slate-700 p-1.5 rounded font-bold text-white mt-0.5">
+          </div>
+          <div>
+            <div class="flex justify-between items-center">
+              <label class="text-[9px] text-slate-400">Ingreso Extra</label>
+              <select id="p-tipo-extra-virginia" onchange="toggleExtraType('Virginia')" class="bg-slate-800 text-[9px] text-indigo-300 border border-slate-700 rounded px-1">
+                <option value="SAC">SAC</option>
+                <option value="Premio">Premio/Bono</option>
+              </select>
+            </div>
+            <input type="text" id="p-extra-virginia" inputmode="decimal" onchange="calcProyTotales()" class="w-full bg-slate-800 border border-slate-700 p-1.5 rounded font-bold text-white mt-0.5">
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- Lista de Gastos Fijos -->
-    <div class="glass p-4 rounded-xl border border-slate-700/80 space-y-3">
+    <!-- Tabla 1: Gastos Fijos BRIAN -->
+    <div class="glass p-4 rounded-xl border border-blue-900/40 space-y-3">
       <div class="flex justify-between items-center border-b border-slate-800 pb-2">
-        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-300">📌 Gastos Fijos & Servicios</h3>
-        <button onclick="addProyGastoRow()" class="text-[10px] bg-slate-800 hover:bg-slate-700 text-slate-200 px-2 py-1 rounded border border-slate-700 font-bold">+ Agregar</button>
+        <h3 class="text-xs font-bold uppercase tracking-wider text-blue-400">📌 Gastos Fijos - Brian</h3>
+        <button onclick="addGastoRow('Brian')" class="text-[10px] bg-slate-800 hover:bg-slate-700 text-slate-200 px-2 py-1 rounded border border-slate-700 font-bold">+ Agregar Item</button>
       </div>
-      <div id="proy-gastos-container" class="space-y-2 max-h-60 overflow-y-auto pr-1 custom-scroll">
-        <!-- Render dinámico de items -->
+      <div id="container-gastos-brian" class="space-y-2"></div>
+      <div class="text-right text-xs font-bold text-slate-400 pt-1">
+        Subtotal Brian: <span id="subtotal-brian" class="text-white">$ 0,00</span>
       </div>
-      <button onclick="saveProyeccionCurrent()" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2.5 rounded-lg text-sm shadow transition-all">
-        💾 Guardar Proyección del Mes
-      </button>
     </div>
+
+    <!-- Tabla 2: Gastos Fijos VIRGINIA -->
+    <div class="glass p-4 rounded-xl border border-fuchsia-900/40 space-y-3">
+      <div class="flex justify-between items-center border-b border-slate-800 pb-2">
+        <h3 class="text-xs font-bold uppercase tracking-wider text-fuchsia-400">📌 Gastos Fijos - Virginia</h3>
+        <button onclick="addGastoRow('Virginia')" class="text-[10px] bg-slate-800 hover:bg-slate-700 text-slate-200 px-2 py-1 rounded border border-slate-700 font-bold">+ Agregar Item</button>
+      </div>
+      <div id="container-gastos-virginia" class="space-y-2"></div>
+      <div class="text-right text-xs font-bold text-slate-400 pt-1">
+        Subtotal Virginia: <span id="subtotal-virginia" class="text-white">$ 0,00</span>
+      </div>
+    </div>
+
+    <!-- Resumen Servicios Globales Computados -->
+    <div class="glass p-3 rounded-xl border border-slate-700/80 flex justify-between items-center text-xs">
+      <span class="text-slate-400 font-semibold">⚡ Servicios Globales Configurados:</span>
+      <span id="subtotal-servicios-globales" class="font-bold text-indigo-300">$ 0,00</span>
+    </div>
+
+    <button onclick="saveProyeccionCurrent()" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3 rounded-xl text-sm shadow-lg transition-all">
+      💾 Guardar Proyección de <span id="lbl-save-mes">Enero</span>
+    </button>
   </section>
 
-  <!-- MODALES DE LA APP -->
-  <!-- HB Modal -->
+  <!-- MODAL DE CONFIGURACIÓN DE SERVICIOS GLOBALES Y DÓLAR -->
+  <div id="modal-servicios" onclick="if(event.target === this) closeServiciosModal()" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-md z-[80] flex items-center justify-center p-4">
+    <div class="glass w-full max-w-md max-h-[90vh] rounded-2xl border border-slate-600 p-4 flex flex-col shadow-2xl space-y-4">
+      <div class="flex justify-between items-center border-b border-slate-800 pb-2">
+        <h2 class="text-base font-bold text-white flex items-center gap-2">⚙️ Tarifario de Servicios</h2>
+        <button onclick="closeServiciosModal()" class="w-7 h-7 rounded-full bg-slate-800 text-slate-400 font-bold text-xs hover:bg-slate-700 border border-slate-700">✕</button>
+      </div>
+
+      <!-- Cotización Dólar -->
+      <div class="bg-slate-900/80 p-3 rounded-xl border border-slate-700 flex justify-between items-center">
+        <div>
+          <label class="text-xs font-bold text-amber-400 block">Cotización Dólar ($ USD)</label>
+          <span class="text-[10px] text-slate-400 block">Usado para convertir servicios en USD</span>
+        </div>
+        <input type="text" id="cfg-dolar-usd" inputmode="decimal" placeholder="1200" onchange="renderServiciosGlobales()" class="w-24 bg-slate-800 border border-slate-700 p-2 rounded text-right font-black text-amber-300 text-sm">
+      </div>
+
+      <!-- Tabla de Servicios -->
+      <div class="flex justify-between items-center">
+        <span class="text-xs font-bold uppercase text-slate-300">Servicios/Suscripciones</span>
+        <button onclick="addServicioGlobalRow()" class="text-[10px] bg-indigo-600 text-white px-2 py-1 rounded font-bold">+ Nuevo Servicio</button>
+      </div>
+
+      <div id="modal-servicios-list" class="space-y-2 overflow-y-auto max-h-60 pr-1 custom-scroll"></div>
+
+      <div class="pt-2 border-t border-slate-800 flex justify-between items-center">
+        <span class="text-xs text-slate-400 font-semibold">Total Servicios Est.:</span>
+        <span id="modal-servicios-total" class="text-sm font-black text-indigo-400">$ 0,00</span>
+      </div>
+
+      <button onclick="saveServiciosConfig()" class="w-full bg-blue-600 hover:bg-blue-500 text-white py-2.5 rounded-lg text-sm font-bold shadow">
+        Guardar Configuración de Servicios
+      </button>
+    </div>
+  </div>
+
+  <!-- RESTO DE MODALES DE LA APP DIARIA -->
   <div id="hb-quick-modal" onclick="if(event.target === this) closeHBUpdate()" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-[60] flex items-center justify-center p-4">
     <div class="glass w-full max-w-sm p-5 rounded-2xl border border-hb shadow-xl">
       <label class="text-xs t-hb font-bold block mb-3 text-center uppercase tracking-wide">Ingresar Nuevo Saldo (HB)</label>
@@ -319,7 +400,6 @@
     </div>
   </div>
 
-  <!-- Modal Rollover -->
   <div id="modal-rollover" class="hidden fixed inset-0 bg-slate-950/90 backdrop-blur-md z-[80] flex items-center justify-center p-4">
     <div class="glass w-full max-w-sm rounded-2xl border border-purple-500/50 p-5 flex flex-col text-center shadow-2xl">
       <span class="text-3xl mb-2">🌅</span>
@@ -338,7 +418,6 @@
     </div>
   </div>
 
-  <!-- Modal Configuración -->
   <div id="modal-config" onclick="if(event.target === this) closeConfigModal()" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-md z-[70] flex items-center justify-center p-4">
     <div class="glass w-full max-w-sm rounded-2xl border border-slate-600 p-4 flex flex-col shadow-2xl">
       <div class="flex justify-between items-center border-b border-slate-800 pb-2 mb-3">
@@ -386,7 +465,6 @@
     </div>
   </div>
 
-  <!-- Modal Calendario -->
   <div id="modal-calendario" onclick="if(event.target === this) closeCalendarModal()" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-md z-[50] flex items-center justify-center p-4">
     <div class="glass w-full max-w-md max-h-[85vh] rounded-2xl border border-indigo-500/30 p-4 flex flex-col shadow-2xl">
       <div class="flex justify-between items-center border-b border-slate-800 pb-3 mb-3">
@@ -401,7 +479,6 @@
     </div>
   </div>
 
-  <!-- Modal Editar -->
   <div id="modal-editar" onclick="if(event.target === this) closeEditModal()" class="hidden fixed inset-0 bg-slate-950/90 backdrop-blur-md z-[60] flex items-center justify-center p-4">
     <div class="glass w-full max-w-sm rounded-2xl border border-slate-600 p-5 shadow-2xl">
       <h2 class="text-lg font-bold text-white mb-1">Editar Movimiento</h2>
@@ -421,26 +498,37 @@
     </div>
   </div>
 
-  <!-- SCRIPT GENERAL -->
+  <!-- SCRIPT GENERAL DE LA APLICACIÓN -->
   <script>
     const API_URL = "https://script.google.com/macros/s/AKfycbxqMkqNgYqcdliQkmz4foC-g6RvI9OGOw-Kai3fnltL-A9dpZC4frGYDsX7TIMxzW0R/exec"; 
     
     let currentUser = "Brian";
     let state = { hb: 0, bs: 0, movements: [], config: { paydate: "", themeBrian: "", themeVirginia: "", lastProcessedDate: "" } };
+    
+    // Variables Módulo Macro
     let proyeccionesData = [];
+    let dolarUSD = 1200;
+    let serviciosGlobales = [
+      { concepto: "Netflix", moneda: "ARS", cant: 1, precio: 13588.49 },
+      { concepto: "Adobe", moneda: "ARS", cant: 1, precio: 21695.30 },
+      { concepto: "Mercado Pago", moneda: "ARS", cant: 1, precio: 8990.00 },
+      { concepto: "YouTube Premium", moneda: "USD", cant: 1, precio: 6.99 },
+      { concepto: "One", moneda: "USD", cant: 1, precio: 2.00 },
+      { concepto: "Internet", moneda: "ARS", cant: 1, precio: 37810.00 },
+      { concepto: "Celulares", moneda: "ARS", cant: 2, precio: 741.00 },
+      { concepto: "Rappi", moneda: "ARS", cant: 1, precio: 9990.00 }
+    ];
+
     let feriadosOficiales = ["2026-01-01", "2026-03-24", "2026-04-02", "2026-05-01", "2026-05-25", "2026-06-20", "2026-07-09", "2026-08-17", "2026-10-12", "2026-11-20", "2026-12-25"];
     let pendingRolloverAmount = 0;
     let pendingRolloverDate = "";
 
-    // CONTROL DE MENÚ / DRAWER Y VISTAS
-    function toggleDrawer() {
-      document.getElementById('drawer-menu').classList.toggle('hidden');
-    }
+    // DRAWER Y VISTAS
+    function toggleDrawer() { document.getElementById('drawer-menu').classList.toggle('hidden'); }
 
     function switchView(view) {
       document.getElementById('view-diario').classList.add('hidden');
       document.getElementById('view-proyeccion').classList.add('hidden');
-      
       const btnD = document.getElementById('nav-btn-diario');
       const btnP = document.getElementById('nav-btn-proyeccion');
 
@@ -490,42 +578,7 @@
           { id: "dark-ruby", name: "🔴 Rubí Nocturno", vals: { primary: "#f43f5e", bolsa: "#fbbf24", hb: "#818cf8", bg: "#18181b", panel: "#27272aa6", isLight: false } },
           { id: "dark-sapphire", name: "🔵 Zafiro Profundo", vals: { primary: "#3b82f6", bolsa: "#ec4899", hb: "#14b8a6", bg: "#172554", panel: "#164e63b3", isLight: false } },
           { id: "dark-amethyst", name: "🟣 Amatista", vals: { primary: "#c084fc", bolsa: "#2dd4bf", hb: "#f472b6", bg: "#2e1065", panel: "#3b0764b3", isLight: false } },
-          { id: "dark-amber", name: "🟠 Ámbar Quemado", vals: { primary: "#f59e0b", bolsa: "#ef4444", hb: "#6366f1", bg: "#451a03", panel: "#78350fb3", isLight: false } },
-          { id: "dark-graphite", name: "⚫ Grafito", vals: { primary: "#94a3b8", bolsa: "#64748b", hb: "#475569", bg: "#020617", panel: "#0f172ab3", isLight: false } },
-          { id: "dark-obsidian", name: "🖤 Obsidiana", vals: { primary: "#e4e4e7", bolsa: "#a1a1aa", hb: "#d4d4d8", bg: "#000000", panel: "#18181bb3", isLight: false } },
-          { id: "dark-forest", name: "🌲 Bosque Negro", vals: { primary: "#22c55e", bolsa: "#eab308", hb: "#0ea5e9", bg: "#052e16", panel: "#14532db3", isLight: false } },
-          { id: "dark-ocean", name: "🌊 Océano Oscuro", vals: { primary: "#06b6d4", bolsa: "#f43f5e", hb: "#3b82f6", bg: "#083344", panel: "#164e63b3", isLight: false } },
-          { id: "dark-blood", name: "🩸 Sangre y Ceniza", vals: { primary: "#dc2626", bolsa: "#7f1d1d", hb: "#ef4444", bg: "#1a0505", panel: "#450a0ab3", isLight: false } }
-        ]
-      },
-      {
-        label: "Neón / Cyberpunk",
-        options: [
-          { id: "neon-synth", name: "👾 Synthwave", vals: { primary: "#f0abfc", bolsa: "#2dd4bf", hb: "#fde047", bg: "#2c1030", panel: "#4a1c40b3", isLight: false } },
-          { id: "neon-cyber", name: "🦾 Cyberpunk", vals: { primary: "#fde047", bolsa: "#f43f5e", hb: "#06b6d4", bg: "#09090b", panel: "#18181bb3", isLight: false } },
-          { id: "neon-matrix", name: "🖥️ Matrix", vals: { primary: "#4ade80", bolsa: "#22c55e", hb: "#16a34a", bg: "#000000", panel: "#022c22b3", isLight: false } },
-          { id: "neon-tokyo", name: "🌃 Tokyo Night", vals: { primary: "#fb7185", bolsa: "#38bdf8", hb: "#c084fc", bg: "#111827", panel: "#1e293bb3", isLight: false } },
-          { id: "neon-miami", name: "🦩 Miami Vice", vals: { primary: "#f472b6", bolsa: "#2dd4bf", hb: "#fde047", bg: "#1e1b4b", panel: "#312e81b3", isLight: false } },
-          { id: "neon-laser", name: "🔦 Láser", vals: { primary: "#e879f9", bolsa: "#34d399", hb: "#f87171", bg: "#171717", panel: "#262626b3", isLight: false } },
-          { id: "neon-acid", name: "🧪 Ácido", vals: { primary: "#a3e635", bolsa: "#eab308", hb: "#22d3ee", bg: "#0f172a", panel: "#1e293bb3", isLight: false } },
-          { id: "neon-purple", name: "🔮 Ultra Púrpura", vals: { primary: "#d946ef", bolsa: "#a855f7", hb: "#8b5cf6", bg: "#2e1065", panel: "#4c1d95b3", isLight: false } },
-          { id: "neon-blue", name: "⚡ Electric Blue", vals: { primary: "#3b82f6", bolsa: "#60a5fa", hb: "#93c5fd", bg: "#020617", panel: "#0f172ab3", isLight: false } },
-          { id: "neon-sunset", name: "🌇 Neón Sunset", vals: { primary: "#fb923c", bolsa: "#f43f5e", hb: "#c084fc", bg: "#2e0219", panel: "#4c0519b3", isLight: false } }
-        ]
-      },
-      {
-        label: "Claros / Minimalistas",
-        options: [
-          { id: "light-arctic", name: "❄️ Ártico Puro", vals: { primary: "#0ea5e9", bolsa: "#8b5cf6", hb: "#14b8a6", bg: "#f8fafc", panel: "#ffffffcc", isLight: true } },
-          { id: "light-ivory", name: "🦴 Marfil", vals: { primary: "#d97706", bolsa: "#be123c", hb: "#4338ca", bg: "#fdfbf7", panel: "#fefdfbcc", isLight: true } },
-          { id: "light-cotton", name: "☁️ Algodón", vals: { primary: "#10b981", bolsa: "#ec4899", hb: "#3b82f6", bg: "#f1f5f9", panel: "#ffffffb3", isLight: true } },
-          { id: "light-vanilla", name: "🍦 Vainilla", vals: { primary: "#f59e0b", bolsa: "#db2777", hb: "#0284c7", bg: "#fffbeb", panel: "#fef3c7cc", isLight: true } },
-          { id: "light-paper", name: "📄 Papel", vals: { primary: "#334155", bolsa: "#64748b", hb: "#475569", bg: "#fdfcfc", panel: "#ffffffb3", isLight: true } },
-          { id: "light-silver", name: "🥄 Plata", vals: { primary: "#64748b", bolsa: "#475569", hb: "#334155", bg: "#e2e8f0", panel: "#f8fafcb3", isLight: true } },
-          { id: "light-rose", name: "🌸 Rosa Pálido", vals: { primary: "#e11d48", bolsa: "#4f46e5", hb: "#059669", bg: "#fff1f2", panel: "#ffe4e6cc", isLight: true } },
-          { id: "light-sky", name: "🌤️ Cielo Claro", vals: { primary: "#0284c7", bolsa: "#7c3aed", hb: "#ea580c", bg: "#f0f9ff", panel: "#e0f2fecc", isLight: true } },
-          { id: "light-mint", name: "🍃 Menta Claro", vals: { primary: "#059669", bolsa: "#2563eb", hb: "#d97706", bg: "#f0fdf4", panel: "#d1fae5cc", isLight: true } },
-          { id: "light-lemon", name: "🍋 Limón Suave", vals: { primary: "#d97706", bolsa: "#059669", hb: "#4f46e5", bg: "#fefce8", panel: "#fef9c3cc", isLight: true } }
+          { id: "dark-amber", name: "🟠 Ámbar Quemado", vals: { primary: "#f59e0b", bolsa: "#ef4444", hb: "#6366f1", bg: "#451a03", panel: "#78350fb3", isLight: false } }
         ]
       }
     ];
@@ -612,8 +665,7 @@
         btnV.className = "px-4 py-1.5 text-xs rounded-full bg-fuchsia-600 text-white font-bold border border-fuchsia-500 shadow transition-all";
         btnB.className = "px-4 py-1.5 text-xs rounded-full bg-slate-800 text-slate-400 border border-slate-700 hover:bg-slate-700 transition-all";
       }
-      applySavedConfig();
-      guardarEnCache();
+      applySavedConfig(); guardarEnCache();
     }
 
     function openConfigModal() {
@@ -637,7 +689,6 @@
     }
     
     function closeConfigModal() { document.getElementById('modal-config').classList.add('hidden'); applySavedConfig(); }
-    
     function switchCfgTab(tabId) {
       document.getElementById('cfg-fecha').classList.add('hidden'); document.getElementById('cfg-tema').classList.add('hidden'); document.getElementById(tabId).classList.remove('hidden');
       document.getElementById('btn-cfg-fecha').className = tabId === 'cfg-fecha' ? "flex-1 py-2 text-blue-400 border-b-2 border-blue-400 transition-all" : "flex-1 py-2 text-slate-500 transition-all";
@@ -721,7 +772,6 @@
     function clearForm(formId) { document.getElementById(formId).reset(); document.getElementById('u-fecha').value = toLocalISODate(new Date()); document.getElementById('d-fecha').value = toLocalISODate(new Date()); document.getElementById('u-fecha').disabled = false; toggleAjusteFields(); }
     function setupEnterNavigation() { document.querySelectorAll('form').forEach(form => { const inputs = Array.from(form.querySelectorAll('input, select, button[type="submit"]')); inputs.forEach((input, index) => { input.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); if (index < inputs.length - 1) inputs[index + 1].focus(); } }); }); }); }
 
-    // ROLLOVER AUTOMÁTICO
     function checkDayRollover() {
       const todayStr = toLocalISODate(new Date());
       const lastProcessed = state.config.lastProcessedDate;
@@ -863,16 +913,11 @@
        const todayStr = toLocalISODate(new Date());
        const sobranteHoy = baseDailyBudget - (gastosPorDia[todayStr] || 0);
 
-       if (sobranteHoy <= 0) {
-          alert("¡No tenés saldo sobrante hoy para enviar a la Bolsa!");
-          return;
-       }
+       if (sobranteHoy <= 0) { alert("¡No tenés saldo sobrante hoy para enviar a la Bolsa!"); return; }
 
        if(confirm(`¿Querés guardar los ${formatMoney(sobranteHoy)} que te sobraron hoy directo en tu Bolsa de Saldos?`)) {
-          let amount = sobranteHoy;
-          let idUnico = new Date().toISOString() + Math.random().toString(36).substr(2, 5);
+          let amount = sobranteHoy; let idUnico = new Date().toISOString() + Math.random().toString(36).substr(2, 5);
           state.bs += amount;
-          
           let newMovement = { action: "addMovement", id: idUnico, user: currentUser, type: "Ajuste T-5", amount: amount, concept: "Sobrante de hoy a Bolsa", target: "Bolsa", dates: [todayStr], newHB: state.hb, newBS: state.bs };
           state.movements.push({ fecha: idUnico, usuario: currentUser, tipo: "Ajuste T-5", monto: amount, concepto: "Sobrante de hoy a Bolsa", target: "Bolsa", fechas_afectadas: JSON.stringify([todayStr]) });
           syncBackend(newMovement); render();
@@ -1015,94 +1060,231 @@
         const res = await fetch(API_URL + cacheBuster);
         const data = await res.json();
         if (data.status === "ok") {
+          dolarUSD = data.dolarUSD || 1200;
+          if (data.serviciosGlobales && data.serviciosGlobales.length > 0) {
+            serviciosGlobales = data.serviciosGlobales;
+          }
           proyeccionesData = data.proyecciones || [];
           renderProyeccion();
         }
       } catch (e) { console.error("Error cargando proyecciones", e); }
     }
 
-    function renderProyeccion() {
-      const mesSelect = document.getElementById('proy-select-mes').value;
-      let mesData = proyeccionesData.find(p => p.mes === mesSelect) || {
-        mes: mesSelect, sueldoBrian: 0, sacBrian: 0, sueldoVirginia: 0, sacVirginia: 0, gastosFijos: []
-      };
-
-      document.getElementById('p-sueldo-brian').value = mesData.sueldoBrian || 0;
-      document.getElementById('p-sac-brian').value = mesData.sacBrian || 0;
-      document.getElementById('p-sueldo-virginia').value = mesData.sueldoVirginia || 0;
-      document.getElementById('p-sac-virginia').value = mesData.sacVirginia || 0;
-
-      const container = document.getElementById('proy-gastos-container');
-      container.innerHTML = "";
-      
-      let totalGastos = 0;
-      (mesData.gastosFijos || []).forEach((gasto, idx) => {
-        totalGastos += parseFloat(gasto.precio) || 0;
-        let rowHtml = `
-          <div class="flex gap-2 items-center bg-slate-900/80 p-2 rounded-lg border border-slate-800">
-            <input type="text" value="${gasto.concepto || ''}" placeholder="Servicio/Gasto" onchange="updateProyGastoItem(${idx}, 'concepto', this.value)" class="flex-1 bg-slate-800 border border-slate-700 p-1.5 rounded text-xs text-white">
-            <input type="text" inputmode="decimal" value="${gasto.precio || 0}" placeholder="Monto ($)" onchange="updateProyGastoItem(${idx}, 'precio', this.value)" class="w-24 bg-slate-800 border border-slate-700 p-1.5 rounded text-xs text-white font-bold text-right">
-            <button onclick="removeProyGastoRow(${idx})" class="text-red-400 p-1 hover:text-red-300">🗑️</button>
-          </div>`;
-        container.innerHTML += rowHtml;
-      });
-
-      let totalIngresos = (parseFloat(mesData.sueldoBrian) || 0) + (parseFloat(mesData.sacBrian) || 0) + (parseFloat(mesData.sueldoVirginia) || 0) + (parseFloat(mesData.sacVirginia) || 0);
-      let nosQueda = totalIngresos - totalGastos;
-
-      document.getElementById('proy-total-ingresos').innerText = formatMoney(totalIngresos);
-      document.getElementById('proy-total-gastos').innerText = formatMoney(totalGastos);
-      document.getElementById('proy-nos-queda').innerText = formatMoney(nosQueda);
+    function openServiciosModal() {
+      document.getElementById('cfg-dolar-usd').value = dolarUSD;
+      renderServiciosGlobales();
+      document.getElementById('modal-servicios').classList.remove('hidden');
     }
 
-    function addProyGastoRow() {
-      const mesSelect = document.getElementById('proy-select-mes').value;
-      let mesData = proyeccionesData.find(p => p.mes === mesSelect);
-      if (!mesData) {
-        mesData = { mes: mesSelect, sueldoBrian: 0, sacBrian: 0, sueldoVirginia: 0, sacVirginia: 0, gastosFijos: [] };
-        proyeccionesData.push(mesData);
-      }
-      mesData.gastosFijos.push({ concepto: "", precio: 0 });
+    function closeServiciosModal() {
+      document.getElementById('modal-servicios').classList.add('hidden');
+    }
+
+    function renderServiciosGlobales() {
+      dolarUSD = parseAmountInput(document.getElementById('cfg-dolar-usd').value) || 1200;
+      const list = document.getElementById('modal-servicios-list');
+      list.innerHTML = "";
+      let totalARS = 0;
+
+      serviciosGlobales.forEach((serv, idx) => {
+        let precioIndividual = parseFloat(serv.precio) || 0;
+        let cant = parseInt(serv.cant) || 1;
+        let costoSubtotal = serv.moneda === "USD" ? (precioIndividual * dolarUSD * cant) : (precioIndividual * cant);
+        totalARS += costoSubtotal;
+
+        let row = `
+          <div class="bg-slate-900/90 p-2 rounded-lg border border-slate-700 text-xs space-y-1.5">
+            <div class="flex gap-1.5 items-center">
+              <input type="text" value="${serv.concepto}" placeholder="Servicio" onchange="serviciosGlobales[${idx}].concepto=this.value; renderServiciosGlobales();" class="flex-1 bg-slate-800 border border-slate-700 p-1 rounded text-white font-semibold">
+              <select onchange="serviciosGlobales[${idx}].moneda=this.value; renderServiciosGlobales();" class="bg-slate-800 text-amber-300 font-bold border border-slate-700 p-1 rounded">
+                <option value="ARS" ${serv.moneda === 'ARS' ? 'selected' : ''}>$ ARS</option>
+                <option value="USD" ${serv.moneda === 'USD' ? 'selected' : ''}>$ USD</option>
+              </select>
+              <button onclick="serviciosGlobales.splice(${idx},1); renderServiciosGlobales();" class="text-red-400 p-1">🗑️</button>
+            </div>
+            <div class="flex gap-2 items-center justify-between">
+              <div class="flex items-center gap-1">
+                <span class="text-[9px] text-slate-400">Cant:</span>
+                <input type="number" value="${cant}" onchange="serviciosGlobales[${idx}].cant=parseInt(this.value)||1; renderServiciosGlobales();" class="w-12 bg-slate-800 border border-slate-700 p-1 rounded text-center text-white font-bold">
+              </div>
+              <div class="flex items-center gap-1">
+                <span class="text-[9px] text-slate-400">Precio Unit:</span>
+                <input type="text" inputmode="decimal" value="${precioIndividual}" onchange="serviciosGlobales[${idx}].precio=parseAmountInput(this.value); renderServiciosGlobales();" class="w-24 bg-slate-800 border border-slate-700 p-1 rounded text-right text-white font-bold">
+              </div>
+              <span class="font-extrabold text-indigo-300 text-xs">${formatMoney(costoSubtotal)}</span>
+            </div>
+          </div>`;
+        list.innerHTML += row;
+      });
+
+      document.getElementById('modal-servicios-total').innerText = formatMoney(totalARS);
+    }
+
+    function addServicioGlobalRow() {
+      serviciosGlobales.push({ concepto: "Nuevo Servicio", moneda: "ARS", cant: 1, precio: 0 });
+      renderServiciosGlobales();
+    }
+
+    function saveServiciosConfig() {
+      dolarUSD = parseAmountInput(document.getElementById('cfg-dolar-usd').value) || 1200;
+      syncBackend({
+        action: "saveConfigServicios",
+        dolarUSD: dolarUSD,
+        serviciosGlobales: serviciosGlobales
+      });
+      closeServiciosModal();
       renderProyeccion();
     }
 
-    function removeProyGastoRow(idx) {
+    function getServiciosTotalCalculated() {
+      let total = 0;
+      serviciosGlobales.forEach(s => {
+        let p = parseFloat(s.precio) || 0;
+        let c = parseInt(s.cant) || 1;
+        total += s.moneda === "USD" ? (p * dolarUSD * c) : (p * c);
+      });
+      return total;
+    }
+
+    function renderProyeccion() {
       const mesSelect = document.getElementById('proy-select-mes').value;
-      let mesData = proyeccionesData.find(p => p.mes === mesSelect);
-      if (mesData && mesData.gastosFijos) {
-        mesData.gastosFijos.splice(idx, 1);
-        renderProyeccion();
+      document.getElementById('lbl-save-mes').innerText = mesSelect;
+
+      let mesData = proyeccionesData.find(p => p.mes === mesSelect) || {
+        mes: mesSelect, sueldoBrian: 0, extraBrian: 0, tipoExtraBrian: "SAC",
+        sueldoVirginia: 0, extraVirginia: 0, tipoExtraVirginia: "SAC",
+        gastosBrian: [], gastosVirginia: []
+      };
+
+      document.getElementById('p-sueldo-brian').value = mesData.sueldoBrian || 0;
+      document.getElementById('p-extra-brian').value = mesData.extraBrian || 0;
+      document.getElementById('p-tipo-extra-brian').value = mesData.tipoExtraBrian || "SAC";
+
+      document.getElementById('p-sueldo-virginia').value = mesData.sueldoVirginia || 0;
+      document.getElementById('p-extra-virginia').value = mesData.extraVirginia || 0;
+      document.getElementById('p-tipo-extra-virginia').value = mesData.tipoExtraVirginia || "SAC";
+
+      renderGastosList('Brian', mesData.gastosBrian || []);
+      renderGastosList('Virginia', mesData.gastosVirginia || []);
+
+      calcProyTotales();
+    }
+
+    function toggleExtraType(user) {
+      const inputSueldo = parseAmountInput(document.getElementById(user === 'Brian' ? 'p-sueldo-brian' : 'p-sueldo-virginia').value);
+      const selectTipo = document.getElementById(user === 'Brian' ? 'p-tipo-extra-brian' : 'p-tipo-extra-virginia').value;
+      const inputExtra = document.getElementById(user === 'Brian' ? 'p-extra-brian' : 'p-extra-virginia');
+
+      if (selectTipo === "SAC") {
+        inputExtra.value = (inputSueldo * 0.5).toFixed(2);
+      }
+      calcProyTotales();
+    }
+
+    function renderGastosList(user, list) {
+      const container = document.getElementById(`container-gastos-${user.toLowerCase()}`);
+      container.innerHTML = "";
+
+      list.forEach((gasto, idx) => {
+        let row = `
+          <div class="flex gap-2 items-center bg-slate-900/80 p-2 rounded-lg border border-slate-800">
+            <input type="text" value="${gasto.concepto || ''}" placeholder="Concepto" onchange="updateGastoItem('${user}', ${idx}, 'concepto', this.value)" class="flex-1 bg-slate-800 border border-slate-700 p-1.5 rounded text-xs text-white">
+            <input type="text" inputmode="decimal" value="${gasto.precio || 0}" placeholder="Monto ($)" onchange="updateGastoItem('${user}', ${idx}, 'precio', this.value)" class="w-24 bg-slate-800 border border-slate-700 p-1.5 rounded text-xs text-white font-bold text-right">
+            <button onclick="removeGastoRow('${user}', ${idx})" class="text-red-400 p-1 hover:text-red-300">🗑️</button>
+          </div>`;
+        container.innerHTML += row;
+      });
+    }
+
+    function addGastoRow(user) {
+      const mesSelect = document.getElementById('proy-select-mes').value;
+      let mesData = getOrCreateMesData(mesSelect);
+      let key = user === 'Brian' ? 'gastosBrian' : 'gastosVirginia';
+      mesData[key].push({ concepto: "", precio: 0 });
+      renderGastosList(user, mesData[key]);
+      calcProyTotales();
+    }
+
+    function removeGastoRow(user, idx) {
+      const mesSelect = document.getElementById('proy-select-mes').value;
+      let mesData = getOrCreateMesData(mesSelect);
+      let key = user === 'Brian' ? 'gastosBrian' : 'gastosVirginia';
+      mesData[key].splice(idx, 1);
+      renderGastosList(user, mesData[key]);
+      calcProyTotales();
+    }
+
+    function updateGastoItem(user, idx, key, value) {
+      const mesSelect = document.getElementById('proy-select-mes').value;
+      let mesData = getOrCreateMesData(mesSelect);
+      let listKey = user === 'Brian' ? 'gastosBrian' : 'gastosVirginia';
+      if (mesData[listKey][idx]) {
+        mesData[listKey][idx][key] = key === 'precio' ? parseAmountInput(value) : value;
+        calcProyTotales();
       }
     }
 
-    function updateProyGastoItem(idx, key, value) {
-      const mesSelect = document.getElementById('proy-select-mes').value;
-      let mesData = proyeccionesData.find(p => p.mes === mesSelect);
-      if (mesData && mesData.gastosFijos[idx]) {
-        mesData.gastosFijos[idx][key] = key === 'precio' ? parseAmountInput(value) : value;
-        renderProyeccion();
+    function getOrCreateMesData(mes) {
+      let found = proyeccionesData.find(p => p.mes === mes);
+      if (!found) {
+        found = { mes: mes, sueldoBrian: 0, extraBrian: 0, tipoExtraBrian: "SAC", sueldoVirginia: 0, extraVirginia: 0, tipoExtraVirginia: "SAC", gastosBrian: [], gastosVirginia: [] };
+        proyeccionesData.push(found);
       }
+      return found;
+    }
+
+    function calcProyTotales() {
+      let sueldoB = parseAmountInput(document.getElementById('p-sueldo-brian').value);
+      let extraB = parseAmountInput(document.getElementById('p-extra-brian').value);
+      let sueldoV = parseAmountInput(document.getElementById('p-sueldo-virginia').value);
+      let extraV = parseAmountInput(document.getElementById('p-extra-virginia').value);
+
+      let totalIngresos = sueldoB + extraB + sueldoV + extraV;
+
+      const mesSelect = document.getElementById('proy-select-mes').value;
+      let mesData = getOrCreateMesData(mesSelect);
+
+      let totalBrian = (mesData.gastosBrian || []).reduce((acc, g) => acc + (parseFloat(g.precio) || 0), 0);
+      let totalVirginia = (mesData.gastosVirginia || []).reduce((acc, g) => acc + (parseFloat(g.precio) || 0), 0);
+      let totalServicios = getServiciosTotalCalculated();
+
+      let totalGastosFijos = totalBrian + totalVirginia + totalServicios;
+      let nosQueda = totalIngresos - totalGastosFijos;
+
+      document.getElementById('subtotal-brian').innerText = formatMoney(totalBrian);
+      document.getElementById('subtotal-virginia').innerText = formatMoney(totalVirginia);
+      document.getElementById('subtotal-servicios-globales').innerText = formatMoney(totalServicios);
+
+      document.getElementById('proy-total-ingresos').innerText = formatMoney(totalIngresos);
+      document.getElementById('proy-total-gastos').innerText = formatMoney(totalGastosFijos);
+      document.getElementById('proy-nos-queda').innerText = formatMoney(nosQueda);
     }
 
     function saveProyeccionCurrent() {
       const mesSelect = document.getElementById('proy-select-mes').value;
-      let mesData = proyeccionesData.find(p => p.mes === mesSelect) || { mes: mesSelect, gastosFijos: [] };
+      let mesData = getOrCreateMesData(mesSelect);
 
       mesData.sueldoBrian = parseAmountInput(document.getElementById('p-sueldo-brian').value);
-      mesData.sacBrian = parseAmountInput(document.getElementById('p-sac-brian').value);
+      mesData.extraBrian = parseAmountInput(document.getElementById('p-extra-brian').value);
+      mesData.tipoExtraBrian = document.getElementById('p-tipo-extra-brian').value;
+
       mesData.sueldoVirginia = parseAmountInput(document.getElementById('p-sueldo-virginia').value);
-      mesData.sacVirginia = parseAmountInput(document.getElementById('p-sac-virginia').value);
+      mesData.extraVirginia = parseAmountInput(document.getElementById('p-extra-virginia').value);
+      mesData.tipoExtraVirginia = document.getElementById('p-tipo-extra-virginia').value;
 
       syncBackend({
-        action: "saveProyeccion",
+        action: "saveProyeccionMes",
         mes: mesData.mes,
         sueldoBrian: mesData.sueldoBrian,
-        sacBrian: mesData.sacBrian,
+        extraBrian: mesData.extraBrian,
+        tipoExtraBrian: mesData.tipoExtraBrian,
         sueldoVirginia: mesData.sueldoVirginia,
-        sacVirginia: mesData.sacVirginia,
-        gastosFijos: mesData.gastosFijos || []
+        extraVirginia: mesData.extraVirginia,
+        tipoExtraVirginia: mesData.tipoExtraVirginia,
+        gastosBrian: mesData.gastosBrian || [],
+        gastosVirginia: mesData.gastosVirginia || []
       });
-      alert(`Proyección de ${mesData.mes} guardada exitosamente.`);
+      alert(`¡Proyección de ${mesData.mes} guardada correctamente!`);
     }
 
     window.onload = init;
