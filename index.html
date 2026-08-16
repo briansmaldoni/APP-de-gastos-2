@@ -165,7 +165,7 @@
     </div>
 
     <form id="tab-unico" class="space-y-3 nav-form" onsubmit="submitUnico(event)">
-      <input type="text" id="u-monto" inputmode="decimal" placeholder="Monto del gasto ($)" required class="w-full bg-slate-800/60 border border-slate-700 p-3 rounded-lg text-white font-bold input-focus">
+      <input type="text" id="u-monto" inputmode="decimal" placeholder="Monto del gasto ($)" onfocus="handleInputFocus(this)" onblur="handleInputBlur(this)" required class="w-full bg-slate-800/60 border border-slate-700 p-3 rounded-lg text-white font-bold input-focus">
       <input type="date" id="u-fecha" class="w-full bg-slate-800/60 border border-slate-700 p-3 rounded-lg text-white text-sm input-focus">
       <input type="text" id="u-concepto" placeholder="¿En qué se gastó? (Detalle)" required class="w-full bg-slate-800/60 border border-slate-700 p-3 rounded-lg text-white text-sm input-focus">
       <label class="flex items-center gap-2 text-sm t-bolsa font-semibold cursor-pointer p-1">
@@ -178,7 +178,7 @@
     </form>
 
     <form id="tab-divisible" class="space-y-3 nav-form hidden" onsubmit="submitDivisible(event)">
-      <input type="text" id="d-monto" inputmode="decimal" placeholder="Monto Total a dividir ($)" required class="w-full bg-slate-800/60 border border-slate-700 p-3 rounded-lg text-white font-bold input-focus">
+      <input type="text" id="d-monto" inputmode="decimal" placeholder="Monto Total a dividir ($)" onfocus="handleInputFocus(this)" onblur="handleInputBlur(this)" required class="w-full bg-slate-800/60 border border-slate-700 p-3 rounded-lg text-white font-bold input-focus">
       <input type="number" id="d-dias" placeholder="Días a dividir (Vacío = hasta fin de ciclo)" class="w-full bg-slate-800/60 border border-slate-700 p-3 rounded-lg text-white text-sm input-focus">
       <label class="text-xs text-slate-400 ml-1">Fecha de inicio del gasto:</label>
       <input type="date" id="d-fecha" class="w-full bg-slate-800/60 border border-slate-700 p-3 rounded-lg text-white text-sm mt-0 input-focus">
@@ -193,7 +193,7 @@
     </form>
 
     <form id="tab-ajuste" class="space-y-3 nav-form hidden" onsubmit="submitAjuste(event)">
-      <input type="text" id="a-monto" inputmode="decimal" placeholder="Monto del movimiento ($)" required class="w-full bg-slate-800/60 border border-slate-700 p-3 rounded-lg text-white font-bold input-focus">
+      <input type="text" id="a-monto" inputmode="decimal" placeholder="Monto del movimiento ($)" onfocus="handleInputFocus(this)" onblur="handleInputBlur(this)" required class="w-full bg-slate-800/60 border border-slate-700 p-3 rounded-lg text-white font-bold input-focus">
       <input type="text" id="a-concepto" placeholder="Concepto o justificación" required class="w-full bg-slate-800/60 border border-slate-700 p-3 rounded-lg text-white text-sm input-focus">
       <select id="a-tipo" onchange="toggleAjusteFields()" class="w-full bg-slate-900 border border-slate-700 p-3 rounded-lg text-white text-xs input-focus">
         <option value="1">1. Ingresar plata a Home Banking (Sumar al saldo)</option>
@@ -251,62 +251,55 @@
       </button>
     </div>
 
-    <!-- Resumen Macro -->
+    <!-- Resumen Macro Superior -->
     <div class="grid grid-cols-2 gap-3">
       <div class="glass p-3 rounded-xl border-l-2 border-emerald-500 shadow-md">
         <span class="text-[10px] text-slate-400 uppercase font-bold block">Ingresos Totales</span>
-        <span id="proy-total-ingresos" class="text-base font-extrabold text-emerald-400 block mt-1">$ 0,00</span>
+        <span class="proy-total-ingresos text-base font-extrabold text-emerald-400 block mt-1">$ 0,00</span>
       </div>
       <div class="glass p-3 rounded-xl border-l-2 border-rose-500 shadow-md">
         <span class="text-[10px] text-slate-400 uppercase font-bold block">Gastos Fijos Totales</span>
-        <span id="proy-total-gastos" class="text-base font-extrabold text-rose-400 block mt-1">$ 0,00</span>
+        <span class="proy-total-gastos text-base font-extrabold text-rose-400 block mt-1">$ 0,00</span>
       </div>
       <div class="glass p-4 rounded-xl col-span-2 text-center border-l-4 border-indigo-500 shadow-lg">
         <span class="text-xs text-slate-400 uppercase font-bold block">Resultado Proyectado ("Nos Queda")</span>
-        <span id="proy-nos-queda" class="text-3xl font-black text-indigo-400 mt-1 block">$ 0,00</span>
+        <span class="proy-nos-queda text-3xl font-black text-indigo-400 mt-1 block">$ 0,00</span>
       </div>
     </div>
 
-    <!-- Sección Ingresos Extras / Variables del Mes -->
-    <div class="glass p-4 rounded-xl border border-slate-700/80 space-y-3">
-      <div class="flex justify-between items-center border-b border-slate-800 pb-2">
-        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-300">💼 Extras del Mes</h3>
-        <button onclick="saveProyeccionCurrent()" class="text-[10px] bg-indigo-600/30 hover:bg-indigo-600/60 text-indigo-300 border border-indigo-500/40 px-2 py-1 rounded font-bold transition-all">
+    <!-- Sección Ingresos Extras COMPACTA -->
+    <div class="glass p-3 rounded-xl border border-slate-700/80 space-y-2">
+      <div class="flex justify-between items-center border-b border-slate-800/80 pb-1.5">
+        <h3 class="text-[11px] font-bold uppercase tracking-wider text-slate-300 flex items-center gap-1">
+          <span>💼 Extras del Mes</span>
+        </h3>
+        <button onclick="saveProyeccionCurrent()" class="text-[9px] bg-indigo-600/30 hover:bg-indigo-600/60 text-indigo-300 border border-indigo-500/40 px-2 py-0.5 rounded font-bold transition-all">
           🔄 Actualizar Extras
         </button>
       </div>
-      <p class="text-[10px] text-slate-400 italic">Los sueldos base se suman automáticamente.</p>
-      
-      <!-- Brian Extra -->
-      <div class="bg-slate-900/60 p-2.5 rounded-lg border border-blue-900/40 space-y-2">
-        <div class="flex justify-between items-center">
-          <span class="text-xs font-bold text-blue-400">Brian (Ingreso Extra)</span>
-          <select id="p-tipo-extra-brian" onchange="onExtraTypeChange('Brian')" class="bg-slate-800 text-[10px] text-indigo-300 border border-slate-700 rounded px-1 py-0.5">
-            <option value="SAC">SAC (Aguinaldo)</option>
-            <option value="Premio">Premio / Bono</option>
-            <option value="Otro">Otro Ingreso</option>
-          </select>
-        </div>
-        <div class="grid grid-cols-2 gap-2 text-xs">
-          <input type="text" id="p-concepto-extra-brian" placeholder="Detalle" class="bg-slate-800 border border-slate-700 p-1.5 rounded text-white text-xs">
-          <input type="text" id="p-extra-brian" inputmode="decimal" placeholder="Monto ($)" oninput="calcProyTotales()" class="bg-slate-800 border border-slate-700 p-1.5 rounded font-bold text-white text-right text-xs">
-        </div>
+
+      <!-- Brian Extra Compacto -->
+      <div class="flex gap-2 items-center bg-slate-900/60 p-1.5 rounded-lg border border-blue-900/30 text-xs">
+        <span class="text-[11px] font-bold text-blue-400 w-12 shrink-0">Brian</span>
+        <select id="p-tipo-extra-brian" onchange="onExtraTypeChange('Brian')" class="bg-slate-800 text-[10px] text-indigo-300 border border-slate-700 rounded px-1 py-1 outline-none shrink-0">
+          <option value="SAC">SAC</option>
+          <option value="Premio">Premio</option>
+          <option value="Otro">Otro</option>
+        </select>
+        <input type="text" id="p-concepto-extra-brian" placeholder="Detalle" class="bg-slate-800 border border-slate-700 p-1 rounded text-white text-[11px] flex-1 outline-none min-w-0">
+        <input type="text" id="p-extra-brian" inputmode="decimal" placeholder="$ 0" onfocus="handleInputFocus(this)" onblur="handleInputBlur(this)" oninput="calcProyTotales()" class="bg-slate-800 border border-slate-700 p-1 rounded font-bold text-white text-right text-xs w-20 shrink-0 outline-none">
       </div>
 
-      <!-- Virginia Extra -->
-      <div class="bg-slate-900/60 p-2.5 rounded-lg border border-fuchsia-900/40 space-y-2">
-        <div class="flex justify-between items-center">
-          <span class="text-xs font-bold text-fuchsia-400">Virginia (Ingreso Extra)</span>
-          <select id="p-tipo-extra-virginia" onchange="onExtraTypeChange('Virginia')" class="bg-slate-800 text-[10px] text-indigo-300 border border-slate-700 rounded px-1 py-0.5">
-            <option value="SAC">SAC (Aguinaldo)</option>
-            <option value="Premio">Premio / Bono</option>
-            <option value="Otro">Otro Ingreso</option>
-          </select>
-        </div>
-        <div class="grid grid-cols-2 gap-2 text-xs">
-          <input type="text" id="p-concepto-extra-virginia" placeholder="Detalle" class="bg-slate-800 border border-slate-700 p-1.5 rounded text-white text-xs">
-          <input type="text" id="p-extra-virginia" inputmode="decimal" placeholder="Monto ($)" oninput="calcProyTotales()" class="bg-slate-800 border border-slate-700 p-1.5 rounded font-bold text-white text-right text-xs">
-        </div>
+      <!-- Virginia Extra Compacto -->
+      <div class="flex gap-2 items-center bg-slate-900/60 p-1.5 rounded-lg border border-fuchsia-900/30 text-xs">
+        <span class="text-[11px] font-bold text-fuchsia-400 w-12 shrink-0">Virginia</span>
+        <select id="p-tipo-extra-virginia" onchange="onExtraTypeChange('Virginia')" class="bg-slate-800 text-[10px] text-indigo-300 border border-slate-700 rounded px-1 py-1 outline-none shrink-0">
+          <option value="SAC">SAC</option>
+          <option value="Premio">Premio</option>
+          <option value="Otro">Otro</option>
+        </select>
+        <input type="text" id="p-concepto-extra-virginia" placeholder="Detalle" class="bg-slate-800 border border-slate-700 p-1 rounded text-white text-[11px] flex-1 outline-none min-w-0">
+        <input type="text" id="p-extra-virginia" inputmode="decimal" placeholder="$ 0" onfocus="handleInputFocus(this)" onblur="handleInputBlur(this)" oninput="calcProyTotales()" class="bg-slate-800 border border-slate-700 p-1 rounded font-bold text-white text-right text-xs w-20 shrink-0 outline-none">
       </div>
     </div>
 
@@ -341,9 +334,25 @@
     </div>
 
     <!-- Resumen Servicios Globales Computados -->
-    <div class="glass p-3 rounded-xl border border-slate-700/80 flex justify-between items-center text-xs">
+    <div class="glass p-3 rounded-xl border border-slate-700/80 flex justify-between items-center text-xs mb-3">
       <span class="text-slate-400 font-semibold">⚡ Servicios Globales Configurados:</span>
       <span id="subtotal-servicios-globales" class="font-bold text-indigo-300">$ 0,00</span>
+    </div>
+
+    <!-- RESUMEN FINAL FLOTANTE AL FINAL DE PANTALLA -->
+    <div class="grid grid-cols-2 gap-3 pt-2 border-t border-slate-800">
+      <div class="glass p-3 rounded-xl border-l-2 border-emerald-500 shadow-md">
+        <span class="text-[10px] text-slate-400 uppercase font-bold block">Ingresos Totales</span>
+        <span class="proy-total-ingresos text-base font-extrabold text-emerald-400 block mt-1">$ 0,00</span>
+      </div>
+      <div class="glass p-3 rounded-xl border-l-2 border-rose-500 shadow-md">
+        <span class="text-[10px] text-slate-400 uppercase font-bold block">Gastos Fijos Totales</span>
+        <span class="proy-total-gastos text-base font-extrabold text-rose-400 block mt-1">$ 0,00</span>
+      </div>
+      <div class="glass p-4 rounded-xl col-span-2 text-center border-l-4 border-indigo-500 shadow-lg">
+        <span class="text-xs text-slate-400 uppercase font-bold block">Resultado Proyectado ("Nos Queda")</span>
+        <span class="proy-nos-queda text-3xl font-black text-indigo-400 mt-1 block">$ 0,00</span>
+      </div>
     </div>
   </section>
 
@@ -366,7 +375,7 @@
             <label class="text-xs font-bold text-amber-400 block">Cotización Dólar ($ USD)</label>
             <span class="text-[10px] text-slate-400 block">Recalcula servicios en USD en vivo</span>
           </div>
-          <input type="text" id="cfg-dolar-usd" inputmode="decimal" placeholder="1200" oninput="renderServiciosGlobales()" class="w-24 bg-slate-800 border border-slate-700 p-2 rounded text-right font-black text-amber-300 text-sm">
+          <input type="text" id="cfg-dolar-usd" inputmode="decimal" placeholder="1200" onfocus="handleInputFocus(this)" onblur="handleInputBlur(this)" oninput="renderServiciosGlobales()" class="w-24 bg-slate-800 border border-slate-700 p-2 rounded text-right font-black text-amber-300 text-sm">
         </div>
 
         <div class="flex justify-between items-center">
@@ -391,12 +400,12 @@
         
         <div class="bg-slate-900/80 p-3 rounded-xl border border-blue-900/40 space-y-1">
           <label class="text-xs font-bold text-blue-400 block">Sueldo Base Brian ($)</label>
-          <input type="text" id="cfg-sueldo-brian" inputmode="decimal" placeholder="0.00" class="w-full bg-slate-800 border border-slate-700 p-2 rounded font-black text-white text-base">
+          <input type="text" id="cfg-sueldo-brian" inputmode="decimal" placeholder="0.00" onfocus="handleInputFocus(this)" onblur="handleInputBlur(this)" class="w-full bg-slate-800 border border-slate-700 p-2 rounded font-black text-white text-base">
         </div>
 
         <div class="bg-slate-900/80 p-3 rounded-xl border border-fuchsia-900/40 space-y-1">
           <label class="text-xs font-bold text-fuchsia-400 block">Sueldo Base Virginia ($)</label>
-          <input type="text" id="cfg-sueldo-virginia" inputmode="decimal" placeholder="0.00" class="w-full bg-slate-800 border border-slate-700 p-2 rounded font-black text-white text-base">
+          <input type="text" id="cfg-sueldo-virginia" inputmode="decimal" placeholder="0.00" onfocus="handleInputFocus(this)" onblur="handleInputBlur(this)" class="w-full bg-slate-800 border border-slate-700 p-2 rounded font-black text-white text-base">
         </div>
 
         <button onclick="saveServiciosConfig()" class="w-full bg-blue-600 hover:bg-blue-500 text-white py-2.5 rounded-lg text-xs font-bold shadow flex items-center justify-center gap-1.5 transition-all mt-2">
@@ -410,7 +419,7 @@
   <div id="hb-quick-modal" onclick="if(event.target === this) closeHBUpdate()" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-[60] flex items-center justify-center p-4">
     <div class="glass w-full max-w-sm p-5 rounded-2xl border border-hb shadow-xl">
       <label class="text-xs t-hb font-bold block mb-3 text-center uppercase tracking-wide">Ingresar Nuevo Saldo (HB)</label>
-      <input type="text" id="input-hb-update" inputmode="decimal" placeholder="Ej: 500000,50" class="w-full bg-slate-900 border border-slate-700 p-3 rounded-lg text-white text-lg font-bold mb-4 text-center input-focus-hb">
+      <input type="text" id="input-hb-update" inputmode="decimal" placeholder="Ej: 500000,50" onfocus="handleInputFocus(this)" onblur="handleInputBlur(this)" class="w-full bg-slate-900 border border-slate-700 p-3 rounded-lg text-white text-lg font-bold mb-4 text-center input-focus-hb">
       <div class="flex gap-2">
         <button onclick="saveHBUpdate()" class="flex-1 bg-hb hover:brightness-110 text-white py-2.5 rounded-lg text-sm font-bold shadow">Guardar</button>
         <button onclick="closeHBUpdate()" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 py-2.5 rounded-lg text-sm border border-slate-700">Cancelar</button>
@@ -507,7 +516,7 @@
       <input type="text" id="edit-concepto" class="w-full bg-slate-900 border border-slate-700 p-3 rounded-lg text-white text-sm mb-3 outline-none focus:border-amber-500">
       
       <label class="text-xs text-slate-400 block mb-1">Monto (Valor Absoluto):</label>
-      <input type="text" id="edit-monto" inputmode="decimal" class="w-full bg-slate-900 border border-slate-700 p-3 rounded-lg text-white font-bold mb-5 outline-none focus:border-amber-500">
+      <input type="text" id="edit-monto" inputmode="decimal" onfocus="handleInputFocus(this)" onblur="handleInputBlur(this)" class="w-full bg-slate-900 border border-slate-700 p-3 rounded-lg text-white font-bold mb-5 outline-none focus:border-amber-500">
       
       <div class="flex gap-2">
         <button onclick="saveEdit()" class="flex-1 bg-amber-600 hover:bg-amber-500 text-white py-2.5 rounded-lg text-sm font-bold shadow">Guardar Cambios</button>
@@ -556,6 +565,21 @@
     let pendingRolloverAmount = 0;
     let pendingRolloverDate = "";
 
+    // CONTROL DE FOCO EN INPUTS PARA LIMPIAR EL '0' AUTOMÁTICAMENTE
+    function handleInputFocus(input) {
+      let val = input.value.toString().trim();
+      if (val === '0' || val === '0.00' || val === '0,00' || val === '$ 0,00' || val === '$ 0.00') {
+        input.value = '';
+      }
+    }
+
+    function handleInputBlur(input) {
+      let val = input.value.toString().trim();
+      if (val === '') {
+        input.value = '0';
+      }
+    }
+
     // DRAWER Y VISTAS
     function toggleDrawer() { document.getElementById('drawer-menu').classList.toggle('hidden'); }
 
@@ -603,7 +627,7 @@
       } catch(e) { console.log("Feriados Offline"); }
     }
 
-    // TODOS LOS TEMAS VISUALES ORIGINALES INTACTOS
+    // TEMAS VISUALES ORIGINALES INTACTOS
     const THEME_GROUPS = [
       {
         label: "Oscuros / Modernos",
@@ -1212,8 +1236,8 @@
         let row = `
           <div class="bg-slate-900/90 p-2 rounded-lg border border-slate-700 text-xs space-y-1.5">
             <div class="flex gap-1.5 items-center">
-              <input type="text" value="${serv.concepto}" placeholder="Servicio" onchange="serviciosGlobales[${idx}].concepto=this.value; renderServiciosGlobales();" class="flex-1 bg-slate-800 border border-slate-700 p-1 rounded text-white font-semibold">
-              <select onchange="serviciosGlobales[${idx}].moneda=this.value; renderServiciosGlobales();" class="bg-slate-800 text-amber-300 font-bold border border-slate-700 p-1 rounded">
+              <input type="text" value="${serv.concepto}" placeholder="Servicio" onchange="serviciosGlobales[${idx}].concepto=this.value; renderServiciosGlobales();" class="flex-1 bg-slate-800 border border-slate-700 p-1 rounded text-white font-semibold outline-none">
+              <select onchange="serviciosGlobales[${idx}].moneda=this.value; renderServiciosGlobales();" class="bg-slate-800 text-amber-300 font-bold border border-slate-700 p-1 rounded outline-none">
                 <option value="ARS" ${serv.moneda === 'ARS' ? 'selected' : ''}>$ ARS</option>
                 <option value="USD" ${serv.moneda === 'USD' ? 'selected' : ''}>$ USD</option>
               </select>
@@ -1222,11 +1246,11 @@
             <div class="flex gap-2 items-center justify-between">
               <div class="flex items-center gap-1">
                 <span class="text-[9px] text-slate-400">Cant:</span>
-                <input type="number" value="${cant}" onchange="serviciosGlobales[${idx}].cant=parseInt(this.value)||1; renderServiciosGlobales();" class="w-12 bg-slate-800 border border-slate-700 p-1 rounded text-center text-white font-bold">
+                <input type="number" value="${cant}" onchange="serviciosGlobales[${idx}].cant=parseInt(this.value)||1; renderServiciosGlobales();" class="w-12 bg-slate-800 border border-slate-700 p-1 rounded text-center text-white font-bold outline-none">
               </div>
               <div class="flex items-center gap-1">
                 <span class="text-[9px] text-slate-400">Precio Unit:</span>
-                <input type="text" inputmode="decimal" value="${precioIndividual}" onchange="serviciosGlobales[${idx}].precio=parseAmountInput(this.value); renderServiciosGlobales();" class="w-24 bg-slate-800 border border-slate-700 p-1 rounded text-right text-white font-bold">
+                <input type="text" inputmode="decimal" value="${precioIndividual}" onfocus="handleInputFocus(this)" onblur="handleInputBlur(this)" onchange="serviciosGlobales[${idx}].precio=parseAmountInput(this.value); renderServiciosGlobales();" class="w-24 bg-slate-800 border border-slate-700 p-1 rounded text-right text-white font-bold outline-none">
               </div>
               <span class="font-extrabold text-indigo-300 text-xs">${formatMoney(costoSubtotal)}</span>
             </div>
@@ -1289,7 +1313,6 @@
       const mesSelect = document.getElementById('proy-select-mes').value;
       let mesData = proyeccionesData.find(p => p.mes === mesSelect);
 
-      // Si es la primera vez que se accede a este mes, settear tipos por defecto según el mes
       if (!mesData) {
         let defaultTipo = "Otro";
         if (mesSelect.includes("[SAC]")) defaultTipo = "SAC";
@@ -1339,18 +1362,18 @@
         let row = `
           <div class="bg-slate-900/90 p-2 rounded-lg border border-slate-800 space-y-1.5">
             <div class="flex gap-1.5 items-center">
-              <select onchange="updateGastoItem('${user}', ${idx}, 'categoria', this.value)" class="bg-slate-800 text-[10px] text-slate-300 border border-slate-700 rounded p-1">
+              <select onchange="updateGastoItem('${user}', ${idx}, 'categoria', this.value)" class="bg-slate-800 text-[10px] text-slate-300 border border-slate-700 rounded p-1 outline-none">
                 ${catOptionsHtml}
               </select>
-              <input type="text" value="${gasto.concepto || ''}" placeholder="Concepto" onchange="updateGastoItem('${user}', ${idx}, 'concepto', this.value)" class="flex-1 bg-slate-800 border border-slate-700 p-1.5 rounded text-xs text-white">
+              <input type="text" value="${gasto.concepto || ''}" placeholder="Concepto" onchange="updateGastoItem('${user}', ${idx}, 'concepto', this.value)" class="flex-1 bg-slate-800 border border-slate-700 p-1.5 rounded text-xs text-white outline-none">
               <button onclick="toggleReplicateGasto('${user}', ${idx})" title="${isReplicated ? 'Replicado en todos los meses' : 'Sólo este mes'}" class="p-1 text-xs rounded border ${isReplicated ? 'bg-emerald-950 border-emerald-500 text-emerald-300 font-bold' : 'bg-slate-800 border-slate-700 text-slate-500'}">
                 🔁
               </button>
               <button onclick="removeGastoRow('${user}', ${idx})" class="text-red-400 p-1">🗑️</button>
             </div>
             <div class="flex justify-between items-center text-[10px]">
-              <span class="${isReplicated ? 'text-emerald-400 font-semibold' : 'text-slate-500'}">${isReplicated ? '🔁 Replicado en todos los meses' : '📌 Exclusivo de este mes'}</span>
-              <input type="text" inputmode="decimal" value="${gasto.precio || 0}" placeholder="Monto ($)" oninput="updateGastoItem('${user}', ${idx}, 'precio', this.value)" class="w-28 bg-slate-800 border border-slate-700 p-1 rounded text-xs text-white font-bold text-right">
+              <span class="${isReplicated ? 'text-emerald-400 font-semibold' : 'text-slate-500'}">${isReplicated ? '🔁 Replicado todos los meses' : '📌 Exclusivo de este mes'}</span>
+              <input type="text" inputmode="decimal" value="${gasto.precio || 0}" placeholder="Monto ($)" onfocus="handleInputFocus(this)" onblur="handleInputBlur(this)" oninput="updateGastoItem('${user}', ${idx}, 'precio', this.value)" class="w-28 bg-slate-800 border border-slate-700 p-1 rounded text-xs text-white font-bold text-right outline-none">
             </div>
           </div>`;
         container.innerHTML += row;
@@ -1366,7 +1389,6 @@
       gasto.replicate = !gasto.replicate;
 
       if (gasto.replicate) {
-        // Replicar a todos los meses
         ALL_MESES.forEach(mName => {
           let mData = getOrCreateMesData(mName);
           let mList = mData[listKey];
@@ -1391,7 +1413,6 @@
       let key = user === 'Brian' ? 'gastosBrian' : 'gastosVirginia';
       mesData[key].push({ concepto: "", precio: 0, categoria: "otros", replicate: true });
 
-      // Replicar por defecto
       ALL_MESES.forEach(mName => {
         let mData = getOrCreateMesData(mName);
         let mList = mData[key];
@@ -1436,7 +1457,6 @@
         let oldConcepto = gasto.concepto;
         gasto[key] = key === 'precio' ? parseAmountInput(value) : value;
 
-        // Si está marcado para replicar, propagar el cambio a todos los meses
         if (gasto.replicate) {
           ALL_MESES.forEach(mName => {
             let mData = getOrCreateMesData(mName);
@@ -1481,9 +1501,9 @@
       document.getElementById('subtotal-virginia').innerText = formatMoney(totalVirginia);
       document.getElementById('subtotal-servicios-globales').innerText = formatMoney(totalServicios);
 
-      document.getElementById('proy-total-ingresos').innerText = formatMoney(totalIngresos);
-      document.getElementById('proy-total-gastos').innerText = formatMoney(totalGastosFijos);
-      document.getElementById('proy-nos-queda').innerText = formatMoney(nosQueda);
+      document.querySelectorAll('.proy-total-ingresos').forEach(el => el.innerText = formatMoney(totalIngresos));
+      document.querySelectorAll('.proy-total-gastos').forEach(el => el.innerText = formatMoney(totalGastosFijos));
+      document.querySelectorAll('.proy-nos-queda').forEach(el => el.innerText = formatMoney(nosQueda));
     }
 
     function saveProyeccionCurrent() {
@@ -1498,7 +1518,6 @@
       mesData.tipoExtraVirginia = document.getElementById('p-tipo-extra-virginia').value;
       mesData.conceptoExtraVirginia = document.getElementById('p-concepto-extra-virginia').value;
 
-      // Si hay gastos replicados, guardarlos en todos los meses
       proyeccionesData.forEach(pData => {
         syncBackend({
           action: "saveProyeccionMes",
