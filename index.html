@@ -5,74 +5,85 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   
   <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#10b981">
+  <meta name="theme-color" content="#090d16">
   <link rel="apple-touch-icon" href="icon-192.png">
   
   <title>Presupuesto e Inteligencia Financiera</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     :root {
-      --c-primary: #10b981; 
-      --c-bolsa: #a855f7;    
-      --c-hb: #3b82f6;       
-      --c-bg: #0f172a;       
-      --c-panel: #1e293bb3;  
+      --c-bg: #090d16;
+      --c-card: #111726;
+      --c-card-border: #1e293b;
+      --c-text-main: #f8fafc;
+      --c-text-muted: #94a3b8;
+      --c-accent: #38bdf8;
+      --c-accent-text: #ffffff;
+      --c-accent-light: rgba(56, 189, 248, 0.12);
+      --c-accent-border: rgba(56, 189, 248, 0.3);
     }
 
-    body { background-color: var(--c-bg); color: #f8fafc; font-family: system-ui, sans-serif; transition: background-color 0.4s ease; }
-    .glass { background: var(--c-panel); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.08); transition: background 0.4s ease, border-color 0.4s ease; }
+    body { 
+      background-color: var(--c-bg); 
+      color: var(--c-text-main); 
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+      transition: background-color 0.3s ease, color 0.3s ease; 
+    }
     
-    .glass-pill { background: rgba(255, 255, 255, 0.04); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.08); box-shadow: 0 4px 15px rgba(0,0,0,0.1); border-radius: 9999px; transition: all 0.3s ease; }
+    .card-clean { 
+      background: var(--c-card); 
+      border: 1px solid var(--c-card-border); 
+      border-radius: 1rem;
+      transition: all 0.3s ease; 
+      color: var(--c-text-main);
+    }
+    
+    .pill-clean { 
+      background: var(--c-card); 
+      border: 1px solid var(--c-card-border); 
+      border-radius: 9999px; 
+      transition: all 0.3s ease; 
+      color: var(--c-text-main);
+    }
 
-    .t-primary { color: var(--c-primary); transition: color 0.4s; }
-    .bg-primary { background-color: var(--c-primary); transition: background-color 0.4s; }
-    .bg-primary-hover:hover { filter: brightness(1.15); }
-    .border-primary { border-color: var(--c-primary); transition: border-color 0.4s; }
-    .bg-primary-light { background-color: color-mix(in srgb, var(--c-primary) 12%, transparent); }
+    .t-accent { color: var(--c-accent); }
+    .bg-accent { background-color: var(--c-accent); color: var(--c-accent-text); }
+    .border-accent { border-color: var(--c-accent); }
+    .bg-accent-light { background-color: var(--c-accent-light); }
+    .border-accent-light { border-color: var(--c-accent-border); }
 
-    .t-bolsa { color: var(--c-bolsa); transition: color 0.4s; }
-    .border-bolsa { border-color: var(--c-bolsa); transition: border-color 0.4s; }
-    .bg-bolsa { background-color: var(--c-bolsa); transition: background-color 0.4s; }
+    .text-main { color: var(--c-text-main) !important; }
+    .text-muted { color: var(--c-text-muted) !important; }
 
-    .t-hb { color: var(--c-hb); transition: color 0.4s; }
-    .border-hb { border-color: var(--c-hb); transition: border-color 0.4s; }
-    .bg-hb-light { background-color: color-mix(in srgb, var(--c-hb) 15%, transparent); }
-    .bg-hb { background-color: var(--c-hb); transition: background-color 0.4s; }
+    input[type="checkbox"] { accent-color: var(--c-accent); }
+    .input-focus:focus { border-color: var(--c-accent); outline: none; }
 
-    input[type="checkbox"] { accent-color: var(--c-bolsa); }
-    .input-focus:focus { border-color: var(--c-primary); outline: none; }
-    .input-focus-hb:focus { border-color: var(--c-hb); outline: none; }
+    body.theme-light {
+      --c-bg: #f8fafc;
+      --c-card: #ffffff;
+      --c-card-border: #cbd5e1;
+      --c-text-main: #0f172a;
+      --c-text-muted: #475569;
+    }
 
-    body.theme-light { color: #0f172a; }
-    .theme-light .text-white { color: #020617 !important; }
-    .theme-light .text-slate-100 { color: #0f172a !important; }
-    .theme-light .text-slate-200 { color: #1e293b !important; }
-    .theme-light .text-slate-300 { color: #334155 !important; }
-    .theme-light .text-slate-400 { color: #475569 !important; }
-    .theme-light .text-slate-500 { color: #64748b !important; }
-    .theme-light .bg-slate-900 { background-color: #f8fafc !important; }
-    .theme-light .bg-slate-800 { background-color: #f1f5f9 !important; }
-    .theme-light .bg-slate-700 { background-color: #e2e8f0 !important; }
-    .theme-light .border-slate-800 { border-color: #cbd5e1 !important; }
-    .theme-light .border-slate-700 { border-color: #e2e8f0 !important; }
-    .theme-light .border-slate-600 { border-color: #cbd5e1 !important; }
-    .theme-light .glass { border: 1px solid rgba(0,0,0,0.08); }
-    .theme-light .glass-pill { background: rgba(255, 255, 255, 0.9); border: 1px solid rgba(0, 0, 0, 0.1); box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+    /* Sobrescribir colores estáticos para soporte de modo claro */
+    .theme-light .text-white { color: var(--c-text-main) !important; }
+    .theme-light .text-slate-100 { color: var(--c-text-main) !important; }
+    .theme-light .text-slate-200 { color: var(--c-text-main) !important; }
+    .theme-light .text-slate-300 { color: var(--c-text-main) !important; }
+    .theme-light .text-slate-400 { color: var(--c-text-muted) !important; }
+    .theme-light .text-slate-500 { color: var(--c-text-muted) !important; }
 
     input[type="text"]::-webkit-inner-spin-button, input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
     .custom-scroll::-webkit-scrollbar { width: 4px; }
     .custom-scroll::-webkit-scrollbar-track { background: transparent; }
-    .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
-    .dark .custom-scroll::-webkit-scrollbar-thumb { background: #334155; }
+    .custom-scroll::-webkit-scrollbar-thumb { background: var(--c-card-border); border-radius: 4px; }
 
-    /* Hide scrollbar for the month swipe selector */
     #month-swipe-container::-webkit-scrollbar { display: none; }
     #month-swipe-container { -ms-overflow-style: none; scrollbar-width: none; }
     
     @keyframes spin { 100% { transform: rotate(360deg); } }
     .syncing-spin { animation: spin 1s linear infinite; }
-    @keyframes pulse-glow { 0%, 100% { box-shadow: 0 0 6px rgba(245, 158, 11, 0.4); transform: scale(1); } 50% { box-shadow: 0 0 14px rgba(245, 158, 11, 0.8); transform: scale(1.03); } }
-    .sync-glow { animation: pulse-glow 1.4s ease-in-out infinite; }
   </style>
 </head>
 <body id="app-body" class="p-4 max-w-md mx-auto min-h-screen flex flex-col justify-start dark relative">
@@ -80,45 +91,45 @@
   <!-- MENÚ LATERAL DRAWER -->
   <div id="drawer-menu" class="hidden fixed inset-0 z-[100] flex">
     <div onclick="toggleDrawer()" class="absolute inset-0 bg-slate-950/80 backdrop-blur-sm"></div>
-    <div class="relative w-72 bg-slate-900 h-full p-5 shadow-2xl border-r border-slate-700 flex flex-col justify-between z-10">
+    <div class="relative w-72 card-clean h-full p-5 shadow-2xl flex flex-col justify-between z-10 rounded-r-2xl rounded-l-none">
       <div>
-        <div class="flex justify-between items-center pb-4 border-b border-slate-800 mb-6">
-          <h2 class="font-bold text-lg text-white flex items-center gap-2">📱 Menú App</h2>
-          <button onclick="toggleDrawer()" class="text-slate-400 hover:text-white font-bold text-lg">✕</button>
+        <div class="flex justify-between items-center pb-4 border-b border-slate-800/80 mb-6">
+          <h2 class="font-semibold text-base text-main flex items-center gap-2">📱 Menú Principal</h2>
+          <button onclick="toggleDrawer()" class="text-muted hover:text-main font-bold text-lg">✕</button>
         </div>
         <nav class="space-y-2">
-          <button onclick="switchView('diario')" id="nav-btn-diario" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm bg-primary text-white shadow">
+          <button onclick="switchView('diario')" id="nav-btn-diario" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-xs bg-accent text-white shadow">
             ⚡ Presupuesto Diario
           </button>
-          <button onclick="switchView('proyeccion')" id="nav-btn-proyeccion" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm text-slate-400 hover:bg-slate-800 transition-all">
+          <button onclick="switchView('proyeccion')" id="nav-btn-proyeccion" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-xs text-muted hover:bg-slate-800/50 transition-all">
             📊 Proyección Mensual
           </button>
         </nav>
       </div>
-      <div class="pt-4 border-t border-slate-800 text-xs text-slate-500 text-center">
+      <div class="pt-4 border-t border-slate-800/80 text-[11px] text-muted text-center">
         Brian & Virginia © 2026
       </div>
     </div>
   </div>
 
   <!-- ENCABEZADO Y NAVEGACIÓN GLOBAL -->
-  <div class="flex justify-between items-center mb-4 relative">
+  <div class="flex justify-between items-center mb-5 relative">
     <div class="flex gap-1.5 items-center shrink-0">
-      <button onclick="toggleDrawer()" class="px-2.5 py-1.5 text-base rounded-full bg-slate-800 border border-slate-700 hover:bg-slate-700 transition-all shadow" title="Menú Principal">☰</button>
-      <button id="user-brian" onclick="setUser('Brian')" class="px-3 py-1.5 text-xs rounded-full transition-all shadow">Brian</button>
-      <button id="user-virginia" onclick="setUser('Virginia')" class="px-3 py-1.5 text-xs rounded-full transition-all shadow">Virginia</button>
-      <button onclick="openConfigModal()" class="px-2 py-1.5 text-sm rounded-full bg-slate-800 border border-slate-700 hover:bg-slate-700 transition-all shadow" title="Configuración">⚙️</button>
+      <button onclick="toggleDrawer()" class="px-2.5 py-1.5 text-xs rounded-full card-clean hover:bg-slate-800/60 transition-all shadow-sm" title="Menú Principal">☰</button>
+      <button id="user-brian" onclick="setUser('Brian')" class="px-3 py-1.5 text-xs rounded-full transition-all shadow-sm font-medium">Brian</button>
+      <button id="user-virginia" onclick="setUser('Virginia')" class="px-3 py-1.5 text-xs rounded-full transition-all shadow-sm font-medium">Virginia</button>
+      <button onclick="openConfigModal()" class="px-2 py-1.5 text-xs rounded-full card-clean hover:bg-slate-800/60 transition-all shadow-sm" title="Configuración">⚙️</button>
     </div>
 
     <div class="flex items-center gap-2 overflow-visible">
-      <button id="btn-top-sync" onclick="manualSync()" class="px-3 py-1.5 text-xs font-bold rounded-full bg-slate-800 text-slate-300 border border-slate-700 hover:bg-slate-700 transition-all shadow flex items-center gap-1.5 shrink-0">
+      <button id="btn-top-sync" onclick="manualSync()" class="px-3 py-1.5 text-xs font-medium rounded-full card-clean text-main hover:bg-slate-800/60 transition-all shadow-sm flex items-center gap-1.5 shrink-0">
         <span class="sync-icon">🔄</span> Actualizar
       </button>
-      <div id="sync-status" class="hidden flex items-center gap-1.5 text-xs text-amber-300 font-extrabold bg-amber-950/90 px-3 py-1.5 rounded-full border border-amber-500/80 shadow-lg whitespace-nowrap sync-glow">
-        <span class="inline-block syncing-spin text-sm">⏳</span> Sincronizando...
+      <div id="sync-status" class="hidden flex items-center gap-1.5 text-xs t-accent font-semibold bg-accent-light px-3 py-1.5 rounded-full border border-accent-light shadow-sm whitespace-nowrap">
+        <span class="inline-block syncing-spin text-xs">⏳</span> Sincronizando...
       </div>
       <div class="flex flex-col items-end shrink-0">
-        <span id="active-user" class="text-[11px] font-bold text-slate-400">Usuario...</span>
+        <span id="active-user" class="text-[11px] font-semibold text-muted">Usuario...</span>
       </div>
     </div>
   </div>
@@ -126,83 +137,83 @@
   <!-- ================= MÓDULO 1: PRESUPUESTO DIARIO (MICRO) ================= -->
   <section id="view-diario" class="space-y-4">
     <div class="grid grid-cols-2 gap-3 mb-4">
-      <div class="glass p-4 rounded-xl col-span-2 text-center border-l-4 border-primary bg-primary-light relative overflow-hidden shadow-lg flex flex-col items-center justify-center">
+      <div class="card-clean p-4 col-span-2 text-center border-accent-light bg-accent-light relative overflow-hidden shadow-sm flex flex-col items-center justify-center">
         <div class="flex justify-between w-full items-start px-1 mb-1">
-           <span class="text-xs t-primary uppercase tracking-wider font-bold">Presupuesto para Hoy</span>
-           <button onclick="enviarSaldoHoyABolsa()" class="bg-bolsa hover:brightness-110 text-white text-[9px] font-bold px-2 py-1 rounded shadow-md flex items-center gap-1 transition-all" title="Mandar lo que sobró hoy a la Bolsa">
+           <span class="text-[11px] t-accent uppercase tracking-wider font-semibold">Presupuesto para Hoy</span>
+           <button onclick="enviarSaldoHoyABolsa()" class="bg-accent hover:brightness-110 text-white text-[9px] font-semibold px-2 py-1 rounded-md shadow-sm flex items-center gap-1 transition-all" title="Mandar lo que sobró hoy a la Bolsa">
               <span class="text-[10px]">📥</span> A Bolsa
            </button>
         </div>
-        <span id="display-today" class="text-4xl font-black t-primary">$ 0,00</span>
+        <span id="display-today" class="text-3xl font-bold t-accent">$ 0,00</span>
       </div>
       
-      <div class="glass p-3 rounded-xl border-l-2 border-bolsa text-center flex flex-col justify-center shadow-md">
-        <span class="text-[11px] text-slate-400 block uppercase font-bold">Bolsa de Saldos</span>
-        <span id="display-bs" class="text-lg font-bold t-bolsa mt-1 block">$ 0,00</span>
+      <div class="card-clean p-3 text-center flex flex-col justify-center shadow-sm">
+        <span class="text-[10px] text-muted block uppercase font-medium">Bolsa de Saldos</span>
+        <span id="display-bs" class="text-base font-semibold text-main mt-1 block">$ 0,00</span>
       </div>
 
-      <div class="glass p-3 rounded-xl border-l-2 border-slate-600 text-center flex flex-col justify-center shadow-md">
-        <span class="text-[11px] text-slate-400 block uppercase font-bold">Mañana</span>
-        <span id="display-tomorrow" class="text-lg font-bold text-slate-100 mt-1 block">$ 0,00</span>
+      <div class="card-clean p-3 text-center flex flex-col justify-center shadow-sm">
+        <span class="text-[10px] text-muted block uppercase font-medium">Mañana</span>
+        <span id="display-tomorrow" class="text-base font-semibold text-main mt-1 block">$ 0,00</span>
       </div>
 
-      <div class="glass p-3 rounded-xl flex flex-col justify-between border-l-2 border-hb text-center shadow-md">
+      <div class="card-clean p-3 flex flex-col justify-between text-center shadow-sm">
         <div>
-          <span class="text-[11px] text-slate-400 block uppercase font-bold">Home Banking</span>
-          <span id="display-hb" class="text-base font-bold t-hb mt-1 block">$ 0,00</span>
+          <span class="text-[10px] text-muted block uppercase font-medium">Home Banking</span>
+          <span id="display-hb" class="text-sm font-semibold text-main mt-1 block">$ 0,00</span>
         </div>
-        <button onclick="focusUpdateHB()" class="mt-2 bg-hb-light hover:bg-slate-700 t-hb py-1 rounded text-[11px] font-bold border border-hb transition-colors w-full">Actualizar Saldo</button>
+        <button onclick="focusUpdateHB()" class="mt-2 card-clean text-main py-1 rounded-md text-[10px] font-medium transition-colors w-full">Actualizar Saldo</button>
       </div>
 
-      <div onclick="openCalendarModal()" class="glass p-3 rounded-xl border-l-2 border-indigo-500 text-center flex flex-col justify-between cursor-pointer hover:bg-slate-800/80 transition-all group shadow-md">
+      <div onclick="openCalendarModal()" class="card-clean p-3 text-center flex flex-col justify-between cursor-pointer hover:bg-slate-800/40 transition-all group shadow-sm">
         <div>
-          <span class="text-[11px] text-slate-400 block uppercase font-bold">Días Restantes</span>
-          <span id="display-days" class="text-xl font-black text-indigo-400 mt-0.5 block">0 Días</span>
+          <span class="text-[10px] text-muted block uppercase font-medium">Días Restantes</span>
+          <span id="display-days" class="text-lg font-bold t-accent mt-0.5 block">0 Días</span>
         </div>
-        <button type="button" class="mt-2 bg-indigo-600/30 group-hover:bg-indigo-600/50 text-indigo-400 py-1 px-1 rounded text-[10px] font-bold border border-indigo-500/30 transition-all">
+        <button type="button" class="mt-2 card-clean text-main py-1 px-1 rounded-md text-[9px] font-medium transition-all">
           📅 Ver Presupuestos
         </button>
       </div>
     </div>
 
-    <div class="flex border-b border-slate-800 mb-4 text-xs font-bold">
-      <button onclick="switchTab('tab-unico')" id="btn-tab-unico" class="flex-1 py-3 t-primary border-b-2 border-primary transition-all text-center">Gasto Único</button>
-      <button onclick="switchTab('tab-divisible')" id="btn-tab-divisible" class="flex-1 py-3 text-slate-500 transition-all text-center">Divisible</button>
-      <button onclick="switchTab('tab-ajuste')" id="btn-tab-ajuste" class="flex-1 py-3 text-slate-500 transition-all text-center">Ajustes</button>
+    <div class="flex border-b border-slate-800 mb-4 text-xs font-semibold">
+      <button onclick="switchTab('tab-unico')" id="btn-tab-unico" class="flex-1 py-2.5 t-accent border-b-2 border-accent transition-all text-center">Gasto Único</button>
+      <button onclick="switchTab('tab-divisible')" id="btn-tab-divisible" class="flex-1 py-2.5 text-muted transition-all text-center">Divisible</button>
+      <button onclick="switchTab('tab-ajuste')" id="btn-tab-ajuste" class="flex-1 py-2.5 text-muted transition-all text-center">Ajustes</button>
     </div>
 
     <form id="tab-unico" class="space-y-3 nav-form" onsubmit="submitUnico(event)">
-      <input type="text" id="u-monto" inputmode="decimal" placeholder="Monto del gasto ($)" onfocus="handleInputFocus(this)" onblur="handleInputBlur(this)" oninput="formatLiveCurrencyInput(this)" required class="w-full bg-slate-800/60 border border-slate-700 p-3 rounded-lg text-white font-bold input-focus">
-      <input type="date" id="u-fecha" class="w-full bg-slate-800/60 border border-slate-700 p-3 rounded-lg text-white text-sm input-focus">
-      <input type="text" id="u-concepto" placeholder="¿En qué se gastó? (Detalle)" required class="w-full bg-slate-800/60 border border-slate-700 p-3 rounded-lg text-white text-sm input-focus">
-      <label class="flex items-center gap-2 text-sm t-bolsa font-semibold cursor-pointer p-1">
-        <input type="checkbox" id="u-bolsa" onchange="toggleBolsaUnico(this)" class="w-4 h-4"> Descontar directo de Bolsa
+      <input type="text" id="u-monto" inputmode="decimal" placeholder="Monto del gasto ($)" onfocus="handleInputFocus(this)" onblur="handleInputBlur(this)" oninput="formatLiveCurrencyInput(this)" required class="w-full card-clean p-3 font-semibold text-sm input-focus">
+      <input type="date" id="u-fecha" class="w-full card-clean p-3 text-xs input-focus">
+      <input type="text" id="u-concepto" placeholder="¿En qué se gastó? (Detalle)" required class="w-full card-clean p-3 text-xs input-focus">
+      <label class="flex items-center gap-2 text-xs text-main font-medium cursor-pointer p-1">
+        <input type="checkbox" id="u-bolsa" onchange="toggleBolsaUnico(this)" class="w-4 h-4 rounded"> Descontar directo de Bolsa
       </label>
-      <div class="flex gap-2 pt-2">
-        <button type="submit" class="flex-1 bg-primary bg-primary-hover text-white font-bold text-sm py-3 rounded-lg shadow-lg">Guardar Gasto</button>
-        <button type="button" onclick="clearForm('tab-unico')" class="bg-slate-800 p-3 rounded-lg text-sm text-slate-400">Limpiar</button>
+      <div class="flex gap-2 pt-1">
+        <button type="submit" class="flex-1 bg-accent hover:brightness-110 text-white font-semibold text-xs py-3 rounded-xl shadow-sm transition-all">Guardar Gasto</button>
+        <button type="button" onclick="clearForm('tab-unico')" class="card-clean px-4 py-3 text-xs text-muted">Limpiar</button>
       </div>
     </form>
 
     <form id="tab-divisible" class="space-y-3 nav-form hidden" onsubmit="submitDivisible(event)">
-      <input type="text" id="d-monto" inputmode="decimal" placeholder="Monto Total a dividir ($)" onfocus="handleInputFocus(this)" onblur="handleInputBlur(this)" oninput="formatLiveCurrencyInput(this)" required class="w-full bg-slate-800/60 border border-slate-700 p-3 rounded-lg text-white font-bold input-focus">
-      <input type="number" id="d-dias" placeholder="Días a dividir (Vacío = hasta fin de ciclo)" class="w-full bg-slate-800/60 border border-slate-700 p-3 rounded-lg text-white text-sm input-focus">
-      <label class="text-xs text-slate-400 ml-1">Fecha de inicio del gasto:</label>
-      <input type="date" id="d-fecha" class="w-full bg-slate-800/60 border border-slate-700 p-3 rounded-lg text-white text-sm mt-0 input-focus">
-      <input type="text" id="d-concepto" placeholder="Detalle del gasto" required class="w-full bg-slate-800/60 border border-slate-700 p-3 rounded-lg text-white text-sm input-focus">
-      <label class="flex items-center gap-2 text-sm t-bolsa font-semibold cursor-pointer p-1">
-        <input type="checkbox" id="d-bolsa" onchange="redirectDivisibleToUnico(this)" class="w-4 h-4"> Descontar de Bolsa (Gasto Único)
+      <input type="text" id="d-monto" inputmode="decimal" placeholder="Monto Total a dividir ($)" onfocus="handleInputFocus(this)" onblur="handleInputBlur(this)" oninput="formatLiveCurrencyInput(this)" required class="w-full card-clean p-3 font-semibold text-sm input-focus">
+      <input type="number" id="d-dias" placeholder="Días a dividir (Vacío = hasta fin de ciclo)" class="w-full card-clean p-3 text-xs input-focus">
+      <label class="text-[11px] text-muted ml-1">Fecha de inicio del gasto:</label>
+      <input type="date" id="d-fecha" class="w-full card-clean p-3 text-xs mt-0 input-focus">
+      <input type="text" id="d-concepto" placeholder="Detalle del gasto" required class="w-full card-clean p-3 text-xs input-focus">
+      <label class="flex items-center gap-2 text-xs text-main font-medium cursor-pointer p-1">
+        <input type="checkbox" id="d-bolsa" onchange="redirectDivisibleToUnico(this)" class="w-4 h-4 rounded"> Descontar de Bolsa (Gasto Único)
       </label>
-      <div class="flex gap-2 pt-2">
-        <button type="submit" class="flex-1 bg-primary bg-primary-hover text-white font-bold text-sm py-3 rounded-lg shadow-lg">Dividir y Guardar</button>
-        <button type="button" onclick="clearForm('tab-divisible')" class="bg-slate-800 p-3 rounded-lg text-sm text-slate-400">Limpiar</button>
+      <div class="flex gap-2 pt-1">
+        <button type="submit" class="flex-1 bg-accent hover:brightness-110 text-white font-semibold text-xs py-3 rounded-xl shadow-sm transition-all">Dividir y Guardar</button>
+        <button type="button" onclick="clearForm('tab-divisible')" class="card-clean px-4 py-3 text-xs text-muted">Limpiar</button>
       </div>
     </form>
 
     <form id="tab-ajuste" class="space-y-3 nav-form hidden" onsubmit="submitAjuste(event)">
-      <input type="text" id="a-monto" inputmode="decimal" placeholder="Monto del movimiento ($)" onfocus="handleInputFocus(this)" onblur="handleInputBlur(this)" oninput="formatLiveCurrencyInput(this)" required class="w-full bg-slate-800/60 border border-slate-700 p-3 rounded-lg text-white font-bold input-focus">
-      <input type="text" id="a-concepto" placeholder="Concepto o justificación" required class="w-full bg-slate-800/60 border border-slate-700 p-3 rounded-lg text-white text-sm input-focus">
-      <select id="a-tipo" onchange="toggleAjusteFields()" class="w-full bg-slate-900 border border-slate-700 p-3 rounded-lg text-white text-xs input-focus">
+      <input type="text" id="a-monto" inputmode="decimal" placeholder="Monto del movimiento ($)" onfocus="handleInputFocus(this)" onblur="handleInputBlur(this)" oninput="formatLiveCurrencyInput(this)" required class="w-full card-clean p-3 font-semibold text-sm input-focus">
+      <input type="text" id="a-concepto" placeholder="Concepto o justificación" required class="w-full card-clean p-3 text-xs input-focus">
+      <select id="a-tipo" onchange="toggleAjusteFields()" class="w-full card-clean p-3 text-xs input-focus">
         <option value="1">1. Ingresar plata a Home Banking (Sumar al saldo)</option>
         <option value="2">2. Ingresar plata directo a Bolsa de Saldos</option>
         <option value="3">3. Restar plata del Home Banking general</option>
@@ -212,20 +223,20 @@
         <option value="7">7. Agregar de HB a día(s) específico(s)</option>
         <option value="8">8. Agregar de Bolsa a día(s) específico(s)</option>
       </select>
-      <div id="a-extra-fields" class="hidden space-y-2 mt-2 bg-slate-800/40 p-3 rounded-lg border border-slate-700">
-          <label class="text-xs text-slate-400">A partir de qué fecha y en cuántos días:</label>
-          <input type="date" id="a-fecha" class="w-full bg-slate-900 border border-slate-700 p-2 rounded text-white text-sm input-focus">
-          <input type="number" id="a-dias" placeholder="Cant. días (Ej: 1 o más)" class="w-full bg-slate-900 border border-slate-700 p-2 rounded text-white text-sm input-focus">
+      <div id="a-extra-fields" class="hidden space-y-2 mt-2 card-clean p-3">
+          <label class="text-[11px] text-muted">A partir de qué fecha y en cuántos días:</label>
+          <input type="date" id="a-fecha" class="w-full card-clean p-2 text-xs input-focus">
+          <input type="number" id="a-dias" placeholder="Cant. días (Ej: 1 o más)" class="w-full card-clean p-2 text-xs input-focus">
       </div>
-      <div class="flex gap-2 pt-2">
-        <button type="submit" class="flex-1 bg-primary bg-primary-hover text-white font-bold text-sm py-3 rounded-lg shadow-lg">Ejecutar Acción</button>
-        <button type="button" onclick="clearForm('tab-ajuste')" class="bg-slate-800 p-3 rounded-lg text-sm text-slate-400">Limpiar</button>
+      <div class="flex gap-2 pt-1">
+        <button type="submit" class="flex-1 bg-accent hover:brightness-110 text-white font-semibold text-xs py-3 rounded-xl shadow-sm transition-all">Ejecutar Acción</button>
+        <button type="button" onclick="clearForm('tab-ajuste')" class="card-clean px-4 py-3 text-xs text-muted">Limpiar</button>
       </div>
     </form>
 
     <div class="mt-6 pb-10">
-      <div class="flex justify-between items-center border-b border-slate-800 pb-2 mb-3">
-        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400">📃 Últimos Movimientos</h3>
+      <div class="flex justify-between items-center border-b border-slate-800/80 pb-2 mb-3">
+        <h3 class="text-[11px] font-semibold uppercase tracking-wider text-muted">📃 Últimos Movimientos</h3>
       </div>
       <div id="bottom-movimientos" class="space-y-2 max-h-80 overflow-y-auto pr-1 custom-scroll"></div>
     </div>
@@ -234,7 +245,7 @@
   <!-- ================= MÓDULO 2: PROYECCIÓN DE GASTOS (MACRO) ================= -->
   <section id="view-proyeccion" class="hidden space-y-4 pb-12">
     <!-- Selector de Mes Interactivo y Deslizable -->
-    <div class="glass p-2 rounded-xl border border-slate-700 flex justify-between items-center gap-2">
+    <div class="card-clean p-2 flex justify-between items-center gap-2">
       <div class="flex items-center gap-1 w-full overflow-hidden">
         <div class="relative shrink-0 flex items-center justify-center">
            <select id="proy-select-mes" onchange="changeMonth(this.value)" class="absolute inset-0 opacity-0 cursor-pointer w-full h-full">
@@ -251,157 +262,157 @@
              <option value="Noviembre [Premio]">Noviembre [Premio]</option>
              <option value="Diciembre [SAC]">Diciembre [SAC]</option>
            </select>
-           <button class="bg-slate-800 hover:bg-slate-700 text-slate-300 p-2 rounded-lg border border-slate-700 font-bold text-xs transition-colors">📅</button>
+           <button class="card-clean text-main p-2 font-medium text-xs transition-colors">📅</button>
         </div>
         
         <div id="month-swipe-container" class="flex-1 overflow-x-auto flex gap-1.5 scroll-smooth custom-scroll pb-1 items-center px-1">
         </div>
       </div>
 
-      <button onclick="openServiciosModal()" class="bg-slate-800 hover:bg-slate-700 text-indigo-300 border border-slate-700 font-bold text-xs px-2.5 py-2 rounded-lg shadow flex items-center gap-1 shrink-0">
+      <button onclick="openServiciosModal()" class="card-clean text-main font-medium text-xs px-2.5 py-2 shadow-sm flex items-center gap-1 shrink-0 hover:bg-slate-800/50">
         ⚙️ Servicios
       </button>
     </div>
 
     <!-- RESUMEN EN PÍLDORAS ESTÉTICAS (PARTE SUPERIOR) -->
     <div class="space-y-2">
-      <div class="glass-pill flex justify-between items-center px-4 py-3">
-        <span class="text-[10px] text-slate-300 font-semibold uppercase tracking-wide truncate">💼 Ingresos Totales:</span>
-        <span class="proy-total-ingresos font-extrabold text-emerald-400 text-sm whitespace-nowrap">$ 0,00</span>
+      <div class="pill-clean flex justify-between items-center px-4 py-2.5">
+        <span class="text-[10px] text-muted font-medium uppercase tracking-wide truncate">💼 Ingresos Totales:</span>
+        <span class="proy-total-ingresos font-semibold text-main text-xs whitespace-nowrap">$ 0,00</span>
       </div>
-      <div class="glass-pill flex justify-between items-center px-4 py-3">
-        <span class="text-[10px] text-slate-300 font-semibold uppercase tracking-wide truncate">📌 Gastos Fijos Totales:</span>
-        <span class="proy-total-gastos font-extrabold text-rose-400 text-sm whitespace-nowrap">$ 0,00</span>
+      <div class="pill-clean flex justify-between items-center px-4 py-2.5">
+        <span class="text-[10px] text-muted font-medium uppercase tracking-wide truncate">📌 Gastos Fijos Totales:</span>
+        <span class="proy-total-gastos font-semibold text-main text-xs whitespace-nowrap">$ 0,00</span>
       </div>
-      <div class="glass-pill flex justify-between items-center px-4 py-3 border border-amber-500/30">
-        <span class="text-[10px] text-amber-200 font-bold uppercase tracking-wide truncate">🤝 Gastos de Terceros:</span>
-        <span class="proy-total-terceros font-extrabold text-amber-400 text-sm whitespace-nowrap">$ 0,00</span>
+      <div class="pill-clean flex justify-between items-center px-4 py-2.5">
+        <span class="text-[10px] text-muted font-medium uppercase tracking-wide truncate">🤝 Gastos de Terceros:</span>
+        <span class="proy-total-terceros font-semibold text-main text-xs whitespace-nowrap">$ 0,00</span>
       </div>
-      <div class="glass-pill flex justify-between items-center px-4 py-3 border border-indigo-500/30">
-        <span class="text-[10px] text-indigo-200 font-extrabold uppercase tracking-wide truncate">💰 Nos Queda:</span>
-        <span class="proy-nos-queda font-black text-indigo-400 text-sm whitespace-nowrap">$ 0,00</span>
+      <div class="pill-clean flex justify-between items-center px-4 py-2.5 border-accent-light bg-accent-light">
+        <span class="text-[10px] t-accent font-semibold uppercase tracking-wide truncate">💰 Nos Queda:</span>
+        <span class="proy-nos-queda font-bold t-accent text-xs whitespace-nowrap">$ 0,00</span>
       </div>
     </div>
 
     <!-- Sección Ingresos Extras COMPACTA -->
-    <div class="glass p-3 rounded-xl border border-slate-700/80 space-y-2">
+    <div class="card-clean p-3 space-y-2">
       <div class="flex justify-between items-center border-b border-slate-800/80 pb-1.5">
-        <h3 class="text-[11px] font-bold uppercase tracking-wider text-slate-300 flex items-center gap-1">
+        <h3 class="text-[11px] font-semibold uppercase tracking-wider text-main flex items-center gap-1">
           <span>💼 Extras del Mes</span>
         </h3>
-        <button onclick="saveProyeccionCurrent(this)" class="btn-update-action text-[9px] bg-indigo-600/30 hover:bg-indigo-600/60 text-indigo-300 border border-indigo-500/40 px-2 py-0.5 rounded font-bold transition-all">
+        <button onclick="saveProyeccionCurrent(this)" class="btn-update-action text-[9px] card-clean text-main px-2 py-0.5 rounded-md font-medium transition-all">
           🔄 Guardar Cambios
         </button>
       </div>
 
-      <div class="flex gap-2 items-center bg-slate-900/60 p-1.5 rounded-lg border border-blue-900/30 text-xs">
-        <span class="text-[11px] font-bold text-blue-400 w-12 shrink-0">Brian</span>
-        <select id="p-tipo-extra-brian" onchange="onExtraTypeChange('Brian')" class="bg-slate-800 text-[10px] text-indigo-300 border border-slate-700 rounded px-1 py-1 outline-none shrink-0">
+      <div class="flex gap-2 items-center card-clean p-1.5 text-xs">
+        <span id="label-user-brian" class="text-[11px] font-medium w-12 shrink-0">Brian</span>
+        <select id="p-tipo-extra-brian" onchange="onExtraTypeChange('Brian')" class="card-clean text-[10px] text-main rounded px-1 py-1 outline-none shrink-0">
           <option value="SAC">SAC</option>
           <option value="Premio">Premio</option>
           <option value="Otro">Otro</option>
         </select>
-        <input type="text" id="p-concepto-extra-brian" placeholder="Detalle" class="bg-slate-800 border border-slate-700 p-1 rounded text-white text-[11px] flex-1 outline-none min-w-0">
-        <input type="text" id="p-extra-brian" inputmode="decimal" placeholder="$ 0" onfocus="handleInputFocus(this)" onblur="handleInputBlur(this)" oninput="formatLiveCurrencyInput(this); calcProyTotales();" class="gasto-monto-input bg-slate-800 border border-slate-700 p-1 rounded font-bold text-white text-right text-xs w-24 shrink-0 outline-none">
+        <input type="text" id="p-concepto-extra-brian" placeholder="Detalle" class="card-clean p-1 text-main text-[11px] flex-1 outline-none min-w-0">
+        <input type="text" id="p-extra-brian" inputmode="decimal" placeholder="$ 0" onfocus="handleInputFocus(this)" onblur="handleInputBlur(this)" oninput="formatLiveCurrencyInput(this); calcProyTotales();" class="gasto-monto-input card-clean p-1 font-semibold text-main text-right text-xs w-24 shrink-0 outline-none">
       </div>
 
-      <div class="flex gap-2 items-center bg-slate-900/60 p-1.5 rounded-lg border border-fuchsia-900/30 text-xs">
-        <span class="text-[11px] font-bold text-fuchsia-400 w-12 shrink-0">Virginia</span>
-        <select id="p-tipo-extra-virginia" onchange="onExtraTypeChange('Virginia')" class="bg-slate-800 text-[10px] text-indigo-300 border border-slate-700 rounded px-1 py-1 outline-none shrink-0">
+      <div class="flex gap-2 items-center card-clean p-1.5 text-xs">
+        <span id="label-user-virginia" class="text-[11px] font-medium w-12 shrink-0">Virginia</span>
+        <select id="p-tipo-extra-virginia" onchange="onExtraTypeChange('Virginia')" class="card-clean text-[10px] text-main rounded px-1 py-1 outline-none shrink-0">
           <option value="SAC">SAC</option>
           <option value="Premio">Premio</option>
           <option value="Otro">Otro</option>
         </select>
-        <input type="text" id="p-concepto-extra-virginia" placeholder="Detalle" class="bg-slate-800 border border-slate-700 p-1 rounded text-white text-[11px] flex-1 outline-none min-w-0">
-        <input type="text" id="p-extra-virginia" inputmode="decimal" placeholder="$ 0" onfocus="handleInputFocus(this)" onblur="handleInputBlur(this)" oninput="formatLiveCurrencyInput(this); calcProyTotales();" class="gasto-monto-input bg-slate-800 border border-slate-700 p-1 rounded font-bold text-white text-right text-xs w-24 shrink-0 outline-none">
+        <input type="text" id="p-concepto-extra-virginia" placeholder="Detalle" class="card-clean p-1 text-main text-[11px] flex-1 outline-none min-w-0">
+        <input type="text" id="p-extra-virginia" inputmode="decimal" placeholder="$ 0" onfocus="handleInputFocus(this)" onblur="handleInputBlur(this)" oninput="formatLiveCurrencyInput(this); calcProyTotales();" class="gasto-monto-input card-clean p-1 font-semibold text-main text-right text-xs w-24 shrink-0 outline-none">
       </div>
     </div>
 
     <!-- Tabla 1: Gastos Fijos BRIAN -->
-    <div class="glass p-4 rounded-xl border border-blue-900/40 space-y-3">
-      <div class="flex justify-between items-center border-b border-slate-800 pb-2">
-        <h3 class="text-xs font-bold uppercase tracking-wider text-blue-400">📌 Gastos Fijos - Brian</h3>
+    <div class="card-clean p-4 space-y-3">
+      <div class="flex justify-between items-center border-b border-slate-800/80 pb-2">
+        <h3 id="title-gastos-brian" class="text-xs font-semibold uppercase tracking-wider text-main">📌 Gastos Fijos - Brian</h3>
         <div class="flex gap-1.5">
-          <button onclick="addGastoRow('Brian')" class="text-[10px] bg-slate-800 hover:bg-slate-700 text-slate-200 px-2 py-1 rounded border border-slate-700 font-bold">+ Agregar</button>
-          <button onclick="saveProyeccionCurrent(this)" class="btn-update-action text-[10px] bg-blue-900/40 hover:bg-blue-800/60 text-blue-300 border border-blue-700/50 px-2 py-1 rounded font-bold transition-all">🔄 Guardar</button>
+          <button onclick="addGastoRow('Brian')" class="text-[10px] card-clean text-main px-2 py-1 font-medium hover:bg-slate-800/50">+ Agregar</button>
+          <button onclick="saveProyeccionCurrent(this)" class="btn-update-action text-[10px] card-clean text-main px-2 py-1 font-medium hover:bg-slate-800/50 transition-all">🔄 Guardar</button>
         </div>
       </div>
       <div id="container-gastos-brian" class="space-y-2"></div>
-      <div class="text-right text-xs font-bold text-slate-400 pt-1">
-        Subtotal Brian (Real): <span id="subtotal-brian" class="text-white whitespace-nowrap">$ 0,00</span>
+      <div class="text-right text-xs font-semibold text-muted pt-1">
+        Subtotal Brian (Real): <span id="subtotal-brian" class="text-main whitespace-nowrap">$ 0,00</span>
       </div>
     </div>
 
     <!-- Tabla 2: Gastos Fijos VIRGINIA -->
-    <div class="glass p-4 rounded-xl border border-fuchsia-900/40 space-y-3">
-      <div class="flex justify-between items-center border-b border-slate-800 pb-2">
-        <h3 class="text-xs font-bold uppercase tracking-wider text-fuchsia-400">📌 Gastos Fijos - Virginia</h3>
+    <div class="card-clean p-4 space-y-3">
+      <div class="flex justify-between items-center border-b border-slate-800/80 pb-2">
+        <h3 id="title-gastos-virginia" class="text-xs font-semibold uppercase tracking-wider text-main">📌 Gastos Fijos - Virginia</h3>
         <div class="flex gap-1.5">
-          <button onclick="addGastoRow('Virginia')" class="text-[10px] bg-slate-800 hover:bg-slate-700 text-slate-200 px-2 py-1 rounded border border-slate-700 font-bold">+ Agregar</button>
-          <button onclick="saveProyeccionCurrent(this)" class="btn-update-action text-[10px] bg-fuchsia-900/40 hover:bg-fuchsia-800/60 text-fuchsia-300 border border-fuchsia-700/50 px-2 py-1 rounded font-bold transition-all">🔄 Guardar</button>
+          <button onclick="addGastoRow('Virginia')" class="text-[10px] card-clean text-main px-2 py-1 font-medium hover:bg-slate-800/50">+ Agregar</button>
+          <button onclick="saveProyeccionCurrent(this)" class="btn-update-action text-[10px] card-clean text-main px-2 py-1 font-medium hover:bg-slate-800/50 transition-all">🔄 Guardar</button>
         </div>
       </div>
       <div id="container-gastos-virginia" class="space-y-2"></div>
-      <div class="text-right text-xs font-bold text-slate-400 pt-1">
-        Subtotal Virginia (Real): <span id="subtotal-virginia" class="text-white whitespace-nowrap">$ 0,00</span>
+      <div class="text-right text-xs font-semibold text-muted pt-1">
+        Subtotal Virginia (Real): <span id="subtotal-virginia" class="text-main whitespace-nowrap">$ 0,00</span>
       </div>
     </div>
 
     <!-- RESUMEN FINAL EN PÍLDORAS ESTÉTICAS (INFERIOR) -->
-    <div class="space-y-2.5 pt-3 border-t border-slate-800/80">
-      <div onclick="openServiciosSelectorModal()" class="glass-pill flex justify-between items-center px-4 py-3 cursor-pointer hover:bg-slate-800/60 border border-indigo-500/40 transition-all shadow-md group" title="Tocar para habilitar/deshabilitar servicios de este mes">
+    <div class="space-y-2 pt-3 border-t border-slate-800/80">
+      <div onclick="openServiciosSelectorModal()" class="pill-clean flex justify-between items-center px-4 py-2.5 cursor-pointer hover:bg-slate-800/50 transition-all shadow-sm group" title="Tocar para habilitar/deshabilitar servicios de este mes">
         <div class="flex items-center gap-1.5 truncate">
-          <span class="text-[10px] text-slate-300 font-semibold uppercase tracking-wide truncate">⚡ Servicios Globales:</span>
-          <span id="servicios-status-badge" class="text-[9px] bg-indigo-900/60 text-indigo-300 px-1.5 py-0.5 rounded border border-indigo-500/40 font-bold group-hover:bg-indigo-600 group-hover:text-white transition-all">Ver / Filtrar</span>
+          <span class="text-[10px] text-muted font-medium uppercase tracking-wide truncate">⚡ Servicios Globales:</span>
+          <span id="servicios-status-badge" class="text-[9px] card-clean px-1.5 py-0.5 font-semibold text-muted transition-all">Ver / Filtrar</span>
         </div>
-        <span id="subtotal-servicios-globales-bottom" class="font-extrabold text-indigo-300 text-sm whitespace-nowrap">$ 0,00</span>
+        <span id="subtotal-servicios-globales-bottom" class="font-semibold text-main text-xs whitespace-nowrap">$ 0,00</span>
       </div>
-      <div class="glass-pill flex justify-between items-center px-4 py-3">
-        <span class="text-[10px] text-slate-300 font-semibold uppercase tracking-wide truncate">💼 Ingresos Totales:</span>
-        <span class="proy-total-ingresos font-extrabold text-emerald-400 text-sm whitespace-nowrap">$ 0,00</span>
+      <div class="pill-clean flex justify-between items-center px-4 py-2.5">
+        <span class="text-[10px] text-muted font-medium uppercase tracking-wide truncate">💼 Ingresos Totales:</span>
+        <span class="proy-total-ingresos font-semibold text-main text-xs whitespace-nowrap">$ 0,00</span>
       </div>
-      <div class="glass-pill flex justify-between items-center px-4 py-3">
-        <span class="text-[10px] text-slate-300 font-semibold uppercase tracking-wide truncate">📌 Gastos Fijos Totales:</span>
-        <span class="proy-total-gastos font-extrabold text-rose-400 text-sm whitespace-nowrap">$ 0,00</span>
+      <div class="pill-clean flex justify-between items-center px-4 py-2.5">
+        <span class="text-[10px] text-muted font-medium uppercase tracking-wide truncate">📌 Gastos Fijos Totales:</span>
+        <span class="proy-total-gastos font-semibold text-main text-xs whitespace-nowrap">$ 0,00</span>
       </div>
-      <div class="glass-pill flex justify-between items-center px-4 py-3 border border-amber-500/30">
-        <span class="text-[10px] text-amber-200 font-bold uppercase tracking-wide truncate">🤝 Gastos de Terceros:</span>
-        <span class="proy-total-terceros font-extrabold text-amber-400 text-sm whitespace-nowrap">$ 0,00</span>
+      <div class="pill-clean flex justify-between items-center px-4 py-2.5">
+        <span class="text-[10px] text-muted font-medium uppercase tracking-wide truncate">🤝 Gastos de Terceros:</span>
+        <span class="proy-total-terceros font-semibold text-main text-xs whitespace-nowrap">$ 0,00</span>
       </div>
-      <div class="glass-pill flex justify-between items-center px-4 py-3 border border-indigo-500/30">
-        <span class="text-[10px] text-indigo-200 font-extrabold uppercase tracking-wide truncate">💰 Nos Queda:</span>
-        <span class="proy-nos-queda font-black text-indigo-400 text-sm whitespace-nowrap">$ 0,00</span>
+      <div class="pill-clean flex justify-between items-center px-4 py-2.5 border-accent-light bg-accent-light">
+        <span class="text-[10px] t-accent font-semibold uppercase tracking-wide truncate">💰 Nos Queda:</span>
+        <span class="proy-nos-queda font-bold t-accent text-xs whitespace-nowrap">$ 0,00</span>
       </div>
     </div>
   </section>
 
   <!-- MODAL SELECCIONADOR DE SERVICIOS PARA EL MES EN CURSO -->
   <div id="modal-servicios-selector" onclick="if(event.target === this) closeServiciosSelectorModal()" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-md z-[85] flex items-center justify-center p-4">
-    <div class="glass w-full max-w-md max-h-[85vh] rounded-2xl border border-indigo-500/50 p-4 flex flex-col shadow-2xl space-y-3">
-      <div class="flex justify-between items-center border-b border-slate-800 pb-2">
+    <div class="card-clean w-full max-w-md max-h-[85vh] p-4 flex flex-col shadow-2xl space-y-3">
+      <div class="flex justify-between items-center border-b border-slate-800/80 pb-2">
         <div>
-          <h2 class="text-base font-bold text-white flex items-center gap-1.5">⚡ Servicios del Mes</h2>
-          <p class="text-[10px] text-indigo-300 font-medium">Desmarcá los débitos que ya entraron en la tarjeta</p>
+          <h2 class="text-sm font-semibold text-main flex items-center gap-1.5">⚡ Servicios del Mes</h2>
+          <p class="text-[10px] text-muted font-medium">Desmarcá los débitos que ya entraron en la tarjeta</p>
         </div>
-        <button onclick="closeServiciosSelectorModal()" class="w-7 h-7 rounded-full bg-slate-800 text-slate-400 font-bold text-xs hover:bg-slate-700 border border-slate-700">✕</button>
+        <button onclick="closeServiciosSelectorModal()" class="w-7 h-7 rounded-full card-clean text-muted font-semibold text-xs hover:bg-slate-800">✕</button>
       </div>
 
-      <div class="flex justify-between items-center bg-slate-900/60 p-2 rounded-lg border border-slate-800 text-xs">
-        <span class="text-slate-400 font-semibold text-[11px]" id="servicios-selector-month-name">Mes: Enero</span>
+      <div class="flex justify-between items-center card-clean p-2 text-xs">
+        <span class="text-muted font-medium text-[11px]" id="servicios-selector-month-name">Mes: Enero</span>
         <div class="flex gap-1.5">
-          <button onclick="toggleAllServiciosMonth(true)" class="bg-indigo-950/80 hover:bg-indigo-900 text-indigo-300 border border-indigo-700/60 px-2 py-1 rounded text-[10px] font-bold">Tildar Todos</button>
-          <button onclick="toggleAllServiciosMonth(false)" class="bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 px-2 py-1 rounded text-[10px] font-bold">Destildar Todos</button>
+          <button onclick="toggleAllServiciosMonth(true)" class="card-clean text-main px-2 py-1 text-[10px] font-medium hover:bg-slate-800">Tildar Todos</button>
+          <button onclick="toggleAllServiciosMonth(false)" class="card-clean text-main px-2 py-1 text-[10px] font-medium hover:bg-slate-800">Destildar Todos</button>
         </div>
       </div>
 
       <div id="modal-servicios-selector-list" class="space-y-2 overflow-y-auto max-h-60 pr-1 custom-scroll"></div>
 
-      <div class="pt-2 border-t border-slate-800 flex justify-between items-center">
-        <span class="text-xs text-slate-400 font-semibold">Total Computado:</span>
-        <span id="modal-servicios-selector-total" class="text-sm font-black text-indigo-400 whitespace-nowrap">$ 0,00</span>
+      <div class="pt-2 border-t border-slate-800/80 flex justify-between items-center">
+        <span class="text-xs text-muted font-medium">Total Computado:</span>
+        <span id="modal-servicios-selector-total" class="text-xs font-semibold text-main whitespace-nowrap">$ 0,00</span>
       </div>
 
-      <button onclick="closeServiciosSelectorModal(); saveProyeccionCurrent();" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white py-2.5 rounded-lg text-xs font-bold shadow flex items-center justify-center gap-1.5 transition-all">
+      <button onclick="closeServiciosSelectorModal(); saveProyeccionCurrent();" class="w-full bg-accent hover:brightness-110 text-white py-2.5 rounded-xl text-xs font-semibold shadow-sm transition-all">
         ✅ Aplicar a este mes
       </button>
     </div>
@@ -409,57 +420,57 @@
 
   <!-- MODAL UNIFICADO: CONFIGURACIÓN DE SERVICIOS, SUELDOS Y DÓLAR -->
   <div id="modal-servicios" onclick="if(event.target === this) closeServiciosModal()" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-md z-[80] flex items-center justify-center p-4">
-    <div class="glass w-full max-w-md max-h-[90vh] rounded-2xl border border-slate-600 p-4 flex flex-col shadow-2xl space-y-3">
-      <div class="flex justify-between items-center border-b border-slate-800 pb-2">
-        <h2 class="text-base font-bold text-white flex items-center gap-2">⚙️ Tarifario & Sueldos Base</h2>
-        <button onclick="closeServiciosModal()" class="w-7 h-7 rounded-full bg-slate-800 text-slate-400 font-bold text-xs hover:bg-slate-700 border border-slate-700">✕</button>
+    <div class="card-clean w-full max-w-md max-h-[90vh] p-4 flex flex-col shadow-2xl space-y-3">
+      <div class="flex justify-between items-center border-b border-slate-800/80 pb-2">
+        <h2 class="text-sm font-semibold text-main flex items-center gap-2">⚙️ Tarifario & Sueldos Base</h2>
+        <button onclick="closeServiciosModal()" class="w-7 h-7 rounded-full card-clean text-muted font-semibold text-xs hover:bg-slate-800">✕</button>
       </div>
 
-      <div class="flex border-b border-slate-700 text-xs font-bold">
-        <button onclick="switchServTab('tab-serv-lista')" id="btn-serv-lista" class="flex-1 py-2 text-indigo-400 border-b-2 border-indigo-400 transition-all">Servicios / Subscripciones</button>
-        <button onclick="switchServTab('tab-serv-sueldos')" id="btn-serv-sueldos" class="flex-1 py-2 text-slate-500 transition-all">Sueldos Base</button>
+      <div class="flex border-b border-slate-800/80 text-xs font-semibold">
+        <button onclick="switchServTab('tab-serv-lista')" id="btn-serv-lista" class="flex-1 py-2 t-accent border-b-2 border-accent transition-all">Servicios / Subscripciones</button>
+        <button onclick="switchServTab('tab-serv-sueldos')" id="btn-serv-sueldos" class="flex-1 py-2 text-muted transition-all">Sueldos Base</button>
       </div>
 
       <div id="tab-serv-lista" class="space-y-3">
-        <div class="bg-slate-900/80 p-2.5 rounded-xl border border-slate-700 flex justify-between items-center">
+        <div class="card-clean p-2.5 flex justify-between items-center">
           <div>
-            <label class="text-xs font-bold text-amber-400 block">Cotización Dólar ($ USD)</label>
-            <span class="text-[10px] text-slate-400 block">Recalcula servicios en USD en vivo</span>
+            <label class="text-xs font-semibold text-main block">Cotización Dólar ($ USD)</label>
+            <span class="text-[10px] text-muted block">Recalcula servicios en USD en vivo</span>
           </div>
-          <input type="text" id="cfg-dolar-usd" inputmode="decimal" placeholder="1200" onfocus="handleInputFocus(this)" onblur="handleInputBlur(this)" oninput="formatLiveCurrencyInput(this); renderServiciosGlobales();" class="w-24 bg-slate-800 border border-slate-700 p-2 rounded text-right font-black text-amber-300 text-sm">
+          <input type="text" id="cfg-dolar-usd" inputmode="decimal" placeholder="1200" onfocus="handleInputFocus(this)" onblur="handleInputBlur(this)" oninput="formatLiveCurrencyInput(this); renderServiciosGlobales();" class="w-24 card-clean p-2 text-right font-bold text-main text-xs">
         </div>
 
         <div class="flex justify-between items-center">
-          <span class="text-xs font-bold uppercase text-slate-300">Lista de Servicios</span>
-          <button onclick="addServicioGlobalRow()" class="text-[10px] bg-indigo-600 text-white px-2 py-1 rounded font-bold">+ Nuevo Servicio</button>
+          <span class="text-xs font-semibold uppercase text-muted">Lista de Servicios</span>
+          <button onclick="addServicioGlobalRow()" class="text-[10px] bg-accent hover:brightness-110 text-white px-2 py-1 rounded-md font-semibold">+ Nuevo Servicio</button>
         </div>
 
         <div id="modal-servicios-list" class="space-y-2 overflow-y-auto max-h-52 pr-1 custom-scroll"></div>
 
-        <div class="pt-2 border-t border-slate-800 flex justify-between items-center">
-          <span class="text-xs text-slate-400 font-semibold">Total Servicios Est.:</span>
-          <span id="modal-servicios-total" class="text-sm font-black text-indigo-400 whitespace-nowrap">$ 0,00</span>
+        <div class="pt-2 border-t border-slate-800/80 flex justify-between items-center">
+          <span class="text-xs text-muted font-medium">Total Servicios Est.:</span>
+          <span id="modal-servicios-total" class="text-xs font-semibold text-main whitespace-nowrap">$ 0,00</span>
         </div>
 
-        <button onclick="saveServiciosConfig(this)" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white py-2.5 rounded-lg text-xs font-bold shadow flex items-center justify-center gap-1.5 transition-all">
+        <button onclick="saveServiciosConfig(this)" class="w-full bg-accent hover:brightness-110 text-white py-2.5 rounded-xl text-xs font-semibold shadow-sm transition-all">
           🔄 Guardar Servicios
         </button>
       </div>
 
       <div id="tab-serv-sueldos" class="hidden space-y-3 py-2">
-        <p class="text-xs text-slate-400">Ingresá los sueldos base actualizados. Aplicarán como base a todas las proyecciones.</p>
+        <p class="text-xs text-muted">Ingresá los sueldos base actualizados. Aplicarán como base a todas las proyecciones.</p>
         
-        <div class="bg-slate-900/80 p-3 rounded-xl border border-blue-900/40 space-y-1">
-          <label class="text-xs font-bold text-blue-400 block">Sueldo Base Brian ($)</label>
-          <input type="text" id="cfg-sueldo-brian" inputmode="decimal" placeholder="0.00" onfocus="handleInputFocus(this)" onblur="handleInputBlur(this)" oninput="formatLiveCurrencyInput(this)" class="w-full bg-slate-800 border border-slate-700 p-2 rounded font-black text-white text-base">
+        <div class="card-clean p-3 space-y-1">
+          <label class="text-xs font-semibold text-main block">Sueldo Base Brian ($)</label>
+          <input type="text" id="cfg-sueldo-brian" inputmode="decimal" placeholder="0.00" onfocus="handleInputFocus(this)" onblur="handleInputBlur(this)" oninput="formatLiveCurrencyInput(this)" class="w-full card-clean p-2 font-bold text-main text-sm">
         </div>
 
-        <div class="bg-slate-900/80 p-3 rounded-xl border border-fuchsia-900/40 space-y-1">
-          <label class="text-xs font-bold text-fuchsia-400 block">Sueldo Base Virginia ($)</label>
-          <input type="text" id="cfg-sueldo-virginia" inputmode="decimal" placeholder="0.00" onfocus="handleInputFocus(this)" onblur="handleInputBlur(this)" oninput="formatLiveCurrencyInput(this)" class="w-full bg-slate-800 border border-slate-700 p-2 rounded font-black text-white text-base">
+        <div class="card-clean p-3 space-y-1">
+          <label class="text-xs font-semibold text-main block">Sueldo Base Virginia ($)</label>
+          <input type="text" id="cfg-sueldo-virginia" inputmode="decimal" placeholder="0.00" onfocus="handleInputFocus(this)" onblur="handleInputBlur(this)" oninput="formatLiveCurrencyInput(this)" class="w-full card-clean p-2 font-bold text-main text-sm">
         </div>
 
-        <button onclick="saveServiciosConfig(this)" class="w-full bg-blue-600 hover:bg-blue-500 text-white py-2.5 rounded-lg text-xs font-bold shadow flex items-center justify-center gap-1.5 transition-all mt-2">
+        <button onclick="saveServiciosConfig(this)" class="w-full bg-accent hover:brightness-110 text-white py-2.5 rounded-xl text-xs font-semibold shadow-sm transition-all mt-2">
           🔄 Guardar Sueldos
         </button>
       </div>
@@ -468,28 +479,28 @@
 
   <!-- RESTO DE MODALES DE LA APP DIARIA -->
   <div id="hb-quick-modal" onclick="if(event.target === this) closeHBUpdate()" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-[60] flex items-center justify-center p-4">
-    <div class="glass w-full max-w-sm p-5 rounded-2xl border border-hb shadow-xl">
-      <label class="text-xs t-hb font-bold block mb-3 text-center uppercase tracking-wide">Ingresar Nuevo Saldo (HB)</label>
-      <input type="text" id="input-hb-update" inputmode="decimal" placeholder="Ej: 500000,50" onfocus="handleInputFocus(this)" onblur="handleInputBlur(this)" oninput="formatLiveCurrencyInput(this)" class="w-full bg-slate-900 border border-slate-700 p-3 rounded-lg text-white text-lg font-bold mb-4 text-center input-focus-hb">
+    <div class="card-clean w-full max-w-sm p-5 shadow-xl">
+      <label class="text-xs font-semibold text-main block mb-3 text-center uppercase tracking-wide">Ingresar Nuevo Saldo (HB)</label>
+      <input type="text" id="input-hb-update" inputmode="decimal" placeholder="Ej: 500000,50" onfocus="handleInputFocus(this)" onblur="handleInputBlur(this)" oninput="formatLiveCurrencyInput(this)" class="w-full card-clean p-3 text-main text-base font-bold mb-4 text-center input-focus">
       <div class="flex gap-2">
-        <button onclick="saveHBUpdate()" class="flex-1 bg-hb hover:brightness-110 text-white py-2.5 rounded-lg text-sm font-bold shadow">Guardar</button>
-        <button onclick="closeHBUpdate()" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 py-2.5 rounded-lg text-sm border border-slate-700">Cancelar</button>
+        <button onclick="saveHBUpdate()" class="flex-1 bg-accent hover:brightness-110 text-white py-2.5 rounded-xl text-xs font-semibold shadow-sm">Guardar</button>
+        <button onclick="closeHBUpdate()" class="flex-1 card-clean text-main py-2.5 rounded-xl text-xs font-medium hover:bg-slate-800">Cancelar</button>
       </div>
     </div>
   </div>
 
   <div id="modal-rollover" class="hidden fixed inset-0 bg-slate-950/90 backdrop-blur-md z-[80] flex items-center justify-center p-4">
-    <div class="glass w-full max-w-sm rounded-2xl border border-purple-500/50 p-5 flex flex-col text-center shadow-2xl">
+    <div class="card-clean w-full max-w-sm p-5 flex flex-col text-center shadow-2xl">
       <span class="text-3xl mb-2">🌅</span>
-      <h2 class="text-base font-bold text-white mb-1">¡Nuevo Día Detectado!</h2>
-      <p class="text-xs text-slate-300 mb-3">Ayer te sobraron <strong id="rollover-amount" class="t-bolsa font-black text-sm">$ 0,00</strong> de tu presupuesto.</p>
-      <p class="text-[11px] text-slate-400 mb-5">¿Qué te gustaría hacer con ese dinero sobrante?</p>
+      <h2 class="text-sm font-semibold text-main mb-1">¡Nuevo Día Detectado!</h2>
+      <p class="text-xs text-muted mb-3">Ayer te sobraron <strong id="rollover-amount" class="font-bold text-main text-sm">$ 0,00</strong> de tu presupuesto.</p>
+      <p class="text-[11px] text-muted mb-5">¿Qué te gustaría hacer con ese dinero sobrante?</p>
 
       <div class="space-y-2">
-        <button onclick="confirmRollover(true)" class="w-full bg-bolsa hover:brightness-110 text-white font-bold text-xs py-3 rounded-xl shadow-lg border border-purple-400/30">
+        <button onclick="confirmRollover(true)" class="w-full bg-accent hover:brightness-110 text-white font-semibold text-xs py-3 rounded-xl shadow-sm">
           📥 Guardar sobrante en la Bolsa (Ahorro)
         </button>
-        <button onclick="confirmRollover(false)" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold text-xs py-3 rounded-xl border border-slate-700">
+        <button onclick="confirmRollover(false)" class="w-full card-clean text-main font-medium text-xs py-3 rounded-xl hover:bg-slate-800">
           🔄 Repartir entre los días que quedan
         </button>
       </div>
@@ -497,81 +508,81 @@
   </div>
 
   <div id="modal-config" onclick="if(event.target === this) closeConfigModal()" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-md z-[70] flex items-center justify-center p-4">
-    <div class="glass w-full max-w-sm rounded-2xl border border-slate-600 p-4 flex flex-col shadow-2xl">
-      <div class="flex justify-between items-center border-b border-slate-800 pb-2 mb-3">
-        <h2 class="text-base font-bold text-white">⚙️ Preferencias</h2>
-        <button onclick="closeConfigModal()" class="w-7 h-7 rounded-full bg-slate-800 text-slate-400 font-bold text-xs hover:bg-slate-700 border border-slate-700">✕</button>
+    <div class="card-clean w-full max-w-sm p-4 flex flex-col shadow-2xl">
+      <div class="flex justify-between items-center border-b border-slate-800/80 pb-2 mb-3">
+        <h2 class="text-sm font-semibold text-main">⚙️ Preferencias</h2>
+        <button onclick="closeConfigModal()" class="w-7 h-7 rounded-full card-clean text-muted font-semibold text-xs hover:bg-slate-800">✕</button>
       </div>
 
-      <div class="flex border-b border-slate-700 mb-4 text-xs font-bold">
-        <button onclick="switchCfgTab('cfg-fecha')" id="btn-cfg-fecha" class="flex-1 py-2 text-blue-400 border-b-2 border-blue-400 transition-all">Fecha Cobro</button>
-        <button onclick="switchCfgTab('cfg-tema')" id="btn-cfg-tema" class="flex-1 py-2 text-slate-500 transition-all">Estilo Visual</button>
+      <div class="flex border-b border-slate-800/80 mb-4 text-xs font-semibold">
+        <button onclick="switchCfgTab('cfg-fecha')" id="btn-cfg-fecha" class="flex-1 py-2 t-accent border-b-2 border-accent transition-all">Fecha Cobro</button>
+        <button onclick="switchCfgTab('cfg-tema')" id="btn-cfg-tema" class="flex-1 py-2 text-muted transition-all">Estilo Visual</button>
       </div>
 
       <div id="cfg-fecha" class="space-y-4">
-        <label class="flex items-start gap-2 text-sm text-slate-300">
-          <input type="checkbox" id="cfg-auto-date" onchange="toggleAutoDate()" class="w-4 h-4 mt-1 accent-blue-500">
+        <label class="flex items-start gap-2 text-xs text-main">
+          <input type="checkbox" id="cfg-auto-date" onchange="toggleAutoDate()" class="w-4 h-4 mt-0.5 rounded">
           <div>
-             <span class="font-bold text-white block">Automático (Recomendado)</span>
-             <span class="text-[10px] text-slate-400 block mt-0.5">Calcula feriados oficiales automáticamente.</span>
+             <span class="font-semibold text-main block">Automático (Recomendado)</span>
+             <span class="text-[10px] text-muted block mt-0.5">Calcula feriados oficiales automáticamente.</span>
           </div>
         </label>
-        <div id="cfg-manual-box" class="hidden p-3 bg-slate-900 border border-slate-700 rounded-lg">
-          <label class="text-xs text-slate-400 block mb-1">Fijar fecha manualmente:</label>
-          <input type="date" id="cfg-manual-date" class="w-full bg-slate-800 border border-slate-700 p-2 rounded text-white text-sm outline-none">
+        <div id="cfg-manual-box" class="hidden p-3 card-clean">
+          <label class="text-[11px] text-muted block mb-1">Fijar fecha manualmente:</label>
+          <input type="date" id="cfg-manual-date" class="w-full card-clean p-2 text-main text-xs outline-none">
         </div>
       </div>
 
       <div id="cfg-tema" class="hidden space-y-3">
         <div>
-          <label class="text-xs text-slate-400 block mb-1">Elegir un Tema (<span id="user-theme-label" class="text-blue-400 font-bold">Brian</span>):</label>
-          <select id="cfg-preset" onchange="applyPreset()" class="w-full bg-slate-900 border border-slate-700 p-2 rounded text-white text-sm outline-none custom-scroll">
+          <label class="text-[11px] text-muted block mb-1">Elegir un Tema (<span id="user-theme-label" class="font-semibold">Brian</span>):</label>
+          <select id="cfg-preset" onchange="applyPreset()" class="w-full card-clean p-2 text-main text-xs outline-none custom-scroll">
           </select>
         </div>
-        <div id="cfg-colors-box" class="hidden grid grid-cols-2 gap-3 p-3 bg-slate-900 border border-slate-700 rounded-lg">
-           <div><label class="text-[10px] text-slate-400 block mb-1">Principal</label><input type="color" id="col-primary" class="w-full h-8 cursor-pointer rounded border border-slate-600 bg-slate-800"></div>
-           <div><label class="text-[10px] text-slate-400 block mb-1">Bolsa</label><input type="color" id="col-bolsa" class="w-full h-8 cursor-pointer rounded border border-slate-600 bg-slate-800"></div>
-           <div><label class="text-[10px] text-slate-400 block mb-1">Home Bank</label><input type="color" id="col-hb" class="w-full h-8 cursor-pointer rounded border border-slate-600 bg-slate-800"></div>
-           <div><label class="text-[10px] text-slate-400 block mb-1">Fondo App</label><input type="color" id="col-bg" class="w-full h-8 cursor-pointer rounded border border-slate-600 bg-slate-800"></div>
-           <label class="col-span-2 flex items-center gap-2 text-xs text-slate-300 mt-1">
-             <input type="checkbox" id="col-islight" onchange="applyPreset()" class="w-4 h-4 accent-blue-500"> Tema Claro (Letras Oscuras)
+        <div id="cfg-colors-box" class="hidden grid grid-cols-2 gap-3 p-3 card-clean">
+           <div><label class="text-[10px] text-muted block mb-1">Color Principal</label><input type="color" id="col-accent" class="w-full h-8 cursor-pointer rounded border border-slate-700 bg-slate-800"></div>
+           <div><label class="text-[10px] text-muted block mb-1">Fondo App</label><input type="color" id="col-bg" class="w-full h-8 cursor-pointer rounded border border-slate-700 bg-slate-800"></div>
+           <div><label class="text-[10px] text-muted block mb-1">Tarjetas</label><input type="color" id="col-card" class="w-full h-8 cursor-pointer rounded border border-slate-700 bg-slate-800"></div>
+           <div><label class="text-[10px] text-muted block mb-1">Bordes</label><input type="color" id="col-border" class="w-full h-8 cursor-pointer rounded border border-slate-700 bg-slate-800"></div>
+           <label class="col-span-2 flex items-center gap-2 text-xs text-main mt-1">
+             <input type="checkbox" id="col-islight" onchange="applyPreset()" class="w-4 h-4 rounded"> Tema Claro (Letras Oscuras)
            </label>
         </div>
       </div>
 
-      <button onclick="saveConfiguration()" class="mt-5 w-full bg-blue-600 hover:bg-blue-500 text-white py-2.5 rounded-lg text-sm font-bold shadow">Guardar Cambios</button>
+      <button onclick="saveConfiguration()" class="mt-5 w-full bg-accent hover:brightness-110 text-white py-2.5 rounded-xl text-xs font-semibold shadow-sm">Guardar Cambios</button>
     </div>
   </div>
 
   <div id="modal-calendario" onclick="if(event.target === this) closeCalendarModal()" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-md z-[50] flex items-center justify-center p-4">
-    <div class="glass w-full max-w-md max-h-[85vh] rounded-2xl border border-indigo-500/30 p-4 flex flex-col shadow-2xl">
-      <div class="flex justify-between items-center border-b border-slate-800 pb-3 mb-3">
+    <div class="card-clean w-full max-w-md max-h-[85vh] p-4 flex flex-col shadow-2xl">
+      <div class="flex justify-between items-center border-b border-slate-800/80 pb-3 mb-3">
         <div>
-          <h2 class="text-base font-bold text-slate-100">📅 Presupuesto por Día</h2>
-          <p class="text-[11px] text-indigo-400 font-semibold" id="modal-days-subtitle">Días Restantes</p>
+          <h2 class="text-sm font-semibold text-main">📅 Presupuesto por Día</h2>
+          <p class="text-[10px] t-accent font-medium" id="modal-days-subtitle">Días Restantes</p>
         </div>
-        <button onclick="closeCalendarModal()" class="w-8 h-8 rounded-full bg-slate-800 text-slate-400 font-bold text-sm hover:bg-slate-700 border border-slate-700">✕</button>
+        <button onclick="closeCalendarModal()" class="w-8 h-8 rounded-full card-clean text-muted font-semibold text-xs hover:bg-slate-800">✕</button>
       </div>
       <div id="modal-calendario-body" class="space-y-2 overflow-y-auto pr-1 custom-scroll flex-1"></div>
-      <button onclick="closeCalendarModal()" class="mt-4 w-full bg-slate-800 hover:bg-slate-700 text-slate-200 py-2.5 rounded-xl font-bold text-xs border border-slate-700">Cerrar Ventana</button>
+      <button onclick="closeCalendarModal()" class="mt-4 w-full card-clean text-main py-2.5 rounded-xl font-semibold text-xs hover:bg-slate-800">Cerrar Ventana</button>
     </div>
   </div>
 
   <div id="modal-editar" onclick="if(event.target === this) closeEditModal()" class="hidden fixed inset-0 bg-slate-950/90 backdrop-blur-md z-[60] flex items-center justify-center p-4">
-    <div class="glass w-full max-w-sm rounded-2xl border border-slate-600 p-5 shadow-2xl">
-      <h2 class="text-lg font-bold text-white mb-1">Editar Movimiento</h2>
-      <p id="edit-mov-tipo" class="text-xs text-slate-400 mb-4"></p>
+    <div class="card-clean w-full max-w-sm p-5 shadow-2xl">
+      <h2 class="text-sm font-semibold text-main mb-1">Editar Movimiento</h2>
+      <p id="edit-mov-tipo" class="text-xs text-muted mb-4"></p>
       <input type="hidden" id="edit-id">
       
-      <label class="text-xs text-slate-400 block mb-1">Concepto:</label>
-      <input type="text" id="edit-concepto" class="w-full bg-slate-900 border border-slate-700 p-3 rounded-lg text-white text-sm mb-3 outline-none focus:border-amber-500">
+      <label class="text-xs text-muted block mb-1">Concepto:</label>
+      <input type="text" id="edit-concepto" class="w-full card-clean p-3 text-main text-xs mb-3 outline-none input-focus">
       
-      <label class="text-xs text-slate-400 block mb-1">Monto (Valor Absoluto):</label>
-      <input type="text" id="edit-monto" inputmode="decimal" onfocus="handleInputFocus(this)" onblur="handleInputBlur(this)" oninput="formatLiveCurrencyInput(this)" class="w-full bg-slate-900 border border-slate-700 p-3 rounded-lg text-white font-bold mb-5 outline-none focus:border-amber-500">
+      <label class="text-xs text-muted block mb-1">Monto (Valor Absoluto):</label>
+      <input type="text" id="edit-monto" inputmode="decimal" onfocus="handleInputFocus(this)" onblur="handleInputBlur(this)" oninput="formatLiveCurrencyInput(this)" class="w-full card-clean p-3 text-main font-bold text-sm mb-5 outline-none input-focus">
       
       <div class="flex gap-2">
-        <button onclick="saveEdit()" class="flex-1 bg-amber-600 hover:bg-amber-500 text-white py-2.5 rounded-lg text-sm font-bold shadow">Guardar Cambios</button>
-        <button onclick="closeEditModal()" class="flex-1 bg-slate-700 hover:bg-slate-600 text-slate-300 py-2.5 rounded-lg text-sm border border-slate-600">Cancelar</button>
+        <button onclick="saveEdit()" class="flex-1 bg-accent hover:brightness-110 text-white py-2.5 rounded-xl text-xs font-semibold shadow-sm">Guardar Cambios</button>
+        <button onclick="closeEditModal()" class="flex-1 card-clean text-main py-2.5 rounded-xl text-xs font-medium hover:bg-slate-800">Cancelar</button>
       </div>
     </div>
   </div>
@@ -583,7 +594,6 @@
     let currentUser = "Brian";
     let state = { hb: 0, bs: 0, movements: [], config: { paydate: "", themeBrian: "", themeVirginia: "", lastProcessedDate: "" } };
     
-    // Variables Módulo Macro
     let currentProyMonth = "Enero";
     let proyeccionesData = [];
     let dolarUSD = 1200;
@@ -597,11 +607,11 @@
     ];
 
     const CATEGORIAS_GASTOS = [
-      { id: "transporte", name: "🚌 Transporte", color: "bg-blue-950/80 border-blue-700/60 text-blue-300" },
-      { id: "tarjeta", name: "💳 Tarjetas & Créditos", color: "bg-purple-950/80 border-purple-700/60 text-purple-300" },
-      { id: "salud", name: "🏥 Salud & Bienestar", color: "bg-emerald-950/80 border-emerald-700/60 text-emerald-300" },
-      { id: "hogar", name: "🏠 Hogar & Servicios", color: "bg-amber-950/80 border-amber-700/60 text-amber-300" },
-      { id: "otros", name: "📌 Varios / Otros", color: "bg-slate-800 border-slate-700 text-slate-300" }
+      { id: "transporte", name: "🚌 Transporte" },
+      { id: "tarjeta", name: "💳 Tarjetas & Créditos" },
+      { id: "salud", name: "🏥 Salud & Bienestar" },
+      { id: "hogar", name: "🏠 Hogar & Servicios" },
+      { id: "otros", name: "📌 Varios / Otros" }
     ];
 
     let feriadosOficiales = ["2026-01-01", "2026-03-24", "2026-04-02", "2026-05-01", "2026-05-25", "2026-06-20", "2026-07-09", "2026-08-17", "2026-10-12", "2026-11-20", "2026-12-25"];
@@ -664,18 +674,18 @@
 
       if (view === 'diario') {
         document.getElementById('view-diario').classList.remove('hidden');
-        btnD.className = "w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm bg-primary text-white shadow";
-        btnP.className = "w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm text-slate-400 hover:bg-slate-800 transition-all";
+        btnD.className = "w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-xs bg-accent text-white shadow";
+        btnP.className = "w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-xs text-muted hover:bg-slate-800/50 transition-all";
       } else {
         document.getElementById('view-proyeccion').classList.remove('hidden');
-        btnP.className = "w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm bg-indigo-600 text-white shadow";
-        btnD.className = "w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm text-slate-400 hover:bg-slate-800 transition-all";
+        btnP.className = "w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-xs bg-accent text-white shadow";
+        btnD.className = "w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-xs text-muted hover:bg-slate-800/50 transition-all";
         fetchProyecciones();
         
         setTimeout(() => {
           const container = document.getElementById('month-swipe-container');
           if(container) {
-             let activeBtn = container.querySelector('.bg-indigo-600');
+             let activeBtn = container.querySelector('.bg-accent');
              if (activeBtn) activeBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
           }
         }, 50);
@@ -713,85 +723,81 @@
       } catch(e) { console.log("Feriados Offline"); }
     }
 
+    // 50 TEMAS RECALIBRADOS CON LEGIBILIDAD GARANTIZADA
     const THEME_GROUPS = [
       {
-        label: "Oscuros / Modernos",
+        label: "Escala de Grises & Oscuros Sobrios",
         options: [
-          { id: "dark-emerald", name: "💚 Esmeralda Oscuro", vals: { primary: "#10b981", bolsa: "#a855f7", hb: "#3b82f6", bg: "#0f172a", panel: "#1e293bb3", isLight: false } },
-          { id: "dark-ruby", name: "🔴 Rubí Nocturno", vals: { primary: "#f43f5e", bolsa: "#fbbf24", hb: "#818cf8", bg: "#18181b", panel: "#27272aa6", isLight: false } },
-          { id: "dark-sapphire", name: "🔵 Zafiro Profundo", vals: { primary: "#3b82f6", bolsa: "#ec4899", hb: "#14b8a6", bg: "#172554", panel: "#164e63b3", isLight: false } },
-          { id: "dark-amethyst", name: "🟣 Amatista", vals: { primary: "#c084fc", bolsa: "#2dd4bf", hb: "#f472b6", bg: "#2e1065", panel: "#3b0764b3", isLight: false } },
-          { id: "dark-amber", name: "🟠 Ámbar Quemado", vals: { primary: "#f59e0b", bolsa: "#ef4444", hb: "#6366f1", bg: "#451a03", panel: "#78350fb3", isLight: false } },
-          { id: "dark-graphite", name: "⚫ Grafito", vals: { primary: "#94a3b8", bolsa: "#64748b", hb: "#475569", bg: "#020617", panel: "#0f172ab3", isLight: false } },
-          { id: "dark-obsidian", name: "🖤 Obsidiana", vals: { primary: "#e4e4e7", bolsa: "#a1a1aa", hb: "#d4d4d8", bg: "#000000", panel: "#18181bb3", isLight: false } },
-          { id: "dark-forest", name: "🌲 Bosque Negro", vals: { primary: "#22c55e", bolsa: "#eab308", hb: "#0ea5e9", bg: "#052e16", panel: "#14532db3", isLight: false } },
-          { id: "dark-ocean", name: "🌊 Océano Oscuro", vals: { primary: "#06b6d4", bolsa: "#f43f5e", hb: "#3b82f6", bg: "#083344", panel: "#164e63b3", isLight: false } },
-          { id: "dark-blood", name: "🩸 Sangre y Ceniza", vals: { primary: "#dc2626", bolsa: "#7f1d1d", hb: "#ef4444", bg: "#1a0505", panel: "#450a0ab3", isLight: false } }
+          { id: "dark-obsidian", name: "🖤 Obsidiana Minimal", vals: { accent: "#38bdf8", bg: "#090d16", card: "#111726", border: "#1e293b", isLight: false } },
+          { id: "dark-slate", name: "📓 Pizarra Grafito", vals: { accent: "#60a5fa", bg: "#0f172a", card: "#1e293b", border: "#334155", isLight: false } },
+          { id: "dark-charcoal", name: "🌑 Carbón Puro", vals: { accent: "#38bdf8", bg: "#121212", card: "#1e1e1e", border: "#333333", isLight: false } },
+          { id: "dark-titanium", name: "⚙️ Titanio Nocturno", vals: { accent: "#94a3b8", bg: "#0a0a0c", card: "#141418", border: "#2e2e38", isLight: false } },
+          { id: "dark-monochrome", name: "🏁 Monocromo Puro", vals: { accent: "#ffffff", bg: "#000000", card: "#141414", border: "#333333", isLight: false } },
+          { id: "dark-zinc", name: "🪨 Cinc Profundo", vals: { accent: "#a1a1aa", bg: "#09090b", card: "#18181b", border: "#3f3f46", isLight: false } },
+          { id: "dark-steel", name: "🗡️ Acero Oscuro", vals: { accent: "#cbd5e1", bg: "#0b0f19", card: "#161e2e", border: "#334155", isLight: false } },
+          { id: "dark-ash", name: "🌋 Ceniza", vals: { accent: "#e2e8f0", bg: "#111315", card: "#1b1e22", border: "#373e47", isLight: false } },
+          { id: "dark-midnight", name: "🌃 Medianoche Clean", vals: { accent: "#38bdf8", bg: "#020617", card: "#0f172a", border: "#1e293b", isLight: false } },
+          { id: "dark-void", name: "🌌 Vacío Profundo", vals: { accent: "#818cf8", bg: "#030712", card: "#111827", border: "#374151", isLight: false } }
         ]
       },
       {
-        label: "Neón / Cyberpunk",
+        label: "Minimalismo Azul & Frecuencias Frías",
         options: [
-          { id: "neon-synth", name: "👾 Synthwave", vals: { primary: "#f0abfc", bolsa: "#2dd4bf", hb: "#fde047", bg: "#2c1030", panel: "#4a1c40b3", isLight: false } },
-          { id: "neon-cyber", name: "🦾 Cyberpunk", vals: { primary: "#fde047", bolsa: "#f43f5e", hb: "#06b6d4", bg: "#09090b", panel: "#18181bb3", isLight: false } },
-          { id: "neon-matrix", name: "🖥️ Matrix", vals: { primary: "#4ade80", bolsa: "#22c55e", hb: "#16a34a", bg: "#000000", panel: "#022c22b3", isLight: false } },
-          { id: "neon-tokyo", name: "🌃 Tokyo Night", vals: { primary: "#fb7185", bolsa: "#38bdf8", hb: "#c084fc", bg: "#111827", panel: "#1e293bb3", isLight: false } },
-          { id: "neon-miami", name: "🦩 Miami Vice", vals: { primary: "#f472b6", bolsa: "#2dd4bf", hb: "#fde047", bg: "#1e1b4b", panel: "#312e81b3", isLight: false } },
-          { id: "neon-laser", name: "🔦 Láser", vals: { primary: "#e879f9", bolsa: "#34d399", hb: "#f87171", bg: "#171717", panel: "#262626b3", isLight: false } },
-          { id: "neon-acid", name: "🧪 Ácido", vals: { primary: "#a3e635", bolsa: "#eab308", hb: "#22d3ee", bg: "#0f172a", panel: "#1e293bb3", isLight: false } },
-          { id: "neon-purple", name: "🔮 Ultra Púrpura", vals: { primary: "#d946ef", bolsa: "#a855f7", hb: "#8b5cf6", bg: "#2e1065", panel: "#4c1d95b3", isLight: false } },
-          { id: "neon-blue", name: "⚡ Electric Blue", vals: { primary: "#3b82f6", bolsa: "#60a5fa", hb: "#93c5fd", bg: "#020617", panel: "#0f172ab3", isLight: false } },
-          { id: "neon-sunset", name: "🌇 Neón Sunset", vals: { primary: "#fb923c", bolsa: "#f43f5e", hb: "#c084fc", bg: "#2e0219", panel: "#4c0519b3", isLight: false } }
+          { id: "blue-nordic", name: "❄️ Azul Nórdico", vals: { accent: "#38bdf8", bg: "#0b1329", card: "#132247", border: "#224180", isLight: false } },
+          { id: "blue-sapphire", name: "🔷 Zafiro Elegante", vals: { accent: "#60a5fa", bg: "#07111e", card: "#0f1f38", border: "#214375", isLight: false } },
+          { id: "blue-atlantic", name: "🌊 Atlántico", vals: { accent: "#22d3ee", bg: "#081a24", card: "#102a3a", border: "#22516d", isLight: false } },
+          { id: "blue-cobalt", name: "🧿 Cobalto Profundo", vals: { accent: "#818cf8", bg: "#0d1127", card: "#171e40", border: "#2d3a7c", isLight: false } },
+          { id: "blue-arctic", name: "🧊 Ártico Sobrio", vals: { accent: "#7dd3fc", bg: "#0c192c", card: "#162944", border: "#2e507d", isLight: false } },
+          { id: "blue-indigo", name: "🪻 Índigo Soft", vals: { accent: "#a5b4fc", bg: "#0e132c", card: "#192147", border: "#314187", isLight: false } },
+          { id: "blue-deepsky", name: "🌌 Cielo Profundo", vals: { accent: "#38bdf8", bg: "#06131e", card: "#0f2334", border: "#204666", isLight: false } },
+          { id: "blue-denim", name: "👖 Denim Minimal", vals: { accent: "#93c5fd", bg: "#101726", card: "#1c2840", border: "#344a73", isLight: false } },
+          { id: "blue-glacier", name: "🏔️ Glaciar", vals: { accent: "#a5f3fc", bg: "#0a192f", card: "#172a45", border: "#2a4a78", isLight: false } },
+          { id: "blue-abyss", name: "⚓ Abismo", vals: { accent: "#60a5fa", bg: "#030a16", card: "#0a162b", border: "#1a3666", isLight: false } }
         ]
       },
       {
-        label: "Claros / Minimalistas",
+        label: "Verdes Orgánicos & Salvia",
         options: [
-          { id: "light-arctic", name: "❄️ Ártico Puro", vals: { primary: "#0ea5e9", bolsa: "#8b5cf6", hb: "#14b8a6", bg: "#f8fafc", panel: "#ffffffcc", isLight: true } },
-          { id: "light-ivory", name: "🦴 Marfil", vals: { primary: "#d97706", bolsa: "#be123c", hb: "#4338ca", bg: "#fdfbf7", panel: "#fefdfbcc", isLight: true } },
-          { id: "light-cotton", name: "☁️ Algodón", vals: { primary: "#10b981", bolsa: "#ec4899", hb: "#3b82f6", bg: "#f1f5f9", panel: "#ffffffb3", isLight: true } },
-          { id: "light-vanilla", name: "🍦 Vainilla", vals: { primary: "#f59e0b", bolsa: "#db2777", hb: "#0284c7", bg: "#fffbeb", panel: "#fef3c7cc", isLight: true } },
-          { id: "light-paper", name: "📄 Papel", vals: { primary: "#334155", bolsa: "#64748b", hb: "#475569", bg: "#fdfcfc", panel: "#ffffffb3", isLight: true } },
-          { id: "light-silver", name: "🥄 Plata", vals: { primary: "#64748b", bolsa: "#475569", hb: "#334155", bg: "#e2e8f0", panel: "#f8fafcb3", isLight: true } },
-          { id: "light-rose", name: "🌸 Rosa Pálido", vals: { primary: "#e11d48", bolsa: "#4f46e5", hb: "#059669", bg: "#fff1f2", panel: "#ffe4e6cc", isLight: true } },
-          { id: "light-sky", name: "🌤️ Cielo Claro", vals: { primary: "#0284c7", bolsa: "#7c3aed", hb: "#ea580c", bg: "#f0f9ff", panel: "#e0f2fecc", isLight: true } },
-          { id: "light-mint", name: "🍃 Menta Claro", vals: { primary: "#059669", bolsa: "#2563eb", hb: "#d97706", bg: "#f0fdf4", panel: "#d1fae5cc", isLight: true } },
-          { id: "light-lemon", name: "🍋 Limón Suave", vals: { primary: "#d97706", bolsa: "#059669", hb: "#4f46e5", bg: "#fefce8", panel: "#fef9c3cc", isLight: true } }
+          { id: "green-sage", name: "🍃 Salvia Minimal", vals: { accent: "#4ade80", bg: "#09140e", card: "#12241b", border: "#264a38", isLight: false } },
+          { id: "green-emerald", name: "💚 Esmeralda Mate", vals: { accent: "#34d399", bg: "#061510", card: "#0d261e", border: "#1f4f3f", isLight: false } },
+          { id: "green-forest", name: "🌲 Bosque Sobrio", vals: { accent: "#22c55e", bg: "#05130b", card: "#0c2215", border: "#1d472d", isLight: false } },
+          { id: "green-olive", name: "🫒 Olivo Profundo", vals: { accent: "#a3e635", bg: "#10140a", card: "#1b2212", border: "#374527", isLight: false } },
+          { id: "green-mint", name: "🌿 Menta Oscuro", vals: { accent: "#2dd4bf", bg: "#061413", card: "#0e2523", border: "#214a46", isLight: false } },
+          { id: "green-botanical", name: "🪴 Botánico", vals: { accent: "#86efac", bg: "#08130c", card: "#122317", border: "#274a31", isLight: false } },
+          { id: "green-moss", name: "🪨 Musgo Mate", vals: { accent: "#a3e635", bg: "#0f130c", card: "#1a2215", border: "#35452b", isLight: false } },
+          { id: "green-eucalyptus", name: "🌱 Eucalipto", vals: { accent: "#6ee7b7", bg: "#071411", card: "#102520", border: "#234c43", isLight: false } },
+          { id: "green-pine", name: "🌲 Pino Nocturno", vals: { accent: "#4ade80", bg: "#041209", card: "#0a2012", border: "#1a4428", isLight: false } },
+          { id: "green-tea", name: "🍵 Té Verde", vals: { accent: "#bef264", bg: "#101409", card: "#1c2411", border: "#3a4a24", isLight: false } }
         ]
       },
       {
-        label: "Pasteles Suaves",
+        label: "Cálidos Elegantes, Ámbar & Moka",
         options: [
-          { id: "pastel-peach", name: "🍑 Durazno", vals: { primary: "#f97316", bolsa: "#db2777", hb: "#0284c7", bg: "#ffedd5", panel: "#fef08acc", isLight: true } },
-          { id: "pastel-lavender", name: "🪻 Lavanda", vals: { primary: "#9333ea", bolsa: "#0284c7", hb: "#ea580c", bg: "#faf5ff", panel: "#f3e8ffcc", isLight: true } },
-          { id: "pastel-babyblue", name: "🍼 Celeste Bebé", vals: { primary: "#3b82f6", bolsa: "#f43f5e", hb: "#10b981", bg: "#eff6ff", panel: "#dbeafecc", isLight: true } },
-          { id: "pastel-pistachio", name: "🥜 Pistacho", vals: { primary: "#65a30d", bolsa: "#0284c7", hb: "#8b5cf6", bg: "#f7fee7", panel: "#dcfce7cc", isLight: true } },
-          { id: "pastel-pink", name: "🎀 Rosa Pastel", vals: { primary: "#ec4899", bolsa: "#8b5cf6", hb: "#06b6d4", bg: "#fdf2f8", panel: "#fce7f3cc", isLight: true } },
-          { id: "pastel-butter", name: "🧈 Manteca", vals: { primary: "#eab308", bolsa: "#ec4899", hb: "#14b8a6", bg: "#fefce8", panel: "#fef08acc", isLight: true } },
-          { id: "pastel-lilac", name: "💐 Lila", vals: { primary: "#d946ef", bolsa: "#0ea5e9", hb: "#f59e0b", bg: "#fdf4ff", panel: "#fae8ffcc", isLight: true } },
-          { id: "pastel-mint", name: "🌿 Menta Pastel", vals: { primary: "#14b8a6", bolsa: "#a855f7", hb: "#f43f5e", bg: "#f0fdfa", panel: "#ccfbf1cc", isLight: true } },
-          { id: "pastel-sand", name: "🏖️ Arena", vals: { primary: "#b45309", bolsa: "#1d4ed8", hb: "#047857", bg: "#fffbeb", panel: "#fef3c7cc", isLight: true } },
-          { id: "pastel-coral", name: "🐠 Coral Pastel", vals: { primary: "#f43f5e", bolsa: "#eab308", hb: "#0ea5e9", bg: "#fff1f2", panel: "#ffe4e6cc", isLight: true } }
+          { id: "warm-amber", name: "🟠 Ámbar Mate", vals: { accent: "#fbbf24", bg: "#141008", card: "#241d0f", border: "#4a3c1f", isLight: false } },
+          { id: "warm-coffee", name: "☕ Café Latte", vals: { accent: "#f97316", bg: "#140e0a", card: "#241a12", border: "#4a3525", isLight: false } },
+          { id: "warm-copper", name: "🥉 Cobre Pulido", vals: { accent: "#f97316", bg: "#160d08", card: "#26170e", border: "#4f311f", isLight: false } },
+          { id: "warm-bronze", name: "🏺 Bronce Antiguo", vals: { accent: "#fbbf24", bg: "#130f0a", card: "#221a11", border: "#473623", isLight: false } },
+          { id: "warm-terracotta", name: "🧱 Terracota Soft", vals: { accent: "#fb923c", bg: "#160e0a", card: "#271811", border: "#4f3123", isLight: false } },
+          { id: "warm-sand", name: "🏖️ Arena Nocturna", vals: { accent: "#fde047", bg: "#14120a", card: "#232011", border: "#474223", isLight: false } },
+          { id: "warm-cinnamon", name: "🫔 Canela Mate", vals: { accent: "#f97316", bg: "#160c07", card: "#26150c", border: "#4f2b19", isLight: false } },
+          { id: "warm-mahogany", name: "🪵 Caoba Sobrio", vals: { accent: "#f97316", bg: "#130a07", card: "#22120b", border: "#472417", isLight: false } },
+          { id: "warm-caramel", name: "🍯 Caramelo Profundo", vals: { accent: "#fbbf24", bg: "#151006", card: "#251c0b", border: "#4c3816", isLight: false } },
+          { id: "warm-sepia", name: "📜 Sepia Elegante", vals: { accent: "#fde047", bg: "#12100a", card: "#201c12", border: "#423a25", isLight: false } }
         ]
       },
       {
-        label: "Estéticas / Vibes",
+        label: "Claros Minimalistas & Pulcros",
         options: [
-          { id: "vibe-coffee", name: "☕ Café Latte", vals: { primary: "#b45309", bolsa: "#14b8a6", hb: "#6366f1", bg: "#292524", panel: "#44403cb3", isLight: false } },
-          { id: "vibe-matcha", name: "🍵 Matcha", vals: { primary: "#4d7c0f", bolsa: "#0369a1", hb: "#b45309", bg: "#f7fee7", panel: "#ecfccbcc", isLight: true } },
-          { id: "vibe-grape", name: "🍇 Uva", vals: { primary: "#7e22ce", bolsa: "#be123c", hb: "#15803d", bg: "#3b0764", panel: "#581c87b3", isLight: false } },
-          { id: "vibe-berry", name: "🍓 Frutos Rojos", vals: { primary: "#be123c", bolsa: "#6d28d9", hb: "#b45309", bg: "#2e0219", panel: "#4c0519b3", isLight: false } },
-          { id: "vibe-autumn", name: "🍂 Otoño", vals: { primary: "#ea580c", bolsa: "#b91c1c", hb: "#a16207", bg: "#451a03", panel: "#78350fb3", isLight: false } },
-          { id: "vibe-desert", name: "🐪 Desierto", vals: { primary: "#d97706", bolsa: "#c2410c", hb: "#b45309", bg: "#78350f", panel: "#92400eb3", isLight: false } },
-          { id: "vibe-galaxy", name: "🌌 Galaxia", vals: { primary: "#c084fc", bolsa: "#38bdf8", hb: "#f472b6", bg: "#0f172a", panel: "#1e1b4bb3", isLight: false } },
-          { id: "vibe-aurora", name: "🌠 Aurora Boreal", vals: { primary: "#34d399", bolsa: "#818cf8", hb: "#a78bfa", bg: "#064e3b", panel: "#065f46b3", isLight: false } },
-          { id: "vibe-twilight", name: "🌆 Crepúsculo", vals: { primary: "#f472b6", bolsa: "#818cf8", hb: "#fb923c", bg: "#2e1065", panel: "#4c1d95b3", isLight: false } },
-          { id: "vibe-candy", name: "🍬 Caramelo", vals: { primary: "#f43f5e", bolsa: "#0ea5e9", hb: "#eab308", bg: "#fdf2f8", panel: "#fbcfe8cc", isLight: true } },
-          { id: "vibe-tangerine", name: "🍊 Mandarina", vals: { primary: "#f97316", bolsa: "#84cc16", hb: "#06b6d4", bg: "#fff7ed", panel: "#ffedd5cc", isLight: true } },
-          { id: "vibe-dracula", name: "🧛 Drácula", vals: { primary: "#ff79c6", bolsa: "#bd93f9", hb: "#50fa7b", bg: "#282a36", panel: "#44475ab3", isLight: false } },
-          { id: "vibe-monokai", name: "🦇 Monokai", vals: { primary: "#a6e22e", bolsa: "#fd971f", hb: "#66d9ef", bg: "#272822", panel: "#3e3d32b3", isLight: false } },
-          { id: "vibe-nord", name: "🧭 Nord", vals: { primary: "#a3be8c", bolsa: "#b48ead", hb: "#81a1c1", bg: "#2e3440", panel: "#3b4252b3", isLight: false } },
-          { id: "vibe-hacker", name: "💻 Hacker", vals: { primary: "#22c55e", bolsa: "#16a34a", hb: "#4ade80", bg: "#000000", panel: "#052e16b3", isLight: false } }
+          { id: "light-titanium", name: "🩶 Titanio Claro", vals: { accent: "#2563eb", bg: "#f1f5f9", card: "#ffffff", border: "#cbd5e1", isLight: true } },
+          { id: "light-paper", name: "📄 Papel Blanco", vals: { accent: "#0284c7", bg: "#f8fafc", card: "#ffffff", border: "#cbd5e1", isLight: true } },
+          { id: "light-cotton", name: "☁️ Algodón", vals: { accent: "#0284c7", bg: "#f1f5f9", card: "#ffffff", border: "#cbd5e1", isLight: true } },
+          { id: "light-ivory", name: "🦴 Marfil Minimal", vals: { accent: "#d97706", bg: "#fefcf6", card: "#ffffff", border: "#e2d9be", isLight: true } },
+          { id: "light-sand", name: "⌛ Arena Clara", vals: { accent: "#d97706", bg: "#fefbf3", card: "#ffffff", border: "#e2d6b5", isLight: true } },
+          { id: "light-mint", name: "🍃 Menta Puro", vals: { accent: "#059669", bg: "#f0fdf4", card: "#ffffff", border: "#a7f3d0", isLight: true } },
+          { id: "light-sky", name: "🌤️ Cielo Claro", vals: { accent: "#0284c7", bg: "#f0f9ff", card: "#ffffff", border: "#bae6fd", isLight: true } },
+          { id: "light-lavender", name: "🪻 Lavanda Soft", vals: { accent: "#7c3aed", bg: "#fcfaff", card: "#ffffff", border: "#ddd6fe", isLight: true } },
+          { id: "light-monochrome", name: "🔲 Monocromo Claro", vals: { accent: "#000000", bg: "#e2e8f0", card: "#ffffff", border: "#cbd5e1", isLight: true } },
+          { id: "light-studio", name: "🎨 Estudio", vals: { accent: "#2563eb", bg: "#f1f5f9", card: "#ffffff", border: "#cbd5e1", isLight: true } }
         ]
       }
     ];
@@ -899,15 +905,15 @@
       const lblUserTheme = document.getElementById('user-theme-label');
 
       if(user === "Brian") {
-        lblUser.innerHTML = `<span class="text-blue-400 font-black">Brian</span>`; 
-        if(lblUserTheme) { lblUserTheme.innerText = "Brian"; lblUserTheme.className = "text-blue-400 font-bold"; }
-        btnB.className = "px-4 py-1.5 text-xs rounded-full bg-blue-600 text-white font-bold border border-blue-500 shadow transition-all";
-        btnV.className = "px-4 py-1.5 text-xs rounded-full bg-slate-800 text-slate-400 border border-slate-700 hover:bg-slate-700 transition-all";
+        lblUser.innerHTML = `<span class="t-accent font-semibold">Brian</span>`; 
+        if(lblUserTheme) { lblUserTheme.innerText = "Brian"; lblUserTheme.className = "t-accent font-semibold"; }
+        btnB.className = "px-4 py-1.5 text-xs rounded-full bg-accent text-white font-medium shadow-sm transition-all";
+        btnV.className = "px-4 py-1.5 text-xs rounded-full card-clean text-muted hover:bg-slate-800 transition-all font-medium";
       } else {
-        lblUser.innerHTML = `<span class="text-fuchsia-400 font-black">Virginia</span>`; 
-        if(lblUserTheme) { lblUserTheme.innerText = "Virginia"; lblUserTheme.className = "text-fuchsia-400 font-bold"; }
-        btnV.className = "px-4 py-1.5 text-xs rounded-full bg-fuchsia-600 text-white font-bold border border-fuchsia-500 shadow transition-all";
-        btnB.className = "px-4 py-1.5 text-xs rounded-full bg-slate-800 text-slate-400 border border-slate-700 hover:bg-slate-700 transition-all";
+        lblUser.innerHTML = `<span class="t-accent font-semibold">Virginia</span>`; 
+        if(lblUserTheme) { lblUserTheme.innerText = "Virginia"; lblUserTheme.className = "t-accent font-semibold"; }
+        btnV.className = "px-4 py-1.5 text-xs rounded-full bg-accent text-white font-medium shadow-sm transition-all";
+        btnB.className = "px-4 py-1.5 text-xs rounded-full card-clean text-muted hover:bg-slate-800 transition-all font-medium";
       }
       applySavedConfig(); guardarEnCache();
     }
@@ -918,14 +924,16 @@
       document.getElementById('cfg-auto-date').checked = isAuto; document.getElementById('cfg-manual-date').value = isAuto ? "" : state.config.paydate; toggleAutoDate();
 
       let tStr = (currentUser === "Brian") ? state.config.themeBrian : state.config.themeVirginia;
-      if(!tStr) { document.getElementById('cfg-preset').value = "dark-emerald"; applyPreset(); }
+      if(!tStr) { document.getElementById('cfg-preset').value = "dark-obsidian"; applyPreset(); }
       else if(tStr.startsWith("{")) {
          let tObj = JSON.parse(tStr);
          if(tObj.preset && getThemeValues(tObj.preset)) { document.getElementById('cfg-preset').value = tObj.preset; applyPreset(); }
          else {
            document.getElementById('cfg-preset').value = "custom";
-           document.getElementById('col-primary').value = tObj.primary || "#10b981"; document.getElementById('col-bolsa').value = tObj.bolsa || "#a855f7";
-           document.getElementById('col-hb').value = tObj.hb || "#3b82f6"; document.getElementById('col-bg').value = tObj.bg || "#0f172a";
+           document.getElementById('col-accent').value = tObj.accent || "#38bdf8"; 
+           document.getElementById('col-bg').value = tObj.bg || "#090d16";
+           document.getElementById('col-card').value = tObj.card || "#111726";
+           document.getElementById('col-border').value = tObj.border || "#1e293b";
            document.getElementById('col-islight').checked = tObj.isLight || false;
            applyPreset();
          }
@@ -935,8 +943,8 @@
     function closeConfigModal() { document.getElementById('modal-config').classList.add('hidden'); applySavedConfig(); }
     function switchCfgTab(tabId) {
       document.getElementById('cfg-fecha').classList.add('hidden'); document.getElementById('cfg-tema').classList.add('hidden'); document.getElementById(tabId).classList.remove('hidden');
-      document.getElementById('btn-cfg-fecha').className = tabId === 'cfg-fecha' ? "flex-1 py-2 text-blue-400 border-b-2 border-blue-400 transition-all" : "flex-1 py-2 text-slate-500 transition-all";
-      document.getElementById('btn-cfg-tema').className = tabId === 'cfg-tema' ? "flex-1 py-2 text-blue-400 border-b-2 border-blue-400 transition-all" : "flex-1 py-2 text-slate-500 transition-all";
+      document.getElementById('btn-cfg-fecha').className = tabId === 'cfg-fecha' ? "flex-1 py-2 t-accent border-b-2 border-accent transition-all" : "flex-1 py-2 text-muted transition-all";
+      document.getElementById('btn-cfg-tema').className = tabId === 'cfg-tema' ? "flex-1 py-2 t-accent border-b-2 border-accent transition-all" : "flex-1 py-2 text-muted transition-all";
     }
 
     function toggleAutoDate() { const isAuto = document.getElementById('cfg-auto-date').checked; document.getElementById('cfg-manual-box').classList.toggle('hidden', isAuto); }
@@ -945,7 +953,7 @@
       const preset = document.getElementById('cfg-preset').value; const cBox = document.getElementById('cfg-colors-box');
       if (preset === "custom") {
          cBox.classList.remove('hidden');
-         updateDOMTheme({ primary: document.getElementById('col-primary').value, bolsa: document.getElementById('col-bolsa').value, hb: document.getElementById('col-hb').value, bg: document.getElementById('col-bg').value, panel: "#1e293bb3", isLight: document.getElementById('col-islight').checked });
+         updateDOMTheme({ accent: document.getElementById('col-accent').value, bg: document.getElementById('col-bg').value, card: document.getElementById('col-card').value, border: document.getElementById('col-border').value, isLight: document.getElementById('col-islight').checked });
       } else {
          cBox.classList.add('hidden'); updateDOMTheme(getThemeValues(preset));
       }
@@ -953,10 +961,19 @@
 
     function updateDOMTheme(colors) {
       if(!colors) return;
-      document.documentElement.style.setProperty('--c-primary', colors.primary); document.documentElement.style.setProperty('--c-bolsa', colors.bolsa);
-      document.documentElement.style.setProperty('--c-hb', colors.hb); document.documentElement.style.setProperty('--c-bg', colors.bg); document.documentElement.style.setProperty('--c-panel', colors.panel || "#1e293bb3");
+      document.documentElement.style.setProperty('--c-accent', colors.accent); 
+      document.documentElement.style.setProperty('--c-bg', colors.bg); 
+      document.documentElement.style.setProperty('--c-card', colors.card);
+      document.documentElement.style.setProperty('--c-card-border', colors.border);
+      
       const body = document.getElementById('app-body');
-      if(colors.isLight) { body.classList.remove('dark'); body.classList.add('theme-light'); } else { body.classList.add('dark'); body.classList.remove('theme-light'); }
+      if(colors.isLight) { 
+        body.classList.remove('dark'); 
+        body.classList.add('theme-light'); 
+      } else { 
+        body.classList.add('dark'); 
+        body.classList.remove('theme-light'); 
+      }
     }
 
     function applySavedConfig() {
@@ -965,7 +982,7 @@
          let tObj = JSON.parse(tStr); 
          if(tObj.preset && getThemeValues(tObj.preset)) updateDOMTheme(getThemeValues(tObj.preset)); 
          else updateDOMTheme(tObj);
-      } else { updateDOMTheme(getThemeValues('dark-emerald')); }
+      } else { updateDOMTheme(getThemeValues('dark-obsidian')); }
     }
 
     function saveConfiguration() {
@@ -973,7 +990,15 @@
       const paydate = isAuto ? "" : document.getElementById('cfg-manual-date').value;
       const preset = document.getElementById('cfg-preset').value;
       let themeData = { preset: preset };
-      if(preset === "custom") { themeData = { primary: document.getElementById('col-primary').value, bolsa: document.getElementById('col-bolsa').value, hb: document.getElementById('col-hb').value, bg: document.getElementById('col-bg').value, panel: "#1e293bb3", isLight: document.getElementById('col-islight').checked }; }
+      if(preset === "custom") { 
+        themeData = { 
+          accent: document.getElementById('col-accent').value, 
+          bg: document.getElementById('col-bg').value, 
+          card: document.getElementById('col-card').value, 
+          border: document.getElementById('col-border').value, 
+          isLight: document.getElementById('col-islight').checked 
+        }; 
+      }
 
       let themeJson = JSON.stringify(themeData);
       state.config.paydate = paydate; 
@@ -994,8 +1019,8 @@
       document.querySelectorAll('.nav-form').forEach(f => f.classList.add('hidden')); document.getElementById(tabId).classList.remove('hidden');
       ['unico', 'divisible', 'ajuste'].forEach(t => {
         const btn = document.getElementById(`btn-tab-${t}`);
-        if (`tab-${t}` === tabId) btn.className = "flex-1 py-3 t-primary border-b-2 border-primary font-bold transition-all text-center";
-        else btn.className = "flex-1 py-3 text-slate-500 font-normal transition-all text-center";
+        if (`tab-${t}` === tabId) btn.className = "flex-1 py-2.5 t-accent border-b-2 border-accent font-semibold transition-all text-center";
+        else btn.className = "flex-1 py-2.5 text-muted font-medium transition-all text-center";
       });
     }
 
@@ -1131,7 +1156,6 @@
         state.movements = data.movements || []; 
         state.config = data.config || { paydate: "", themeBrian: "", themeVirginia: "", lastProcessedDate: "" };
 
-        // FILTRO ANTI-BUGS PARA FECHAS DEL BACKEND
         if (state.config.paydate && state.config.paydate.length > 10) state.config.paydate = state.config.paydate.substring(0, 10);
         if (state.config.lastProcessedDate && state.config.lastProcessedDate.length > 10) state.config.lastProcessedDate = state.config.lastProcessedDate.substring(0, 10);
         
@@ -1244,10 +1268,10 @@
       document.getElementById('display-hb').innerText = formatMoney(state.hb); document.getElementById('display-bs').innerText = formatMoney(state.bs);
       
       let dToday = document.getElementById('display-today'); dToday.innerText = formatMoney(todayBudget);
-      dToday.className = todayBudget < 0 ? "text-4xl font-black text-red-400" : "text-4xl font-black t-primary";
+      dToday.className = todayBudget < 0 ? "text-3xl font-bold text-red-400" : "text-3xl font-bold t-accent";
 
       let dTomorrow = document.getElementById('display-tomorrow'); dTomorrow.innerText = formatMoney(tomorrowBudget);
-      dTomorrow.className = tomorrowBudget < 0 ? "text-lg font-bold text-red-400 mt-1 block" : "text-lg font-bold text-slate-100 mt-1 block";
+      dTomorrow.className = tomorrowBudget < 0 ? "text-base font-semibold text-red-400 mt-1 block" : "text-base font-semibold text-main mt-1 block";
 
       document.getElementById('display-days').innerText = `${dates.length} Días`;
       document.getElementById('modal-days-subtitle').innerText = `${dates.length} Días restantes hasta el cobro`;
@@ -1307,29 +1331,28 @@
 
     function renderHistory() {
       const container = document.getElementById('bottom-movimientos'); container.innerHTML = "";
-      if(state.movements.length === 0) { container.innerHTML = `<p class="text-xs text-slate-500 text-center py-4">No hay movimientos registrados.</p>`; return; }
+      if(state.movements.length === 0) { container.innerHTML = `<p class="text-xs text-muted text-center py-4">No hay movimientos registrados.</p>`; return; }
       let reversedMovs = [...state.movements].reverse();
       reversedMovs.forEach(m => {
         let isNegative = parseFloat(m.monto) < 0; let displayMonto = Math.abs(m.monto);
         let isIngreso = m.tipo.includes("T-1") || m.tipo.includes("T-2") || isNegative;
-        let colorAmount = isIngreso ? 't-primary' : 'text-slate-100'; let sign = isIngreso ? '+' : '-';
+        let colorAmount = isIngreso ? 't-accent' : 'text-main'; let sign = isIngreso ? '+' : '-';
         let dateObj = m.fecha ? new Date(m.fecha) : new Date();
-        let userColor = (m.usuario === "Brian") ? "bg-blue-900/50 text-blue-300 border-blue-700" : "bg-fuchsia-900/50 text-fuchsia-300 border-fuchsia-700";
         let html = `
-          <div class="glass p-3 rounded-lg border border-slate-700 flex justify-between items-center mb-2">
+          <div class="card-clean p-3 flex justify-between items-center mb-2">
             <div class="flex flex-col flex-1 overflow-hidden pr-2">
               <div class="flex items-center gap-2 mb-1">
-                <span class="text-[9px] uppercase font-bold border px-1.5 py-0.5 rounded-sm ${userColor}">${m.usuario || "App"}</span>
-                <span class="text-[10px] text-slate-500">${dateObj.toLocaleDateString('es-AR', {day: '2-digit', month: 'short'})} ${dateObj.toLocaleTimeString('es-AR', {hour: '2-digit', minute:'2-digit'})}</span>
+                <span class="text-[9px] uppercase font-semibold border border-slate-700/80 px-1.5 py-0.5 rounded text-muted">${m.usuario || "App"}</span>
+                <span class="text-[10px] text-muted">${dateObj.toLocaleDateString('es-AR', {day: '2-digit', month: 'short'})} ${dateObj.toLocaleTimeString('es-AR', {hour: '2-digit', minute:'2-digit'})}</span>
               </div>
-              <span class="text-sm font-semibold text-slate-300 truncate">${m.concepto || "Sin detalle"}</span>
-              <span class="text-[10px] text-slate-400 italic">${m.tipo.replace("Ajuste ", "")}</span>
+              <span class="text-xs font-medium text-main truncate">${m.concepto || "Sin detalle"}</span>
+              <span class="text-[10px] text-muted italic">${m.tipo.replace("Ajuste ", "")}</span>
             </div>
             <div class="text-right flex flex-col items-end justify-center">
-              <span class="text-base font-black ${colorAmount} mb-2">${sign}${formatMoney(displayMonto)}</span>
+              <span class="text-sm font-bold ${colorAmount} mb-1.5">${sign}${formatMoney(displayMonto)}</span>
               <div class="flex gap-1">
-                <button onclick="openEditModal('${m.fecha}')" class="text-[10px] bg-slate-800 hover:bg-slate-700 text-slate-400 px-2 py-1.5 rounded border border-slate-700 transition-colors">✏️</button>
-                <button onclick="deleteMovementDirectly('${m.fecha}')" class="text-[10px] bg-red-900/20 hover:bg-red-900/50 text-red-400 px-2 py-1.5 rounded border border-red-500/30 transition-colors">🗑️</button>
+                <button onclick="openEditModal('${m.fecha}')" class="text-[10px] card-clean text-muted px-2 py-1 hover:bg-slate-800">✏️</button>
+                <button onclick="deleteMovementDirectly('${m.fecha}')" class="text-[10px] card-clean text-muted px-2 py-1 hover:bg-slate-800">🗑️</button>
               </div>
             </div>
           </div>`;
@@ -1341,26 +1364,26 @@
       const cal = document.getElementById('modal-calendario-body'); cal.innerHTML = "";
       const { dates, baseDailyBudget, gastosPorDia } = calculateBudgets();
       dates.forEach(date => {
-        let dailyBudget = baseDailyBudget - gastosPorDia[date]; let colorCls = dailyBudget < 0 ? "text-red-400 border-red-900" : "t-primary border-slate-800";
-        let html = `<div class="glass p-3 rounded-lg border border-slate-700/80 mb-2">
-             <div class="flex justify-between items-center border-b border-slate-700 pb-2 mb-2">
-                <span class="font-bold text-slate-200 text-xs">${date}</span>
-                <span class="font-bold text-xs ${colorCls} bg-slate-900 px-2 py-1 rounded border">Disp: ${formatMoney(dailyBudget)}</span>
+        let dailyBudget = baseDailyBudget - gastosPorDia[date]; let colorCls = dailyBudget < 0 ? "text-red-400 border-red-900/50" : "t-accent border-slate-800";
+        let html = `<div class="card-clean p-3 mb-2">
+             <div class="flex justify-between items-center border-b border-slate-800/80 pb-2 mb-2">
+                <span class="font-semibold text-main text-xs">${date}</span>
+                <span class="font-semibold text-xs ${colorCls} card-clean px-2 py-0.5">Disp: ${formatMoney(dailyBudget)}</span>
              </div>
-             <div class="text-xs text-slate-400 space-y-1 pl-1">`;
+             <div class="text-xs text-muted space-y-1 pl-1">`;
         let hasMovements = false;
         state.movements.forEach(m => {
            if(m.fechas_afectadas && m.fechas_afectadas.length > 2 && m.fechas_afectadas.includes(date) && m.target !== "Ajuste Global" && m.target !== "Bolsa") {
              hasMovements = true; let arr = JSON.parse(m.fechas_afectadas);
              let propMonto = parseFloat(m.monto) / arr.length; let isPositive = propMonto < 0; 
-             let sign = isPositive ? "+" : "-"; let color = isPositive ? "t-primary font-bold" : "text-slate-300";
+             let sign = isPositive ? "+" : "-"; let color = isPositive ? "t-accent font-semibold" : "text-main";
              html += `<p class="flex justify-between items-center text-[11px]">
-               <span class="truncate w-3/4">• <strong class="${color}">${m.concepto}</strong> ${arr.length > 1 && !isPositive ? '<span class="text-[9px] text-slate-500">(Cuota)</span>' : ''}</span>
+               <span class="truncate w-3/4">• <strong class="${color}">${m.concepto}</strong> ${arr.length > 1 && !isPositive ? '<span class="text-[9px] text-muted">(Cuota)</span>' : ''}</span>
                <span class="${color}">${sign}${formatMoney(Math.abs(propMonto))}</span>
              </p>`;
            }
         });
-        if(!hasMovements) html += `<p class="italic text-[11px] text-slate-500">Sin gastos computados.</p>`;
+        if(!hasMovements) html += `<p class="italic text-[11px] text-muted">Sin gastos computados.</p>`;
         html += `</div></div>`; cal.innerHTML += html;
       });
     }
@@ -1400,14 +1423,14 @@
       ALL_MESES.forEach(m => {
         let isActive = m === currentProyMonth;
         let cls = isActive 
-          ? "bg-indigo-600 text-white font-bold border-indigo-500 shadow-md" 
-          : "bg-slate-800 text-slate-400 font-semibold border-slate-700 hover:bg-slate-700";
-        container.innerHTML += `<button onclick="changeMonth('${m}')" class="shrink-0 px-3 py-1.5 rounded-lg border text-[11px] transition-all ${cls}">${m}</button>`;
+          ? "bg-accent text-white font-semibold shadow-sm" 
+          : "card-clean text-muted font-medium hover:bg-slate-800/50";
+        container.innerHTML += `<button onclick="changeMonth('${m}')" class="shrink-0 px-3 py-1.5 rounded-xl text-[11px] transition-all ${cls}">${m}</button>`;
       });
       document.getElementById('proy-select-mes').value = currentProyMonth;
 
       setTimeout(() => {
-        let activeBtn = container.querySelector('.bg-indigo-600');
+        let activeBtn = container.querySelector('.bg-accent');
         if (activeBtn) activeBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
       }, 100);
     }
@@ -1475,8 +1498,8 @@
       document.getElementById('tab-serv-sueldos').classList.add('hidden');
       document.getElementById(tabId).classList.remove('hidden');
 
-      document.getElementById('btn-serv-lista').className = tabId === 'tab-serv-lista' ? "flex-1 py-2 text-indigo-400 border-b-2 border-indigo-400 transition-all" : "flex-1 py-2 text-slate-500 transition-all";
-      document.getElementById('btn-serv-sueldos').className = tabId === 'tab-serv-sueldos' ? "flex-1 py-2 text-indigo-400 border-b-2 border-indigo-400 transition-all" : "flex-1 py-2 text-slate-500 transition-all";
+      document.getElementById('btn-serv-lista').className = tabId === 'tab-serv-lista' ? "flex-1 py-2 t-accent border-b-2 border-accent transition-all" : "flex-1 py-2 text-muted transition-all";
+      document.getElementById('btn-serv-sueldos').className = tabId === 'tab-serv-sueldos' ? "flex-1 py-2 t-accent border-b-2 border-accent transition-all" : "flex-1 py-2 text-muted transition-all";
     }
 
     function renderServiciosGlobales() {
@@ -1492,25 +1515,25 @@
         totalARS += costoSubtotal;
 
         let row = `
-          <div class="bg-slate-900/90 p-2 rounded-lg border border-slate-700 text-xs space-y-1.5">
+          <div class="card-clean p-2 text-xs space-y-1.5">
             <div class="flex gap-1.5 items-center">
-              <input type="text" value="${serv.concepto}" placeholder="Servicio" onchange="serviciosGlobales[${idx}].concepto=this.value; renderServiciosGlobales();" class="flex-1 bg-slate-800 border border-slate-700 p-1 rounded text-white font-semibold outline-none">
-              <select onchange="serviciosGlobales[${idx}].moneda=this.value; renderServiciosGlobales();" class="bg-slate-800 text-amber-300 font-bold border border-slate-700 p-1 rounded outline-none">
+              <input type="text" value="${serv.concepto}" placeholder="Servicio" onchange="serviciosGlobales[${idx}].concepto=this.value; renderServiciosGlobales();" class="flex-1 card-clean p-1 text-main font-medium outline-none">
+              <select onchange="serviciosGlobales[${idx}].moneda=this.value; renderServiciosGlobales();" class="card-clean text-main font-bold p-1 outline-none">
                 <option value="ARS" ${serv.moneda === 'ARS' ? 'selected' : ''}>$ ARS</option>
                 <option value="USD" ${serv.moneda === 'USD' ? 'selected' : ''}>$ USD</option>
               </select>
-              <button onclick="serviciosGlobales.splice(${idx},1); renderServiciosGlobales();" class="text-red-400 p-1">🗑️</button>
+              <button onclick="serviciosGlobales.splice(${idx},1); renderServiciosGlobales();" class="text-muted hover:text-red-400 p-1">🗑️</button>
             </div>
             <div class="flex gap-2 items-center justify-between">
               <div class="flex items-center gap-1">
-                <span class="text-[9px] text-slate-400">Cant:</span>
-                <input type="number" value="${cant}" onchange="serviciosGlobales[${idx}].cant=parseInt(this.value)||1; renderServiciosGlobales();" class="w-12 bg-slate-800 border border-slate-700 p-1 rounded text-center text-white font-bold outline-none">
+                <span class="text-[9px] text-muted">Cant:</span>
+                <input type="number" value="${cant}" onchange="serviciosGlobales[${idx}].cant=parseInt(this.value)||1; renderServiciosGlobales();" class="w-12 card-clean p-1 text-center text-main font-bold outline-none">
               </div>
               <div class="flex items-center gap-1">
-                <span class="text-[9px] text-slate-400">Precio Unit:</span>
-                <input type="text" inputmode="decimal" value="${new Intl.NumberFormat('es-AR').format(precioIndividual)}" onfocus="handleInputFocus(this)" onblur="handleInputBlur(this)" oninput="formatLiveCurrencyInput(this); serviciosGlobales[${idx}].precio=parseAmountInput(this.value); renderServiciosGlobales();" class="w-24 bg-slate-800 border border-slate-700 p-1 rounded text-right text-white font-bold outline-none">
+                <span class="text-[9px] text-muted">Precio Unit:</span>
+                <input type="text" inputmode="decimal" value="${new Intl.NumberFormat('es-AR').format(precioIndividual)}" onfocus="handleInputFocus(this)" onblur="handleInputBlur(this)" oninput="formatLiveCurrencyInput(this); serviciosGlobales[${idx}].precio=parseAmountInput(this.value); renderServiciosGlobales();" class="w-24 card-clean p-1 text-right text-main font-bold outline-none">
               </div>
-              <span class="font-extrabold text-indigo-300 text-xs">${formatMoney(costoSubtotal)}</span>
+              <span class="font-semibold text-main text-xs">${formatMoney(costoSubtotal)}</span>
             </div>
           </div>`;
         list.innerHTML += row;
@@ -1595,7 +1618,7 @@
       let totalComputado = 0;
 
       if (serviciosGlobales.length === 0) {
-        container.innerHTML = `<p class="text-xs text-slate-500 text-center py-4">No hay servicios globales cargados en la configuración.</p>`;
+        container.innerHTML = `<p class="text-xs text-muted text-center py-4">No hay servicios globales cargados en la configuración.</p>`;
         document.getElementById('modal-servicios-selector-total').innerText = formatMoney(0);
         return;
       }
@@ -1609,15 +1632,15 @@
         if (isEnabled) totalComputado += costoSubtotal;
 
         let row = `
-          <div class="bg-slate-900/90 p-2.5 rounded-xl border ${isEnabled ? 'border-indigo-500/40 bg-indigo-950/20' : 'border-slate-800 opacity-60'} flex justify-between items-center transition-all cursor-pointer" onclick="toggleServicioForCurrentMonth('${serv.concepto.replace(/'/g, "\\'")}', ${!isEnabled})">
+          <div class="card-clean p-2.5 ${isEnabled ? 'bg-accent-light border-accent-light' : 'opacity-50'} flex justify-between items-center transition-all cursor-pointer" onclick="toggleServicioForCurrentMonth('${serv.concepto.replace(/'/g, "\\'")}', ${!isEnabled})">
             <div class="flex items-center gap-2.5">
-              <input type="checkbox" ${isEnabled ? 'checked' : ''} onclick="event.stopPropagation(); toggleServicioForCurrentMonth('${serv.concepto.replace(/'/g, "\\'")}', this.checked)" class="w-4 h-4 accent-indigo-500 cursor-pointer">
+              <input type="checkbox" ${isEnabled ? 'checked' : ''} onclick="event.stopPropagation(); toggleServicioForCurrentMonth('${serv.concepto.replace(/'/g, "\\'")}', this.checked)" class="w-4 h-4 rounded cursor-pointer">
               <div class="flex flex-col">
-                <span class="text-xs font-bold ${isEnabled ? 'text-white' : 'text-slate-400 line-through'}">${serv.concepto}</span>
-                <span class="text-[9px] text-slate-400">${serv.cant > 1 ? serv.cant + 'x ' : ''}${serv.moneda === 'USD' ? 'USD ' + serv.precio : '$ ' + serv.precio}</span>
+                <span class="text-xs font-semibold ${isEnabled ? 'text-main' : 'text-muted line-through'}">${serv.concepto}</span>
+                <span class="text-[9px] text-muted">${serv.cant > 1 ? serv.cant + 'x ' : ''}${serv.moneda === 'USD' ? 'USD ' + serv.precio : '$ ' + serv.precio}</span>
               </div>
             </div>
-            <span class="text-xs font-extrabold ${isEnabled ? 'text-indigo-300' : 'text-slate-500 line-through'}">${formatMoney(costoSubtotal)}</span>
+            <span class="text-xs font-semibold ${isEnabled ? 'text-main' : 'text-muted line-through'}">${formatMoney(costoSubtotal)}</span>
           </div>`;
         container.innerHTML += row;
       });
@@ -1708,28 +1731,26 @@
         let displayPrecio = gasto.precio === 0 ? '' : (gasto.precio < 0 ? '-' : '') + new Intl.NumberFormat('es-AR').format(Math.abs(gasto.precio));
 
         let row = `
-          <div class="bg-slate-900/90 p-2 rounded-lg border border-slate-800 space-y-2">
-            <!-- Fila 1: Categoria, Concepto, Borrar y Flechas -->
+          <div class="card-clean p-2 space-y-2">
             <div class="flex gap-1.5 items-center">
               <div class="flex flex-col gap-0.5">
-                <button onclick="moveGastoOrder('${user}', '${gasto.id}', -1)" ${idx === 0 ? 'disabled class="opacity-20"' : ''} title="Subir orden" class="text-[10px] bg-slate-800 hover:bg-slate-700 p-0.5 rounded border border-slate-700 leading-none">▲</button>
-                <button onclick="moveGastoOrder('${user}', '${gasto.id}', 1)" ${idx === list.length - 1 ? 'disabled class="opacity-20"' : ''} title="Bajar orden" class="text-[10px] bg-slate-800 hover:bg-slate-700 p-0.5 rounded border border-slate-700 leading-none">▼</button>
+                <button onclick="moveGastoOrder('${user}', '${gasto.id}', -1)" ${idx === 0 ? 'disabled class="opacity-20"' : ''} title="Subir orden" class="text-[10px] card-clean p-0.5 leading-none hover:bg-slate-800">▲</button>
+                <button onclick="moveGastoOrder('${user}', '${gasto.id}', 1)" ${idx === list.length - 1 ? 'disabled class="opacity-20"' : ''} title="Bajar orden" class="text-[10px] card-clean p-0.5 leading-none hover:bg-slate-800">▼</button>
               </div>
 
-              <select onchange="updateGastoItem('${user}', '${gasto.id}', 'categoria', this.value)" class="bg-slate-800 text-[10px] text-slate-300 border border-slate-700 rounded p-1 outline-none">
+              <select onchange="updateGastoItem('${user}', '${gasto.id}', 'categoria', this.value)" class="card-clean text-[10px] text-main rounded p-1 outline-none">
                 ${catOptionsHtml}
               </select>
-              <input type="text" value="${gasto.concepto || ''}" placeholder="Concepto" onchange="updateGastoItem('${user}', '${gasto.id}', 'concepto', this.value)" class="flex-1 bg-slate-800 border border-slate-700 p-1.5 rounded text-xs text-white outline-none min-w-0">
-              <button onclick="removeGastoRow('${user}', '${gasto.id}')" class="text-red-400 p-1.5 bg-slate-800 border border-slate-700 rounded">🗑️</button>
+              <input type="text" value="${gasto.concepto || ''}" placeholder="Concepto" onchange="updateGastoItem('${user}', '${gasto.id}', 'concepto', this.value)" class="flex-1 card-clean p-1.5 rounded text-xs text-main outline-none min-w-0">
+              <button onclick="removeGastoRow('${user}', '${gasto.id}')" class="text-muted hover:text-red-400 p-1.5 card-clean">🗑️</button>
             </div>
             
-            <!-- Fila 2: Botón de Replicado Manual y Monto -->
             <div class="flex justify-between items-center gap-2 pl-4">
-              <button type="button" onclick="replicateGastoValue('${user}', '${gasto.id}')" class="flex items-center gap-1.5 text-[10px] text-blue-400 hover:text-blue-300 transition-colors" title="Copiar este monto a todos los meses">
-                <span class="p-1 rounded border border-blue-800 bg-blue-900/30">🔁</span>
+              <button type="button" onclick="replicateGastoValue('${user}', '${gasto.id}')" class="flex items-center gap-1.5 text-[10px] text-muted hover:text-main transition-colors" title="Copiar este monto a todos los meses">
+                <span class="p-1 rounded card-clean">🔁</span>
                 <span>Copiar al resto del año</span>
               </button>
-              <input type="text" inputmode="decimal" value="${displayPrecio}" placeholder="Monto ($)" onfocus="handleInputFocus(this)" onblur="handleInputBlur(this)" oninput="formatLiveCurrencyInput(this); updateGastoItem('${user}', '${gasto.id}', 'precio', this.value)" onkeydown="handleGastoMontoKeydown(event, this)" class="gasto-monto-input w-32 bg-slate-800 border border-slate-700 p-1.5 rounded text-xs text-white font-bold text-right outline-none">
+              <input type="text" inputmode="decimal" value="${displayPrecio}" placeholder="Monto ($)" onfocus="handleInputFocus(this)" onblur="handleInputBlur(this)" oninput="formatLiveCurrencyInput(this); updateGastoItem('${user}', '${gasto.id}', 'precio', this.value)" onkeydown="handleGastoMontoKeydown(event, this)" class="gasto-monto-input w-32 card-clean p-1.5 rounded text-xs text-main font-bold text-right outline-none">
             </div>
           </div>`;
         container.innerHTML += row;
@@ -1897,10 +1918,10 @@
         let disabledCount = getDisabledServiciosForCurrentMonth().length;
         if (disabledCount > 0) {
           statusBadge.innerText = `${serviciosGlobales.length - disabledCount}/${serviciosGlobales.length} activos`;
-          statusBadge.className = "text-[9px] bg-amber-900/60 text-amber-300 px-1.5 py-0.5 rounded border border-amber-500/40 font-bold group-hover:bg-amber-600 group-hover:text-white transition-all";
+          statusBadge.className = "text-[9px] card-clean px-1.5 py-0.5 font-semibold text-muted transition-all";
         } else {
           statusBadge.innerText = "Ver / Filtrar";
-          statusBadge.className = "text-[9px] bg-indigo-900/60 text-indigo-300 px-1.5 py-0.5 rounded border border-indigo-500/40 font-bold group-hover:bg-indigo-600 group-hover:text-white transition-all";
+          statusBadge.className = "text-[9px] card-clean px-1.5 py-0.5 font-semibold text-muted transition-all";
         }
       }
 
