@@ -1,0 +1,490 @@
+ // 50 TEMAS RECALIBRADOS CON LEGIBILIDAD GARANTIZADA
+    const THEME_GROUPS = [
+      {
+        label: "Escala de Grises & Oscuros Sobrios",
+        options: [
+          { id: "dark-obsidian", name: "🖤 Obsidiana Minimal", vals: { accent: "#38bdf8", bg: "#090d16", card: "#111726", border: "#1e293b", isLight: false } },
+          { id: "dark-slate", name: "📓 Pizarra Grafito", vals: { accent: "#60a5fa", bg: "#0f172a", card: "#1e293b", border: "#334155", isLight: false } },
+          { id: "dark-charcoal", name: "🌑 Carbón Puro", vals: { accent: "#38bdf8", bg: "#121212", card: "#1e1e1e", border: "#333333", isLight: false } },
+          { id: "dark-titanium", name: "⚙️ Titanio Nocturno", vals: { accent: "#94a3b8", bg: "#0a0a0c", card: "#141418", border: "#2e2e38", isLight: false } },
+          { id: "dark-monochrome", name: "🏁 Monocromo Puro", vals: { accent: "#ffffff", bg: "#000000", card: "#141414", border: "#333333", isLight: false } },
+          { id: "dark-zinc", name: "🪨 Cinc Profundo", vals: { accent: "#a1a1aa", bg: "#09090b", card: "#18181b", border: "#3f3f46", isLight: false } },
+          { id: "dark-steel", name: "🗡️ Acero Oscuro", vals: { accent: "#cbd5e1", bg: "#0b0f19", card: "#161e2e", border: "#334155", isLight: false } },
+          { id: "dark-ash", name: "🌋 Ceniza", vals: { accent: "#e2e8f0", bg: "#111315", card: "#1b1e22", border: "#373e47", isLight: false } },
+          { id: "dark-midnight", name: "🌃 Medianoche Clean", vals: { accent: "#38bdf8", bg: "#020617", card: "#0f172a", border: "#1e293b", isLight: false } },
+          { id: "dark-void", name: "🌌 Vacío Profundo", vals: { accent: "#818cf8", bg: "#030712", card: "#111827", border: "#374151", isLight: false } }
+        ]
+      },
+      {
+        label: "Minimalismo Azul & Frecuencias Frías",
+        options: [
+          { id: "blue-nordic", name: "❄️ Azul Nórdico", vals: { accent: "#38bdf8", bg: "#0b1329", card: "#132247", border: "#224180", isLight: false } },
+          { id: "blue-sapphire", name: "🔷 Zafiro Elegante", vals: { accent: "#60a5fa", bg: "#07111e", card: "#0f1f38", border: "#214375", isLight: false } },
+          { id: "blue-atlantic", name: "🌊 Atlántico", vals: { accent: "#22d3ee", bg: "#081a24", card: "#102a3a", border: "#22516d", isLight: false } },
+          { id: "blue-cobalt", name: "🧿 Cobalto Profundo", vals: { accent: "#818cf8", bg: "#0d1127", card: "#171e40", border: "#2d3a7c", isLight: false } },
+          { id: "blue-arctic", name: "🧊 Ártico Sobrio", vals: { accent: "#7dd3fc", bg: "#0c192c", card: "#162944", border: "#2e507d", isLight: false } },
+          { id: "blue-indigo", name: "🪻 Índigo Soft", vals: { accent: "#a5b4fc", bg: "#0e132c", card: "#192147", border: "#314187", isLight: false } },
+          { id: "blue-deepsky", name: "🌌 Cielo Profundo", vals: { accent: "#38bdf8", bg: "#06131e", card: "#0f2334", border: "#204666", isLight: false } },
+          { id: "blue-denim", name: "👖 Denim Minimal", vals: { accent: "#93c5fd", bg: "#101726", card: "#1c2840", border: "#344a73", isLight: false } },
+          { id: "blue-glacier", name: "🏔️ Glaciar", vals: { accent: "#a5f3fc", bg: "#0a192f", card: "#172a45", border: "#2a4a78", isLight: false } },
+          { id: "blue-abyss", name: "⚓ Abismo", vals: { accent: "#60a5fa", bg: "#030a16", card: "#0a162b", border: "#1a3666", isLight: false } }
+        ]
+      },
+      {
+        label: "Verdes Orgánicos & Salvia",
+        options: [
+          { id: "green-sage", name: "🍃 Salvia Minimal", vals: { accent: "#4ade80", bg: "#09140e", card: "#12241b", border: "#264a38", isLight: false } },
+          { id: "green-emerald", name: "💚 Esmeralda Mate", vals: { accent: "#34d399", bg: "#061510", card: "#0d261e", border: "#1f4f3f", isLight: false } },
+          { id: "green-forest", name: "🌲 Bosque Sobrio", vals: { accent: "#22c55e", bg: "#05130b", card: "#0c2215", border: "#1d472d", isLight: false } },
+          { id: "green-olive", name: "🫒 Olivo Profundo", vals: { accent: "#a3e635", bg: "#10140a", card: "#1b2212", border: "#374527", isLight: false } },
+          { id: "green-mint", name: "🌿 Menta Oscuro", vals: { accent: "#2dd4bf", bg: "#061413", card: "#0e2523", border: "#214a46", isLight: false } },
+          { id: "green-botanical", name: "🪴 Botánico", vals: { accent: "#86efac", bg: "#08130c", card: "#122317", border: "#274a31", isLight: false } },
+          { id: "green-moss", name: "🪨 Musgo Mate", vals: { accent: "#a3e635", bg: "#0f130c", card: "#1a2215", border: "#35452b", isLight: false } },
+          { id: "green-eucalyptus", name: "🌱 Eucalipto", vals: { accent: "#6ee7b7", bg: "#071411", card: "#102520", border: "#234c43", isLight: false } },
+          { id: "green-pine", name: "🌲 Pino Nocturno", vals: { accent: "#4ade80", bg: "#041209", card: "#0a2012", border: "#1a4428", isLight: false } },
+          { id: "green-tea", name: "🍵 Té Verde", vals: { accent: "#bef264", bg: "#101409", card: "#1c2411", border: "#3a4a24", isLight: false } }
+        ]
+      },
+      {
+        label: "Cálidos Elegantes, Ámbar & Moka",
+        options: [
+          { id: "warm-amber", name: "🟠 Ámbar Mate", vals: { accent: "#fbbf24", bg: "#141008", card: "#241d0f", border: "#4a3c1f", isLight: false } },
+          { id: "warm-coffee", name: "☕ Café Latte", vals: { accent: "#f97316", bg: "#140e0a", card: "#241a12", border: "#4a3525", isLight: false } },
+          { id: "warm-copper", name: "🥉 Cobre Pulido", vals: { accent: "#f97316", bg: "#160d08", card: "#26170e", border: "#4f311f", isLight: false } },
+          { id: "warm-bronze", name: "🏺 Bronce Antiguo", vals: { accent: "#fbbf24", bg: "#130f0a", card: "#221a11", border: "#473623", isLight: false } },
+          { id: "warm-terracotta", name: "🧱 Terracota Soft", vals: { accent: "#fb923c", bg: "#160e0a", card: "#271811", border: "#4f3123", isLight: false } },
+          { id: "warm-sand", name: "🏖️ Arena Nocturna", vals: { accent: "#fde047", bg: "#14120a", card: "#232011", border: "#474223", isLight: false } },
+          { id: "warm-cinnamon", name: "🫔 Canela Mate", vals: { accent: "#f97316", bg: "#160c07", card: "#26150c", border: "#4f2b19", isLight: false } },
+          { id: "warm-mahogany", name: "🪵 Caoba Sobrio", vals: { accent: "#f97316", bg: "#130a07", card: "#22120b", border: "#472417", isLight: false } },
+          { id: "warm-caramel", name: "🍯 Caramelo Profundo", vals: { accent: "#fbbf24", bg: "#151006", card: "#251c0b", border: "#4c3816", isLight: false } },
+          { id: "warm-sepia", name: "📜 Sepia Elegante", vals: { accent: "#fde047", bg: "#12100a", card: "#201c12", border: "#423a25", isLight: false } }
+        ]
+      },
+      {
+        label: "Claros Minimalistas & Pulcros",
+        options: [
+          { id: "light-titanium", name: "🩶 Titanio Claro", vals: { accent: "#2563eb", bg: "#f1f5f9", card: "#ffffff", border: "#cbd5e1", isLight: true } },
+          { id: "light-paper", name: "📄 Papel Blanco", vals: { accent: "#0284c7", bg: "#f8fafc", card: "#ffffff", border: "#cbd5e1", isLight: true } },
+          { id: "light-cotton", name: "☁️ Algodón", vals: { accent: "#0284c7", bg: "#f1f5f9", card: "#ffffff", border: "#cbd5e1", isLight: true } },
+          { id: "light-ivory", name: "🦴 Marfil Minimal", vals: { accent: "#d97706", bg: "#fefcf6", card: "#ffffff", border: "#e2d9be", isLight: true } },
+          { id: "light-sand", name: "⌛ Arena Clara", vals: { accent: "#d97706", bg: "#fefbf3", card: "#ffffff", border: "#e2d6b5", isLight: true } },
+          { id: "light-mint", name: "🍃 Menta Puro", vals: { accent: "#059669", bg: "#f0fdf4", card: "#ffffff", border: "#a7f3d0", isLight: true } },
+          { id: "light-sky", name: "🌤️ Cielo Claro", vals: { accent: "#0284c7", bg: "#f0f9ff", card: "#ffffff", border: "#bae6fd", isLight: true } },
+          { id: "light-lavender", name: "🪻 Lavanda Soft", vals: { accent: "#7c3aed", bg: "#fcfaff", card: "#ffffff", border: "#ddd6fe", isLight: true } },
+          { id: "light-monochrome", name: "🔲 Monocromo Claro", vals: { accent: "#000000", bg: "#e2e8f0", card: "#ffffff", border: "#cbd5e1", isLight: true } },
+          { id: "light-studio", name: "🎨 Estudio", vals: { accent: "#2563eb", bg: "#f1f5f9", card: "#ffffff", border: "#cbd5e1", isLight: true } }
+        ]
+      }
+    ];
+
+
+    // 50 TEMAS RECALIBRADOS - 100% DISTINTOS Y LEGIBLES
+const THEME_GROUPS = [
+  {
+    label: "Escala de Grises & Oscuros Sobrios",
+    options: [
+      { id: "dark-oled", name: "🖤 OLED Puro", vals: { accent: "#ffffff", bg: "#000000", card: "#0a0a0a", border: "#222222", isLight: false } }, // Negro absoluto
+      { id: "dark-hacker", name: "📟 Terminal Hacker", vals: { accent: "#22c55e", bg: "#0d1117", card: "#161b22", border: "#30363d", isLight: false } }, // Estilo GitHub/Consola
+      { id: "dark-dracula", name: "🧛 Dracula", vals: { accent: "#ff79c6", bg: "#282a36", card: "#44475a", border: "#6272a4", isLight: false } }, // Tonos morado-grisáceo
+      { id: "dark-cyber", name: "🌆 Cyberpunk", vals: { accent: "#f0abfc", bg: "#101014", card: "#1a1a24", border: "#3b2a45", isLight: false } }, // Gris oscuro con acento neón
+      { id: "dark-slate", name: "📓 Pizarra Azulada", vals: { accent: "#38bdf8", bg: "#0f172a", card: "#1e293b", border: "#334155", isLight: false } }, // Tailwind Slate
+      { id: "dark-warm", name: "☕ Gris Cálido", vals: { accent: "#fbbf24", bg: "#1f1d1b", card: "#2c2926", border: "#423d38", isLight: false } }, // Gris con base marrón
+      { id: "dark-dim", name: "🌫️ Niebla Dim", vals: { accent: "#818cf8", bg: "#222428", card: "#2f3136", border: "#40444b", isLight: false } }, // Estilo Discord oscuro
+      { id: "dark-navy", name: "⚓ Gris Naval", vals: { accent: "#fca5a5", bg: "#111827", card: "#1f2937", border: "#374151", isLight: false } }, // Gris muy oscuro con acento salmón
+      { id: "dark-zinc", name: "🪨 Cinc Industrial", vals: { accent: "#a1a1aa", bg: "#09090b", card: "#18181b", border: "#27272a", isLight: false } }, // Metálico mate
+      { id: "dark-blood", name: "🩸 Vampiro Minimal", vals: { accent: "#ef4444", bg: "#121212", card: "#1e1e1e", border: "#3f2323", isLight: false } } // Gris puro con rojo intenso
+    ]
+  },
+  {
+    label: "Azules & Frecuencias Frías",
+    options: [
+      { id: "blue-ocean", name: "🌊 Océano Profundo", vals: { accent: "#22d3ee", bg: "#001e36", card: "#002b4d", border: "#00477a", isLight: false } }, // Azul verdoso
+      { id: "blue-royal", name: "👑 Azul Real", vals: { accent: "#fbbf24", bg: "#0a1930", card: "#112240", border: "#233554", isLight: false } }, // Azul oscuro con acento dorado
+      { id: "blue-neon", name: "⚡ Cobalto Neón", vals: { accent: "#00ffcc", bg: "#050b14", card: "#0a1324", border: "#152a4a", isLight: false } }, // Muy oscuro con cian vibrante
+      { id: "blue-pastel", name: "🪻 Índigo Suave", vals: { accent: "#a5b4fc", bg: "#1e1b4b", card: "#312e81", border: "#4338ca", isLight: false } }, // Morado-azul
+      { id: "blue-ice", name: "🧊 Cueva de Hielo", vals: { accent: "#38bdf8", bg: "#0b192c", card: "#162b45", border: "#284b7a", isLight: false } }, // Azul frío cristalino
+      { id: "blue-denim", name: "👖 Denim Vintage", vals: { accent: "#f97316", bg: "#172554", card: "#1e3a8a", border: "#1e40af", isLight: false } }, // Azul vaquero con naranja
+      { id: "blue-twilight", name: "🌌 Crepúsculo", vals: { accent: "#c084fc", bg: "#020617", card: "#0f172a", border: "#312e81", isLight: false } }, // Base oscura con violeta
+      { id: "blue-aqua", name: "🤿 Abismo Marino", vals: { accent: "#6ee7b7", bg: "#083344", card: "#164e63", border: "#0891b2", isLight: false } }, // Tonos cyan/teal
+      { id: "blue-gray", name: "🛡️ Acero Azul", vals: { accent: "#94a3b8", bg: "#0f172a", card: "#1e293b", border: "#475569", isLight: false } }, // Desaturado y profesional
+      { id: "blue-galaxy", name: "🔭 Galaxia", vals: { accent: "#ec4899", bg: "#070b19", card: "#10162a", border: "#1e2542", isLight: false } } // Azul noche con rosa
+    ]
+  },
+  {
+    label: "Verdes Orgánicos & Botánicos",
+    options: [
+      { id: "green-forest", name: "🌲 Bosque Oscuro", vals: { accent: "#a3e635", bg: "#022c22", card: "#064e3b", border: "#065f46", isLight: false } }, // Verde pino intenso
+      { id: "green-matcha", name: "🍵 Matcha Suave", vals: { accent: "#d9f99d", bg: "#141c14", card: "#222f22", border: "#3a4a3a", isLight: false } }, // Verde desaturado/Grisáceo
+      { id: "green-toxic", name: "☣️ Verde Tóxico", vals: { accent: "#84cc16", bg: "#0a0a0a", card: "#121811", border: "#24331e", isLight: false } }, // Casi negro con verde lima
+      { id: "green-tropical", name: "🦜 Selva Tropical", vals: { accent: "#fb923c", bg: "#0f2e22", card: "#134230", border: "#195c42", isLight: false } }, // Verde oscuro con naranja
+      { id: "green-olive", name: "🫒 Táctico Militar", vals: { accent: "#fcd34d", bg: "#1e2117", card: "#2b3022", border: "#444a33", isLight: false } }, // Verde olivo oscuro
+      { id: "green-mint", name: "🌿 Menta Noche", vals: { accent: "#34d399", bg: "#021715", card: "#052e2a", border: "#0d5c54", isLight: false } }, // Verde agua/teal
+      { id: "green-emerald", name: "💎 Esmeralda", vals: { accent: "#ffffff", bg: "#064e3b", card: "#047857", border: "#059669", isLight: false } }, // Verde brillante tipo joya
+      { id: "green-swamp", name: "🐊 Pantano", vals: { accent: "#bef264", bg: "#162013", card: "#24361e", border: "#3b5530", isLight: false } }, // Verde-marrón
+      { id: "green-aurora", name: "🌌 Aurora Boreal", vals: { accent: "#22d3ee", bg: "#041512", card: "#072a24", border: "#0d4d42", isLight: false } }, // Verde muy oscuro con cian
+      { id: "green-sage", name: "🍃 Salvia", vals: { accent: "#6ee7b7", bg: "#1a211e", card: "#242e2a", border: "#35453f", isLight: false } } // Gris-verde muy suave
+    ]
+  },
+  {
+    label: "Cálidos Elegantes, Ámbar & Moka",
+    options: [
+      { id: "warm-coffee", name: "☕ Espresso", vals: { accent: "#d4a373", bg: "#1b1411", card: "#2b1f1a", border: "#47342b", isLight: false } }, // Marrón oscuro
+      { id: "warm-wine", name: "🍷 Vino Tinto", vals: { accent: "#fda4af", bg: "#2a0e18", card: "#431424", border: "#6b2138", isLight: false } }, // Rojo vino oscuro
+      { id: "warm-desert", name: "🏜️ Noche en el Desierto", vals: { accent: "#f97316", bg: "#211a14", card: "#33261c", border: "#523b2b", isLight: false } }, // Marrón arena
+      { id: "warm-rust", name: "🧱 Óxido y Cobre", vals: { accent: "#67e8f9", bg: "#271711", card: "#3d2218", border: "#5c3324", isLight: false } }, // Naranja oscuro con contraste azul
+      { id: "warm-gold", name: "🏆 Ébano y Oro", vals: { accent: "#fbbf24", bg: "#111111", card: "#1f1d19", border: "#403a2a", isLight: false } }, // Casi negro con dorado
+      { id: "warm-sepia", name: "📜 Sepia Retro", vals: { accent: "#fcd34d", bg: "#2d2721", card: "#3f372e", border: "#594d41", isLight: false } }, // Estilo foto antigua
+      { id: "warm-cherry", name: "🍒 Madera de Cerezo", vals: { accent: "#f87171", bg: "#251214", card: "#38191c", border: "#57252a", isLight: false } }, // Marrón rojizo
+      { id: "warm-pumpkin", name: "🎃 Calabaza", vals: { accent: "#ffed4a", bg: "#2d1606", card: "#45220a", border: "#6b3410", isLight: false } }, // Naranja muy quemado
+      { id: "warm-rose", name: "🥀 Palo Rosa Oscuro", vals: { accent: "#fbcfe8", bg: "#21171d", card: "#33232c", border: "#4f3544", isLight: false } }, // Marrón-rosáceo
+      { id: "warm-bronze", name: "🏺 Bronce Metálico", vals: { accent: "#34d399", bg: "#211b15", card: "#332a21", border: "#4f4133", isLight: false } } // Marrón con contraste menta
+    ]
+  },
+  {
+    label: "Claros Minimalistas & Pulcros",
+    options: [
+      { id: "light-apple", name: "🍏 Blanco Puro", vals: { accent: "#007aff", bg: "#f5f5f7", card: "#ffffff", border: "#d2d2d7", isLight: true } }, // Estilo Apple
+      { id: "light-paper", name: "📖 Modo Lectura", vals: { accent: "#92400e", bg: "#fef3c7", card: "#fffbeb", border: "#fde68a", isLight: true } }, // Crema muy cálido
+      { id: "light-ice", name: "❄️ Azul Hielo", vals: { accent: "#0369a1", bg: "#f0f9ff", card: "#ffffff", border: "#bae6fd", isLight: true } }, // Azul clarito
+      { id: "light-mint", name: "🍃 Brisa de Menta", vals: { accent: "#047857", bg: "#ecfdf5", card: "#ffffff", border: "#a1f3d0", isLight: true } }, // Verde clarito
+      { id: "light-peach", name: "🍑 Durazno Soft", vals: { accent: "#be123c", bg: "#fff1f2", card: "#ffffff", border: "#fecdd3", isLight: true } }, // Rosa/Naranja pastel
+      { id: "light-lavender", name: "🪻 Lavanda Clara", vals: { accent: "#6d28d9", bg: "#f5f3ff", card: "#ffffff", border: "#ddd6fe", isLight: true } }, // Morado clarito
+      { id: "light-chrome", name: "🩶 Cromo", vals: { accent: "#111827", bg: "#e5e7eb", card: "#f3f4f6", border: "#d1d5db", isLight: true } }, // Gris claro corporativo
+      { id: "light-sunflower", name: "🌻 Girasol", vals: { accent: "#ea580c", bg: "#fefce8", card: "#ffffff", border: "#fef08a", isLight: true } }, // Amarillo muy tenue
+      { id: "light-sand", name: "🏖️ Arena Blanca", vals: { accent: "#b45309", bg: "#fafaf9", card: "#ffffff", border: "#e7e5e4", isLight: true } }, // Tono piedra/arena
+      { id: "light-contrast", name: "🔲 Alto Contraste", vals: { accent: "#000000", bg: "#ffffff", card: "#ffffff", border: "#000000", isLight: true } } // Blanco y negro radical
+    ]
+  }
+];
+
+// 50 TEMAS RECALIBRADOS - MÁXIMO CONTRASTE Y SIN TONOS AZULES INDESEADOS
+const THEME_GROUPS = [
+  {
+    label: "Escala de Grises & Oscuros Sobrios",
+    options: [
+      { id: "dark-oled", name: "🖤 OLED Puro", vals: { accent: "#3b82f6", bg: "#000000", card: "#0a0a0a", border: "#222222", isLight: false } }, // Acento azul intenso para que lea el texto
+      { id: "dark-hacker", name: "📟 Terminal Hacker", vals: { accent: "#16a34a", bg: "#0d1117", card: "#161b22", border: "#30363d", isLight: false } }, 
+      { id: "dark-dracula", name: "🧛 Dracula", vals: { accent: "#9333ea", bg: "#282a36", card: "#44475a", border: "#6272a4", isLight: false } }, 
+      { id: "dark-cyber", name: "🌆 Cyberpunk", vals: { accent: "#c026d3", bg: "#101014", card: "#1a1a24", border: "#3b2a45", isLight: false } }, 
+      { id: "dark-slate", name: "📓 Pizarra", vals: { accent: "#0284c7", bg: "#0f172a", card: "#1e293b", border: "#334155", isLight: false } }, 
+      { id: "dark-warm", name: "☕ Gris Cálido", vals: { accent: "#d97706", bg: "#1f1d1b", card: "#2c2926", border: "#423d38", isLight: false } }, 
+      { id: "dark-dim", name: "🌫️ Niebla Dim", vals: { accent: "#4f46e5", bg: "#222428", card: "#2f3136", border: "#40444b", isLight: false } }, 
+      { id: "dark-navy", name: "⚓ Gris Naval", vals: { accent: "#e11d48", bg: "#111827", card: "#1f2937", border: "#374151", isLight: false } }, 
+      { id: "dark-zinc", name: "🪨 Cinc Industrial", vals: { accent: "#52525b", bg: "#09090b", card: "#18181b", border: "#27272a", isLight: false } }, 
+      { id: "dark-blood", name: "🩸 Vampiro Minimal", vals: { accent: "#dc2626", bg: "#121212", card: "#1e1e1e", border: "#3f2323", isLight: false } } 
+    ]
+  },
+  {
+    label: "Azules & Frecuencias Frías",
+    options: [
+      { id: "blue-ocean", name: "🌊 Océano Profundo", vals: { accent: "#0891b2", bg: "#001e36", card: "#002b4d", border: "#00477a", isLight: false } }, 
+      { id: "blue-royal", name: "👑 Azul Real", vals: { accent: "#b45309", bg: "#0a1930", card: "#112240", border: "#233554", isLight: false } }, 
+      { id: "blue-neon", name: "⚡ Cobalto Intenso", vals: { accent: "#0284c7", bg: "#050b14", card: "#0a1324", border: "#152a4a", isLight: false } }, // Acento oscurecido para contraste
+      { id: "blue-pastel", name: "🪻 Índigo Suave", vals: { accent: "#4f46e5", bg: "#1e1b4b", card: "#312e81", border: "#4338ca", isLight: false } }, 
+      { id: "blue-ice", name: "🧊 Cueva de Hielo", vals: { accent: "#2563eb", bg: "#0b192c", card: "#162b45", border: "#284b7a", isLight: false } }, 
+      { id: "blue-denim", name: "👖 Denim Vintage", vals: { accent: "#ea580c", bg: "#172554", card: "#1e3a8a", border: "#1e40af", isLight: false } }, 
+      { id: "blue-twilight", name: "🌌 Crepúsculo", vals: { accent: "#7e22ce", bg: "#020617", card: "#0f172a", border: "#312e81", isLight: false } }, 
+      { id: "blue-aqua", name: "🤿 Abismo Marino", vals: { accent: "#059669", bg: "#083344", card: "#164e63", border: "#0891b2", isLight: false } }, 
+      { id: "blue-gray", name: "🛡️ Acero Azul", vals: { accent: "#475569", bg: "#0f172a", card: "#1e293b", border: "#475569", isLight: false } }, 
+      { id: "blue-galaxy", name: "🔭 Galaxia", vals: { accent: "#db2777", bg: "#070b19", card: "#10162a", border: "#1e2542", isLight: false } } 
+    ]
+  },
+  {
+    label: "Verdes Orgánicos & Botánicos",
+    options: [
+      { id: "green-forest", name: "🌲 Bosque Oscuro", vals: { accent: "#4d7c0f", bg: "#022c22", card: "#064e3b", border: "#065f46", isLight: false } }, 
+      { id: "green-matcha", name: "🍵 Matcha Suave", vals: { accent: "#65a30d", bg: "#141c14", card: "#222f22", border: "#3a4a3a", isLight: false } }, // Acento verde oscuro, no pastel
+      { id: "green-toxic", name: "☣️ Verde Tóxico", vals: { accent: "#15803d", bg: "#0a0a0a", card: "#121811", border: "#24331e", isLight: false } }, 
+      { id: "green-tropical", name: "🦜 Selva Tropical", vals: { accent: "#ea580c", bg: "#0f2e22", card: "#134230", border: "#195c42", isLight: false } }, 
+      { id: "green-olive", name: "🫒 Táctico Militar", vals: { accent: "#b45309", bg: "#1e2117", card: "#2b3022", border: "#444a33", isLight: false } }, 
+      { id: "green-mint", name: "🌿 Menta Noche", vals: { accent: "#0d9488", bg: "#021715", card: "#052e2a", border: "#0d5c54", isLight: false } }, 
+      { id: "green-emerald", name: "💎 Esmeralda Puro", vals: { accent: "#059669", bg: "#064e3b", card: "#047857", border: "#065f46", isLight: false } }, // Acento verde oscuro para el texto
+      { id: "green-swamp", name: "🐊 Pantano", vals: { accent: "#65a30d", bg: "#162013", card: "#24361e", border: "#3b5530", isLight: false } }, 
+      { id: "green-aurora", name: "🌌 Aurora Boreal", vals: { accent: "#0284c7", bg: "#041512", card: "#072a24", border: "#0d4d42", isLight: false } }, 
+      { id: "green-sage", name: "🍃 Salvia", vals: { accent: "#059669", bg: "#1a211e", card: "#242e2a", border: "#35453f", isLight: false } } 
+    ]
+  },
+  {
+    label: "Cálidos Elegantes, Ámbar & Moka",
+    options: [
+      { id: "warm-coffee", name: "☕ Espresso", vals: { accent: "#9a3412", bg: "#1b1411", card: "#2b1f1a", border: "#47342b", isLight: false } }, 
+      { id: "warm-wine", name: "🍷 Vino Tinto", vals: { accent: "#be123c", bg: "#2a0e18", card: "#431424", border: "#6b2138", isLight: false } }, 
+      { id: "warm-desert", name: "🏜️ Noche en el Desierto", vals: { accent: "#c2410c", bg: "#211a14", card: "#33261c", border: "#523b2b", isLight: false } }, 
+      { id: "warm-rust", name: "🧱 Óxido y Cobre", vals: { accent: "#0369a1", bg: "#271711", card: "#3d2218", border: "#5c3324", isLight: false } }, // Acento oscurecido
+      { id: "warm-gold", name: "🏆 Ébano y Oro", vals: { accent: "#b45309", bg: "#111111", card: "#1f1d19", border: "#403a2a", isLight: false } }, 
+      { id: "warm-sepia", name: "📜 Sepia Retro", vals: { accent: "#92400e", bg: "#2d2721", card: "#3f372e", border: "#594d41", isLight: false } }, 
+      { id: "warm-cherry", name: "🍒 Madera de Cerezo", vals: { accent: "#b91c1c", bg: "#251214", card: "#38191c", border: "#57252a", isLight: false } }, 
+      { id: "warm-pumpkin", name: "🎃 Calabaza", vals: { accent: "#c2410c", bg: "#2d1606", card: "#45220a", border: "#6b3410", isLight: false } }, // Naranja oscuro en vez de amarillo brillante
+      { id: "warm-rose", name: "🥀 Palo Rosa Oscuro", vals: { accent: "#be185d", bg: "#21171d", card: "#33232c", border: "#4f3544", isLight: false } }, 
+      { id: "warm-bronze", name: "🏺 Bronce Metálico", vals: { accent: "#0f766e", bg: "#211b15", card: "#332a21", border: "#4f4133", isLight: false } } 
+    ]
+  },
+  {
+    label: "Claros Minimalistas & Pulcros (Sin tonos celestes)",
+    options: [
+      { id: "light-apple", name: "🍏 Blanco Puro", vals: { accent: "#2563eb", bg: "#f5f5f5", card: "#ffffff", border: "#e5e5e5", isLight: true } }, // Grises puros, cero azul
+      { id: "light-paper", name: "📖 Modo Lectura", vals: { accent: "#92400e", bg: "#faf8f5", card: "#ffffff", border: "#e8e4d9", isLight: true } }, // Crema neutro
+      { id: "light-silver", name: "🪙 Plata Pulida", vals: { accent: "#0284c7", bg: "#f0f0f0", card: "#ffffff", border: "#d4d4d4", isLight: true } }, 
+      { id: "light-mint", name: "🍃 Brisa de Menta", vals: { accent: "#047857", bg: "#f4fbf7", card: "#ffffff", border: "#c6ebd6", isLight: true } }, 
+      { id: "light-peach", name: "🍑 Durazno Soft", vals: { accent: "#be123c", bg: "#fff5f5", card: "#ffffff", border: "#fcd7d7", isLight: true } }, 
+      { id: "light-lavender", name: "🪻 Lavanda Clara", vals: { accent: "#6d28d9", bg: "#fbfaff", card: "#ffffff", border: "#e6e1f9", isLight: true } }, 
+      { id: "light-neutral", name: "🩶 Gris Neutro", vals: { accent: "#404040", bg: "#f3f3f3", card: "#ffffff", border: "#cccccc", isLight: true } }, // Mejorado frente a Cromo
+      { id: "light-sunflower", name: "🌻 Girasol", vals: { accent: "#c2410c", bg: "#fffef5", card: "#ffffff", border: "#f4edcc", isLight: true } }, 
+      { id: "light-sand", name: "🏖️ Arena Blanca", vals: { accent: "#92400e", bg: "#faf9f7", card: "#ffffff", border: "#e8e6e1", isLight: true } }, 
+      { id: "light-elegant", name: "👔 Blanco Elegante", vals: { accent: "#171717", bg: "#fdfdfd", card: "#ffffff", border: "#e0e0e0", isLight: true } } // Mejorado frente al Alto Contraste agresivo
+    ]
+  }
+];
+
+// 50 TEMAS DEFINITIVOS - CONTRASTE PERFECTO GARANTIZADO
+const THEME_GROUPS = [
+  {
+    label: "Escala de Grises & Oscuros Sobrios",
+    options: [
+      { id: "dark-oled", name: "🖤 OLED Puro", vals: { accent: "#3b82f6", bg: "#000000", card: "#0a0a0a", border: "#222222", isLight: false } }, 
+      { id: "dark-hacker", name: "📟 Terminal Hacker", vals: { accent: "#16a34a", bg: "#0d1117", card: "#161b22", border: "#30363d", isLight: false } }, 
+      { id: "dark-dracula", name: "🧛 Dracula", vals: { accent: "#9333ea", bg: "#282a36", card: "#44475a", border: "#6272a4", isLight: false } }, 
+      { id: "dark-cyber", name: "🌆 Cyberpunk", vals: { accent: "#c026d3", bg: "#101014", card: "#1a1a24", border: "#3b2a45", isLight: false } }, 
+      { id: "dark-slate", name: "📓 Pizarra", vals: { accent: "#0284c7", bg: "#0f172a", card: "#1e293b", border: "#334155", isLight: false } }, 
+      { id: "dark-warm", name: "☕ Gris Cálido", vals: { accent: "#d97706", bg: "#1f1d1b", card: "#2c2926", border: "#423d38", isLight: false } }, 
+      { id: "dark-dim", name: "🌫️ Niebla Dim", vals: { accent: "#4f46e5", bg: "#222428", card: "#2f3136", border: "#40444b", isLight: false } }, 
+      { id: "dark-navy", name: "⚓ Gris Naval", vals: { accent: "#e11d48", bg: "#111827", card: "#1f2937", border: "#374151", isLight: false } }, 
+      { id: "dark-zinc", name: "🪨 Cinc Industrial", vals: { accent: "#3f3f46", bg: "#09090b", card: "#18181b", border: "#27272a", isLight: false } }, 
+      { id: "dark-blood", name: "🩸 Vampiro Minimal", vals: { accent: "#dc2626", bg: "#121212", card: "#1e1e1e", border: "#3f2323", isLight: false } } 
+    ]
+  },
+  {
+    label: "Azules & Frecuencias Frías",
+    options: [
+      { id: "blue-ocean", name: "🌊 Océano Profundo", vals: { accent: "#0891b2", bg: "#001e36", card: "#002b4d", border: "#00477a", isLight: false } }, 
+      { id: "blue-royal", name: "👑 Azul Real", vals: { accent: "#b45309", bg: "#0a1930", card: "#112240", border: "#233554", isLight: false } }, 
+      { id: "blue-neon", name: "⚡ Cobalto Intenso", vals: { accent: "#0284c7", bg: "#050b14", card: "#0a1324", border: "#152a4a", isLight: false } }, 
+      { id: "blue-pastel", name: "🪻 Índigo Suave", vals: { accent: "#4f46e5", bg: "#1e1b4b", card: "#312e81", border: "#4338ca", isLight: false } }, 
+      { id: "blue-ice", name: "🧊 Cueva de Hielo", vals: { accent: "#2563eb", bg: "#0b192c", card: "#162b45", border: "#284b7a", isLight: false } }, 
+      { id: "blue-denim", name: "👖 Denim Vintage", vals: { accent: "#ea580c", bg: "#172554", card: "#1e3a8a", border: "#1e40af", isLight: false } }, 
+      { id: "blue-twilight", name: "🌌 Crepúsculo", vals: { accent: "#7e22ce", bg: "#020617", card: "#0f172a", border: "#312e81", isLight: false } }, 
+      { id: "blue-aqua", name: "🤿 Abismo Marino", vals: { accent: "#059669", bg: "#083344", card: "#164e63", border: "#0891b2", isLight: false } }, 
+      { id: "blue-gray", name: "🛡️ Acero Azul", vals: { accent: "#475569", bg: "#0f172a", card: "#1e293b", border: "#475569", isLight: false } }, 
+      { id: "blue-galaxy", name: "🔭 Galaxia", vals: { accent: "#db2777", bg: "#070b19", card: "#10162a", border: "#1e2542", isLight: false } } 
+    ]
+  },
+  {
+    label: "Verdes Orgánicos & Botánicos",
+    options: [
+      { id: "green-forest", name: "🌲 Bosque Oscuro", vals: { accent: "#4d7c0f", bg: "#022c22", card: "#064e3b", border: "#065f46", isLight: false } }, 
+      { id: "green-matcha", name: "🍵 Matcha Suave", vals: { accent: "#65a30d", bg: "#141c14", card: "#222f22", border: "#3a4a3a", isLight: false } },
+      { id: "green-toxic", name: "☣️ Verde Tóxico", vals: { accent: "#15803d", bg: "#0a0a0a", card: "#121811", border: "#24331e", isLight: false } }, 
+      { id: "green-tropical", name: "🦜 Selva Tropical", vals: { accent: "#ea580c", bg: "#0f2e22", card: "#134230", border: "#195c42", isLight: false } }, 
+      { id: "green-olive", name: "🫒 Táctico Militar", vals: { accent: "#b45309", bg: "#1e2117", card: "#2b3022", border: "#444a33", isLight: false } }, 
+      { id: "green-mint", name: "🌿 Menta Noche", vals: { accent: "#0d9488", bg: "#021715", card: "#052e2a", border: "#0d5c54", isLight: false } }, 
+      { id: "green-emerald", name: "💎 Esmeralda Puro", vals: { accent: "#059669", bg: "#064e3b", card: "#047857", border: "#065f46", isLight: false } }, 
+      { id: "green-swamp", name: "🐊 Pantano", vals: { accent: "#65a30d", bg: "#162013", card: "#24361e", border: "#3b5530", isLight: false } }, 
+      { id: "green-aurora", name: "🌌 Aurora Boreal", vals: { accent: "#0284c7", bg: "#041512", card: "#072a24", border: "#0d4d42", isLight: false } }, 
+      { id: "green-sage", name: "🍃 Salvia", vals: { accent: "#059669", bg: "#1a211e", card: "#242e2a", border: "#35453f", isLight: false } } 
+    ]
+  },
+  {
+    label: "Cálidos Elegantes, Ámbar & Moka",
+    options: [
+      { id: "warm-coffee", name: "☕ Espresso", vals: { accent: "#9a3412", bg: "#1b1411", card: "#2b1f1a", border: "#47342b", isLight: false } }, 
+      { id: "warm-wine", name: "🍷 Vino Tinto", vals: { accent: "#be123c", bg: "#2a0e18", card: "#431424", border: "#6b2138", isLight: false } }, 
+      { id: "warm-desert", name: "🏜️ Noche en el Desierto", vals: { accent: "#c2410c", bg: "#211a14", card: "#33261c", border: "#523b2b", isLight: false } }, 
+      { id: "warm-rust", name: "🧱 Óxido y Cobre", vals: { accent: "#0369a1", bg: "#271711", card: "#3d2218", border: "#5c3324", isLight: false } }, 
+      { id: "warm-gold", name: "🏆 Ébano y Oro", vals: { accent: "#b45309", bg: "#111111", card: "#1f1d19", border: "#403a2a", isLight: false } }, 
+      { id: "warm-sepia", name: "📜 Sepia Retro", vals: { accent: "#92400e", bg: "#2d2721", card: "#3f372e", border: "#594d41", isLight: false } }, 
+      { id: "warm-cherry", name: "🍒 Madera de Cerezo", vals: { accent: "#b91c1c", bg: "#251214", card: "#38191c", border: "#57252a", isLight: false } }, 
+      { id: "warm-pumpkin", name: "🎃 Calabaza", vals: { accent: "#c2410c", bg: "#2d1606", card: "#45220a", border: "#6b3410", isLight: false } }, 
+      { id: "warm-rose", name: "🥀 Palo Rosa Oscuro", vals: { accent: "#be185d", bg: "#21171d", card: "#33232c", border: "#4f3544", isLight: false } }, 
+      { id: "warm-bronze", name: "🏺 Bronce Metálico", vals: { accent: "#0f766e", bg: "#211b15", card: "#332a21", border: "#4f4133", isLight: false } } 
+    ]
+  },
+  {
+    label: "Claros Vibrantes (Texto oscuro 100% legible)",
+    options: [
+      { id: "light-orange", name: "🍊 Naranja Brillante", vals: { accent: "#fb923c", bg: "#fafaf9", card: "#ffffff", border: "#fed7aa", isLight: true } }, 
+      { id: "light-apple", name: "🍏 Verde Manzana", vals: { accent: "#a3e635", bg: "#f7fee7", card: "#ffffff", border: "#d9f99d", isLight: true } }, 
+      { id: "light-aqua", name: "💧 Verde Agua", vals: { accent: "#4fd1c5", bg: "#f0fdfa", card: "#ffffff", border: "#99f6e4", isLight: true } }, 
+      { id: "light-sky", name: "🌤️ Celeste Radiante", vals: { accent: "#7dd3fc", bg: "#f0f9ff", card: "#ffffff", border: "#bae6fd", isLight: true } }, 
+      { id: "light-pink", name: "🌸 Rosa Chicle", vals: { accent: "#f9a8d4", bg: "#fdf2f8", card: "#ffffff", border: "#fbcfe8", isLight: true } }, 
+      { id: "light-lemon", name: "🍋 Amarillo Sol", vals: { accent: "#fde047", bg: "#fefce8", card: "#ffffff", border: "#fef08a", isLight: true } }, 
+      { id: "light-lilac", name: "🪻 Lila Pastel", vals: { accent: "#d8b4fe", bg: "#faf5ff", card: "#ffffff", border: "#e9d5ff", isLight: true } }, 
+      { id: "light-silver", name: "🪙 Plata Elegante", vals: { accent: "#cbd5e1", bg: "#f8fafc", card: "#ffffff", border: "#e2e8f0", isLight: true } }, 
+      { id: "light-peach", name: "🍑 Durazno Claro", vals: { accent: "#fca5a5", bg: "#fff5f5", card: "#ffffff", border: "#fecaca", isLight: true } }, 
+      { id: "light-mint", name: "🌿 Menta Fresca", vals: { accent: "#86efac", bg: "#f0fdf4", card: "#ffffff", border: "#bbf7d0", isLight: true } } 
+    ]
+  }
+];
+
+
+// 55 TEMAS DEFINITIVOS - CONTRASTE PERFECTO GARANTIZADO
+const THEME_GROUPS = [
+  {
+    label: "Escala de Grises & Oscuros Sobrios",
+    options: [
+      { id: "dark-oled", name: "🖤 OLED Puro", vals: { accent: "#3b82f6", bg: "#000000", card: "#0a0a0a", border: "#222222", isLight: false } }, 
+      { id: "dark-hacker", name: "📟 Terminal Hacker", vals: { accent: "#16a34a", bg: "#0d1117", card: "#161b22", border: "#30363d", isLight: false } }, 
+      { id: "dark-dracula", name: "🧛 Dracula", vals: { accent: "#9333ea", bg: "#282a36", card: "#44475a", border: "#6272a4", isLight: false } }, 
+      { id: "dark-cyber", name: "🌆 Cyberpunk", vals: { accent: "#c026d3", bg: "#101014", card: "#1a1a24", border: "#3b2a45", isLight: false } }, 
+      { id: "dark-slate", name: "📓 Pizarra", vals: { accent: "#0284c7", bg: "#0f172a", card: "#1e293b", border: "#334155", isLight: false } }, 
+      { id: "dark-warm", name: "☕ Gris Cálido", vals: { accent: "#d97706", bg: "#1f1d1b", card: "#2c2926", border: "#423d38", isLight: false } }, 
+      { id: "dark-dim", name: "🌫️ Niebla Dim", vals: { accent: "#4f46e5", bg: "#222428", card: "#2f3136", border: "#40444b", isLight: false } }, 
+      { id: "dark-navy", name: "⚓ Gris Naval", vals: { accent: "#e11d48", bg: "#111827", card: "#1f2937", border: "#374151", isLight: false } }, 
+      { id: "dark-zinc", name: "🪨 Cinc Industrial", vals: { accent: "#3f3f46", bg: "#09090b", card: "#18181b", border: "#27272a", isLight: false } }, 
+      { id: "dark-blood", name: "🩸 Vampiro Minimal", vals: { accent: "#dc2626", bg: "#121212", card: "#1e1e1e", border: "#3f2323", isLight: false } } 
+    ]
+  },
+  {
+    label: "Azules & Frecuencias Frías",
+    options: [
+      { id: "blue-ocean", name: "🌊 Océano Profundo", vals: { accent: "#0891b2", bg: "#001e36", card: "#002b4d", border: "#00477a", isLight: false } }, 
+      { id: "blue-royal", name: "👑 Azul Real", vals: { accent: "#b45309", bg: "#0a1930", card: "#112240", border: "#233554", isLight: false } }, 
+      { id: "blue-neon", name: "⚡ Cobalto Intenso", vals: { accent: "#0284c7", bg: "#050b14", card: "#0a1324", border: "#152a4a", isLight: false } }, 
+      { id: "blue-pastel", name: "🪻 Índigo Suave", vals: { accent: "#4f46e5", bg: "#1e1b4b", card: "#312e81", border: "#4338ca", isLight: false } }, 
+      { id: "blue-ice", name: "🧊 Cueva de Hielo", vals: { accent: "#2563eb", bg: "#0b192c", card: "#162b45", border: "#284b7a", isLight: false } }, 
+      { id: "blue-denim", name: "👖 Denim Vintage", vals: { accent: "#ea580c", bg: "#172554", card: "#1e3a8a", border: "#1e40af", isLight: false } }, 
+      { id: "blue-twilight", name: "🌌 Crepúsculo", vals: { accent: "#7e22ce", bg: "#020617", card: "#0f172a", border: "#312e81", isLight: false } }, 
+      { id: "blue-aqua", name: "🤿 Abismo Marino", vals: { accent: "#059669", bg: "#083344", card: "#164e63", border: "#0891b2", isLight: false } }, 
+      { id: "blue-gray", name: "🛡️ Acero Azul", vals: { accent: "#475569", bg: "#0f172a", card: "#1e293b", border: "#475569", isLight: false } }, 
+      { id: "blue-galaxy", name: "🔭 Galaxia", vals: { accent: "#db2777", bg: "#070b19", card: "#10162a", border: "#1e2542", isLight: false } } 
+    ]
+  },
+  {
+    label: "Verdes Orgánicos & Botánicos",
+    options: [
+      { id: "green-forest", name: "🌲 Bosque Oscuro", vals: { accent: "#4d7c0f", bg: "#022c22", card: "#064e3b", border: "#065f46", isLight: false } }, 
+      { id: "green-matcha", name: "🍵 Matcha Suave", vals: { accent: "#65a30d", bg: "#141c14", card: "#222f22", border: "#3a4a3a", isLight: false } },
+      { id: "green-toxic", name: "☣️ Verde Tóxico", vals: { accent: "#15803d", bg: "#0a0a0a", card: "#121811", border: "#24331e", isLight: false } }, 
+      { id: "green-tropical", name: "🦜 Selva Tropical", vals: { accent: "#ea580c", bg: "#0f2e22", card: "#134230", border: "#195c42", isLight: false } }, 
+      { id: "green-olive", name: "🫒 Táctico Militar", vals: { accent: "#b45309", bg: "#1e2117", card: "#2b3022", border: "#444a33", isLight: false } }, 
+      { id: "green-mint", name: "🌿 Menta Noche", vals: { accent: "#0d9488", bg: "#021715", card: "#052e2a", border: "#0d5c54", isLight: false } }, 
+      { id: "green-emerald", name: "💎 Esmeralda Puro", vals: { accent: "#059669", bg: "#064e3b", card: "#047857", border: "#065f46", isLight: false } }, 
+      { id: "green-swamp", name: "🐊 Pantano", vals: { accent: "#65a30d", bg: "#162013", card: "#24361e", border: "#3b5530", isLight: false } }, 
+      { id: "green-aurora", name: "🌌 Aurora Boreal", vals: { accent: "#0284c7", bg: "#041512", card: "#072a24", border: "#0d4d42", isLight: false } }, 
+      { id: "green-sage", name: "🍃 Salvia", vals: { accent: "#059669", bg: "#1a211e", card: "#242e2a", border: "#35453f", isLight: false } } 
+    ]
+  },
+  {
+    label: "Cálidos Elegantes, Ámbar & Moka",
+    options: [
+      { id: "warm-coffee", name: "☕ Espresso", vals: { accent: "#9a3412", bg: "#1b1411", card: "#2b1f1a", border: "#47342b", isLight: false } }, 
+      { id: "warm-wine", name: "🍷 Vino Tinto", vals: { accent: "#be123c", bg: "#2a0e18", card: "#431424", border: "#6b2138", isLight: false } }, 
+      { id: "warm-desert", name: "🏜️ Noche en el Desierto", vals: { accent: "#c2410c", bg: "#211a14", card: "#33261c", border: "#523b2b", isLight: false } }, 
+      { id: "warm-rust", name: "🧱 Óxido y Cobre", vals: { accent: "#0369a1", bg: "#271711", card: "#3d2218", border: "#5c3324", isLight: false } }, 
+      { id: "warm-gold", name: "🏆 Ébano y Oro", vals: { accent: "#b45309", bg: "#111111", card: "#1f1d19", border: "#403a2a", isLight: false } }, 
+      { id: "warm-sepia", name: "📜 Sepia Retro", vals: { accent: "#92400e", bg: "#2d2721", card: "#3f372e", border: "#594d41", isLight: false } }, 
+      { id: "warm-cherry", name: "🍒 Madera de Cerezo", vals: { accent: "#b91c1c", bg: "#251214", card: "#38191c", border: "#57252a", isLight: false } }, 
+      { id: "warm-pumpkin", name: "🎃 Calabaza", vals: { accent: "#c2410c", bg: "#2d1606", card: "#45220a", border: "#6b3410", isLight: false } }, 
+      { id: "warm-rose", name: "🥀 Palo Rosa Oscuro", vals: { accent: "#be185d", bg: "#21171d", card: "#33232c", border: "#4f3544", isLight: false } }, 
+      { id: "warm-bronze", name: "🏺 Bronce Metálico", vals: { accent: "#0f766e", bg: "#211b15", card: "#332a21", border: "#4f4133", isLight: false } } 
+    ]
+  },
+  {
+    label: "Claros Vibrantes (Texto blanco visible)",
+    options: [
+      { id: "light-orange", name: "🍊 Naranja Brillante", vals: { accent: "#ea580c", bg: "#fafaf9", card: "#ffffff", border: "#e7e5e4", isLight: true } }, 
+      { id: "light-apple", name: "🍏 Verde Manzana", vals: { accent: "#65a30d", bg: "#f7fee7", card: "#ffffff", border: "#d9f99d", isLight: true } }, 
+      { id: "light-aqua", name: "💧 Verde Agua", vals: { accent: "#0d9488", bg: "#f0fdfa", card: "#ffffff", border: "#ccfbf1", isLight: true } }, 
+      { id: "light-sky", name: "🌤️ Celeste Radiante", vals: { accent: "#0284c7", bg: "#f0f9ff", card: "#ffffff", border: "#bae6fd", isLight: true } }, 
+      { id: "light-pink", name: "🌸 Rosa Fucsia", vals: { accent: "#db2777", bg: "#fdf2f8", card: "#ffffff", border: "#fbcfe8", isLight: true } }, 
+      { id: "light-lemon", name: "🍋 Amarillo Mostaza", vals: { accent: "#ca8a04", bg: "#fefce8", card: "#ffffff", border: "#fef08a", isLight: true } }, 
+      { id: "light-lilac", name: "🪻 Lila Intenso", vals: { accent: "#7c3aed", bg: "#faf5ff", card: "#ffffff", border: "#e9d5ff", isLight: true } }, 
+      { id: "light-silver", name: "🪙 Plata Elegante", vals: { accent: "#475569", bg: "#f8fafc", card: "#ffffff", border: "#e2e8f0", isLight: true } }, 
+      { id: "light-peach", name: "🍒 Cereza Claro", vals: { accent: "#e11d48", bg: "#fff1f2", card: "#ffffff", border: "#fecdd3", isLight: true } }, 
+      { id: "light-mint", name: "🌿 Menta Fresca", vals: { accent: "#059669", bg: "#ecfdf5", card: "#ffffff", border: "#a7f3d0", isLight: true } } 
+      { id: "light-pink", name: "🌸 Rosa Chicle", vals: { accent: "#f9a8d4", bg: "#fdf2f8", card: "#ffffff", border: "#fbcfe8", isLight: true } }, 
+      { id: "light-lemon", name: "🍋 Amarillo Sol", vals: { accent: "#fde047", bg: "#fefce8", card: "#ffffff", border: "#fef08a", isLight: true } }, 
+      { id: "light-lilac", name: "🪻 Lila Pastel", vals: { accent: "#d8b4fe", bg: "#faf5ff", card: "#ffffff", border: "#e9d5ff", isLight: true } }, 
+      { id: "light-silver", name: "🪙 Plata Elegante", vals: { accent: "#cbd5e1", bg: "#f8fafc", card: "#ffffff", border: "#e2e8f0", isLight: true } }, 
+      { id: "light-peach", name: "🍑 Durazno Claro", vals: { accent: "#fca5a5", bg: "#fff5f5", card: "#ffffff", border: "#fecaca", isLight: true } }, 
+
+    ]
+  }
+];
+
+
+// 55 TEMAS DEFINITIVOS - CONTRASTE PERFECTO GARANTIZADO
+const THEME_GROUPS = [
+  {
+    label: "Escala de Grises & Oscuros Sobrios",
+    options: [
+      { id: "dark-oled", name: "🖤 OLED Puro", vals: { accent: "#3b82f6", bg: "#000000", card: "#0a0a0a", border: "#222222", isLight: false } }, 
+      { id: "dark-hacker", name: "📟 Terminal Hacker", vals: { accent: "#16a34a", bg: "#0d1117", card: "#161b22", border: "#30363d", isLight: false } }, 
+      { id: "dark-dracula", name: "🧛 Dracula", vals: { accent: "#9333ea", bg: "#282a36", card: "#44475a", border: "#6272a4", isLight: false } }, 
+      { id: "dark-cyber", name: "🌆 Cyberpunk", vals: { accent: "#c026d3", bg: "#101014", card: "#1a1a24", border: "#3b2a45", isLight: false } }, 
+      { id: "dark-slate", name: "📓 Pizarra", vals: { accent: "#0284c7", bg: "#0f172a", card: "#1e293b", border: "#334155", isLight: false } }, 
+      { id: "dark-warm", name: "☕ Gris Cálido", vals: { accent: "#d97706", bg: "#1f1d1b", card: "#2c2926", border: "#423d38", isLight: false } }, 
+      { id: "dark-dim", name: "🌫️ Niebla Dim", vals: { accent: "#4f46e5", bg: "#222428", card: "#2f3136", border: "#40444b", isLight: false } }, 
+      { id: "dark-navy", name: "⚓ Gris Naval", vals: { accent: "#e11d48", bg: "#111827", card: "#1f2937", border: "#374151", isLight: false } }, 
+      { id: "dark-zinc", name: "🪨 Cinc Industrial", vals: { accent: "#3f3f46", bg: "#09090b", card: "#18181b", border: "#27272a", isLight: false } }, 
+      { id: "dark-blood", name: "🩸 Vampiro Minimal", vals: { accent: "#dc2626", bg: "#121212", card: "#1e1e1e", border: "#3f2323", isLight: false } } 
+    ]
+  },
+  {
+    label: "Azules & Frecuencias Frías",
+    options: [
+      { id: "blue-ocean", name: "🌊 Océano Profundo", vals: { accent: "#0891b2", bg: "#001e36", card: "#002b4d", border: "#00477a", isLight: false } }, 
+      { id: "blue-royal", name: "👑 Azul Real", vals: { accent: "#b45309", bg: "#0a1930", card: "#112240", border: "#233554", isLight: false } }, 
+      { id: "blue-neon", name: "⚡ Cobalto Intenso", vals: { accent: "#0284c7", bg: "#050b14", card: "#0a1324", border: "#152a4a", isLight: false } }, 
+      { id: "blue-pastel", name: "🪻 Índigo Suave", vals: { accent: "#4f46e5", bg: "#1e1b4b", card: "#312e81", border: "#4338ca", isLight: false } }, 
+      { id: "blue-ice", name: "🧊 Cueva de Hielo", vals: { accent: "#2563eb", bg: "#0b192c", card: "#162b45", border: "#284b7a", isLight: false } }, 
+      { id: "blue-denim", name: "👖 Denim Vintage", vals: { accent: "#ea580c", bg: "#172554", card: "#1e3a8a", border: "#1e40af", isLight: false } }, 
+      { id: "blue-twilight", name: "🌌 Crepúsculo", vals: { accent: "#7e22ce", bg: "#020617", card: "#0f172a", border: "#312e81", isLight: false } }, 
+      { id: "blue-aqua", name: "🤿 Abismo Marino", vals: { accent: "#059669", bg: "#083344", card: "#164e63", border: "#0891b2", isLight: false } }, 
+      { id: "blue-gray", name: "🛡️ Acero Azul", vals: { accent: "#475569", bg: "#0f172a", card: "#1e293b", border: "#475569", isLight: false } }, 
+      { id: "blue-galaxy", name: "🔭 Galaxia", vals: { accent: "#db2777", bg: "#070b19", card: "#10162a", border: "#1e2542", isLight: false } } 
+    ]
+  },
+  {
+    label: "Verdes Orgánicos & Botánicos",
+    options: [
+      { id: "green-forest", name: "🌲 Bosque Oscuro", vals: { accent: "#4d7c0f", bg: "#022c22", card: "#064e3b", border: "#065f46", isLight: false } }, 
+      { id: "green-matcha", name: "🍵 Matcha Suave", vals: { accent: "#65a30d", bg: "#141c14", card: "#222f22", border: "#3a4a3a", isLight: false } },
+      { id: "green-toxic", name: "☣️ Verde Tóxico", vals: { accent: "#15803d", bg: "#0a0a0a", card: "#121811", border: "#24331e", isLight: false } }, 
+      { id: "green-tropical", name: "🦜 Selva Tropical", vals: { accent: "#ea580c", bg: "#0f2e22", card: "#134230", border: "#195c42", isLight: false } }, 
+      { id: "green-olive", name: "🫒 Táctico Militar", vals: { accent: "#b45309", bg: "#1e2117", card: "#2b3022", border: "#444a33", isLight: false } }, 
+      { id: "green-mint", name: "🌿 Menta Noche", vals: { accent: "#0d9488", bg: "#021715", card: "#052e2a", border: "#0d5c54", isLight: false } }, 
+      { id: "green-emerald", name: "💎 Esmeralda Puro", vals: { accent: "#059669", bg: "#064e3b", card: "#047857", border: "#065f46", isLight: false } }, 
+      { id: "green-swamp", name: "🐊 Pantano", vals: { accent: "#65a30d", bg: "#162013", card: "#24361e", border: "#3b5530", isLight: false } }, 
+      { id: "green-aurora", name: "🌌 Aurora Boreal", vals: { accent: "#0284c7", bg: "#041512", card: "#072a24", border: "#0d4d42", isLight: false } }, 
+      { id: "green-sage", name: "🍃 Salvia", vals: { accent: "#059669", bg: "#1a211e", card: "#242e2a", border: "#35453f", isLight: false } } 
+    ]
+  },
+  {
+    label: "Cálidos Elegantes, Ámbar & Moka",
+    options: [
+      { id: "warm-coffee", name: "☕ Espresso", vals: { accent: "#9a3412", bg: "#1b1411", card: "#2b1f1a", border: "#47342b", isLight: false } }, 
+      { id: "warm-wine", name: "🍷 Vino Tinto", vals: { accent: "#be123c", bg: "#2a0e18", card: "#431424", border: "#6b2138", isLight: false } }, 
+      { id: "warm-desert", name: "🏜️ Noche en el Desierto", vals: { accent: "#c2410c", bg: "#211a14", card: "#33261c", border: "#523b2b", isLight: false } }, 
+      { id: "warm-rust", name: "🧱 Óxido y Cobre", vals: { accent: "#0369a1", bg: "#271711", card: "#3d2218", border: "#5c3324", isLight: false } }, 
+      { id: "warm-gold", name: "🏆 Ébano y Oro", vals: { accent: "#b45309", bg: "#111111", card: "#1f1d19", border: "#403a2a", isLight: false } }, 
+      { id: "warm-sepia", name: "📜 Sepia Retro", vals: { accent: "#92400e", bg: "#2d2721", card: "#3f372e", border: "#594d41", isLight: false } }, 
+      { id: "warm-cherry", name: "🍒 Madera de Cerezo", vals: { accent: "#b91c1c", bg: "#251214", card: "#38191c", border: "#57252a", isLight: false } }, 
+      { id: "warm-pumpkin", name: "🎃 Calabaza", vals: { accent: "#c2410c", bg: "#2d1606", card: "#45220a", border: "#6b3410", isLight: false } }, 
+      { id: "warm-rose", name: "🥀 Palo Rosa Oscuro", vals: { accent: "#be185d", bg: "#21171d", card: "#33232c", border: "#4f3544", isLight: false } }, 
+      { id: "warm-bronze", name: "🏺 Bronce Metálico", vals: { accent: "#0f766e", bg: "#211b15", card: "#332a21", border: "#4f4133", isLight: false } } 
+    ]
+  },
+  {
+    label: "Claros Vibrantes (Texto blanco visible)",
+    options: [
+      { id: "light-orange", name: "🍊 Naranja Brillante", vals: { accent: "#ea580c", bg: "#fafaf9", card: "#ffffff", border: "#e7e5e4", isLight: true } }, 
+      { id: "light-apple", name: "🍏 Verde Manzana", vals: { accent: "#65a30d", bg: "#f7fee7", card: "#ffffff", border: "#d9f99d", isLight: true } }, 
+      { id: "light-aqua", name: "💧 Verde Agua", vals: { accent: "#0d9488", bg: "#f0fdfa", card: "#ffffff", border: "#ccfbf1", isLight: true } }, 
+      { id: "light-sky", name: "🌤️ Celeste Radiante", vals: { accent: "#0284c7", bg: "#f0f9ff", card: "#ffffff", border: "#bae6fd", isLight: true } }, 
+      { id: "light-pink", name: "🌸 Rosa Fucsia", vals: { accent: "#db2777", bg: "#fdf2f8", card: "#ffffff", border: "#fbcfe8", isLight: true } }, 
+      { id: "light-lemon", name: "🍋 Amarillo Mostaza", vals: { accent: "#ca8a04", bg: "#fefce8", card: "#ffffff", border: "#fef08a", isLight: true } }, 
+      { id: "light-lilac", name: "🪻 Lila Intenso", vals: { accent: "#7c3aed", bg: "#faf5ff", card: "#ffffff", border: "#e9d5ff", isLight: true } }, 
+      { id: "light-silver", name: "🪙 Plata Elegante", vals: { accent: "#475569", bg: "#f8fafc", card: "#ffffff", border: "#e2e8f0", isLight: true } }, 
+      { id: "light-peach", name: "🍒 Cereza Claro", vals: { accent: "#e11d48", bg: "#fff1f2", card: "#ffffff", border: "#fecdd3", isLight: true } }, 
+      { id: "light-mint", name: "🌿 Menta Fresca", vals: { accent: "#059669", bg: "#ecfdf5", card: "#ffffff", border: "#a7f3d0", isLight: true } }, 
+      { id: "light-lilac-pastel", name: "🪻 Lila Pastel", vals: { accent: "#d8b4fe", accentText: "#3b0764", bg: "#faf5ff", card: "#ffffff", border: "#e9d5ff", isLight: true } },
+      { id: "light-mint-pastel", name: "🌿 Menta Pastel", vals: { accent: "#a7f3d0", accentText: "#064e3b", bg: "#f0fdf4", card: "#ffffff", border: "#bbf7d0", isLight: true } },
+      { id: "light-pink-pastel", name: "🌸 Rosa Pastel", vals: { accent: "#fbcfe8", accentText: "#831843", bg: "#fdf2f8", card: "#ffffff", border: "#fce7f3", isLight: true } },
+      { id: "light-pink", name: "🌸 Rosa Chicle", vals: { accent: "#f9a8d4", bg: "#fdf2f8", card: "#ffffff", border: "#fbcfe8", isLight: true } }, 
+      { id: "light-lemon", name: "🍋 Amarillo Sol", vals: { accent: "#fde047", bg: "#fefce8", card: "#ffffff", border: "#fef08a", isLight: true } }, 
+      { id: "light-silver", name: "🪙 Plata Elegante", vals: { accent: "#cbd5e1", bg: "#f8fafc", card: "#ffffff", border: "#e2e8f0", isLight: true } }, 
+      { id: "light-peach", name: "🍑 Durazno Claro", vals: { accent: "#fca5a5", bg: "#fff5f5", card: "#ffffff", border: "#fecaca", isLight: true } }, 
+
+    ]
+  }
+];
