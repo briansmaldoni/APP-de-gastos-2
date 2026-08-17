@@ -349,8 +349,11 @@
 
     <!-- RESUMEN FINAL EN PÍLDORAS ESTÉTICAS (INFERIOR) -->
     <div class="space-y-2.5 pt-3 border-t border-slate-800/80">
-      <div class="glass-pill flex justify-between items-center px-4 py-3">
-        <span class="text-[10px] text-slate-300 font-semibold uppercase tracking-wide truncate">⚡ Servicios Globales:</span>
+      <div onclick="openServiciosSelectorModal()" class="glass-pill flex justify-between items-center px-4 py-3 cursor-pointer hover:bg-slate-800/60 border border-indigo-500/40 transition-all shadow-md group" title="Tocar para habilitar/deshabilitar servicios de este mes">
+        <div class="flex items-center gap-1.5 truncate">
+          <span class="text-[10px] text-slate-300 font-semibold uppercase tracking-wide truncate">⚡ Servicios Globales:</span>
+          <span id="servicios-status-badge" class="text-[9px] bg-indigo-900/60 text-indigo-300 px-1.5 py-0.5 rounded border border-indigo-500/40 font-bold group-hover:bg-indigo-600 group-hover:text-white transition-all">Ver / Filtrar</span>
+        </div>
         <span id="subtotal-servicios-globales-bottom" class="font-extrabold text-indigo-300 text-sm whitespace-nowrap">$ 0,00</span>
       </div>
       <div class="glass-pill flex justify-between items-center px-4 py-3">
@@ -371,6 +374,38 @@
       </div>
     </div>
   </section>
+
+  <!-- MODAL SELECCIONADOR DE SERVICIOS PARA EL MES EN CURSO -->
+  <div id="modal-servicios-selector" onclick="if(event.target === this) closeServiciosSelectorModal()" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-md z-[85] flex items-center justify-center p-4">
+    <div class="glass w-full max-w-md max-h-[85vh] rounded-2xl border border-indigo-500/50 p-4 flex flex-col shadow-2xl space-y-3">
+      <div class="flex justify-between items-center border-b border-slate-800 pb-2">
+        <div>
+          <h2 class="text-base font-bold text-white flex items-center gap-1.5">⚡ Servicios del Mes</h2>
+          <p class="text-[10px] text-indigo-300 font-medium">Desmarcá los débitos que ya entraron en la tarjeta</p>
+        </div>
+        <button onclick="closeServiciosSelectorModal()" class="w-7 h-7 rounded-full bg-slate-800 text-slate-400 font-bold text-xs hover:bg-slate-700 border border-slate-700">✕</button>
+      </div>
+
+      <div class="flex justify-between items-center bg-slate-900/60 p-2 rounded-lg border border-slate-800 text-xs">
+        <span class="text-slate-400 font-semibold text-[11px]" id="servicios-selector-month-name">Mes: Enero</span>
+        <div class="flex gap-1.5">
+          <button onclick="toggleAllServiciosMonth(true)" class="bg-indigo-950/80 hover:bg-indigo-900 text-indigo-300 border border-indigo-700/60 px-2 py-1 rounded text-[10px] font-bold">Tildar Todos</button>
+          <button onclick="toggleAllServiciosMonth(false)" class="bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 px-2 py-1 rounded text-[10px] font-bold">Destildar Todos</button>
+        </div>
+      </div>
+
+      <div id="modal-servicios-selector-list" class="space-y-2 overflow-y-auto max-h-60 pr-1 custom-scroll"></div>
+
+      <div class="pt-2 border-t border-slate-800 flex justify-between items-center">
+        <span class="text-xs text-slate-400 font-semibold">Total Computado:</span>
+        <span id="modal-servicios-selector-total" class="text-sm font-black text-indigo-400 whitespace-nowrap">$ 0,00</span>
+      </div>
+
+      <button onclick="closeServiciosSelectorModal(); saveProyeccionCurrent();" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white py-2.5 rounded-lg text-xs font-bold shadow flex items-center justify-center gap-1.5 transition-all">
+        ✅ Aplicar a este mes
+      </button>
+    </div>
+  </div>
 
   <!-- MODAL UNIFICADO: CONFIGURACIÓN DE SERVICIOS, SUELDOS Y DÓLAR -->
   <div id="modal-servicios" onclick="if(event.target === this) closeServiciosModal()" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-md z-[80] flex items-center justify-center p-4">
@@ -1507,12 +1542,99 @@
       renderProyeccion();
     }
 
+    // ================= FUNCIONES DE FILTRADO Y CHECKBOX DE SERVICIOS POR MES =================
+
+    function openServiciosSelectorModal() {
+      document.getElementById('servicios-selector-month-name').innerText = `Mes: ${currentProyMonth}`;
+      renderServiciosSelectorList();
+      document.getElementById('modal-servicios-selector').classList.remove('hidden');
+    }
+
+    function closeServiciosSelectorModal() {
+      document.getElementById('modal-servicios-selector').classList.add('hidden');
+    }
+
+    function getDisabledServiciosForCurrentMonth() {
+      let mesData = getOrCreateMesData(currentProyMonth);
+      if (!mesData.serviciosDesactivados) {
+        mesData.serviciosDesactivados = [];
+      }
+      return mesData.serviciosDesactivados;
+    }
+
+    function toggleServicioForCurrentMonth(servConcepto, isChecked) {
+      let disabledList = getDisabledServiciosForCurrentMonth();
+      if (isChecked) {
+        let idx = disabledList.indexOf(servConcepto);
+        if (idx !== -1) disabledList.splice(idx, 1);
+      } else {
+        if (!disabledList.includes(servConcepto)) {
+          disabledList.push(servConcepto);
+        }
+      }
+      calcProyTotales();
+      renderServiciosSelectorList();
+    }
+
+    function toggleAllServiciosMonth(enableAll) {
+      let mesData = getOrCreateMesData(currentProyMonth);
+      if (enableAll) {
+        mesData.serviciosDesactivados = [];
+      } else {
+        mesData.serviciosDesactivados = serviciosGlobales.map(s => s.concepto);
+      }
+      calcProyTotales();
+      renderServiciosSelectorList();
+    }
+
+    function renderServiciosSelectorList() {
+      const container = document.getElementById('modal-servicios-selector-list');
+      container.innerHTML = "";
+      
+      let disabledList = getDisabledServiciosForCurrentMonth();
+      let totalComputado = 0;
+
+      if (serviciosGlobales.length === 0) {
+        container.innerHTML = `<p class="text-xs text-slate-500 text-center py-4">No hay servicios globales cargados en la configuración.</p>`;
+        document.getElementById('modal-servicios-selector-total').innerText = formatMoney(0);
+        return;
+      }
+
+      serviciosGlobales.forEach((serv) => {
+        let p = parseFloat(serv.precio) || 0;
+        let c = parseInt(serv.cant) || 1;
+        let costoSubtotal = serv.moneda === "USD" ? (p * dolarUSD * c) : (p * c);
+        
+        let isEnabled = !disabledList.includes(serv.concepto);
+        if (isEnabled) totalComputado += costoSubtotal;
+
+        let row = `
+          <div class="bg-slate-900/90 p-2.5 rounded-xl border ${isEnabled ? 'border-indigo-500/40 bg-indigo-950/20' : 'border-slate-800 opacity-60'} flex justify-between items-center transition-all cursor-pointer" onclick="toggleServicioForCurrentMonth('${serv.concepto.replace(/'/g, "\\'")}', ${!isEnabled})">
+            <div class="flex items-center gap-2.5">
+              <input type="checkbox" ${isEnabled ? 'checked' : ''} onclick="event.stopPropagation(); toggleServicioForCurrentMonth('${serv.concepto.replace(/'/g, "\\'")}', this.checked)" class="w-4 h-4 accent-indigo-500 cursor-pointer">
+              <div class="flex flex-col">
+                <span class="text-xs font-bold ${isEnabled ? 'text-white' : 'text-slate-400 line-through'}">${serv.concepto}</span>
+                <span class="text-[9px] text-slate-400">${serv.cant > 1 ? serv.cant + 'x ' : ''}${serv.moneda === 'USD' ? 'USD ' + serv.precio : '$ ' + serv.precio}</span>
+              </div>
+            </div>
+            <span class="text-xs font-extrabold ${isEnabled ? 'text-indigo-300' : 'text-slate-500 line-through'}">${formatMoney(costoSubtotal)}</span>
+          </div>`;
+        container.innerHTML += row;
+      });
+
+      document.getElementById('modal-servicios-selector-total').innerText = formatMoney(totalComputado);
+    }
+
     function getServiciosTotalCalculated() {
       let total = 0;
+      let disabledList = getDisabledServiciosForCurrentMonth();
+
       serviciosGlobales.forEach(s => {
-        let p = parseFloat(s.precio) || 0;
-        let c = parseInt(s.cant) || 1;
-        total += s.moneda === "USD" ? (p * dolarUSD * c) : (p * c);
+        if (!disabledList.includes(s.concepto)) {
+          let p = parseFloat(s.precio) || 0;
+          let c = parseInt(s.cant) || 1;
+          total += s.moneda === "USD" ? (p * dolarUSD * c) : (p * c);
+        }
       });
       return total;
     }
@@ -1556,7 +1678,8 @@
           tipoExtraVirginia: defaultTipo,
           conceptoExtraVirginia: defaultTipo === "SAC" ? "SAC" : (defaultTipo === "Premio" ? "Premio / Bono" : ""),
           gastosBrian: [],
-          gastosVirginia: []
+          gastosVirginia: [],
+          serviciosDesactivados: []
         };
         proyeccionesData.push(mesData);
       }
@@ -1728,8 +1851,11 @@
     function getOrCreateMesData(mes) {
       let found = proyeccionesData.find(p => p.mes === mes);
       if (!found) {
-        found = { mes: mes, extraBrian: 0, tipoExtraBrian: "Otro", conceptoExtraBrian: "", extraVirginia: 0, tipoExtraVirginia: "Otro", conceptoExtraVirginia: "", gastosBrian: [], gastosVirginia: [] };
+        found = { mes: mes, extraBrian: 0, tipoExtraBrian: "Otro", conceptoExtraBrian: "", extraVirginia: 0, tipoExtraVirginia: "Otro", conceptoExtraVirginia: "", gastosBrian: [], gastosVirginia: [], serviciosDesactivados: [] };
         proyeccionesData.push(found);
+      }
+      if (!found.serviciosDesactivados) {
+        found.serviciosDesactivados = [];
       }
       return found;
     }
@@ -1765,6 +1891,18 @@
       
       const lblServBottom = document.getElementById('subtotal-servicios-globales-bottom');
       if (lblServBottom) lblServBottom.innerText = formatMoney(totalServicios);
+
+      const statusBadge = document.getElementById('servicios-status-badge');
+      if (statusBadge) {
+        let disabledCount = getDisabledServiciosForCurrentMonth().length;
+        if (disabledCount > 0) {
+          statusBadge.innerText = `${serviciosGlobales.length - disabledCount}/${serviciosGlobales.length} activos`;
+          statusBadge.className = "text-[9px] bg-amber-900/60 text-amber-300 px-1.5 py-0.5 rounded border border-amber-500/40 font-bold group-hover:bg-amber-600 group-hover:text-white transition-all";
+        } else {
+          statusBadge.innerText = "Ver / Filtrar";
+          statusBadge.className = "text-[9px] bg-indigo-900/60 text-indigo-300 px-1.5 py-0.5 rounded border border-indigo-500/40 font-bold group-hover:bg-indigo-600 group-hover:text-white transition-all";
+        }
+      }
 
       document.querySelectorAll('.proy-total-ingresos').forEach(el => el.innerText = formatMoney(totalIngresos));
       document.querySelectorAll('.proy-total-gastos').forEach(el => el.innerText = formatMoney(totalGastosFijos));
