@@ -55,8 +55,10 @@
     .text-main { color: var(--c-text-main) !important; }
     .text-muted { color: var(--c-text-muted) !important; }
 
-    input[type="checkbox"] { accent-color: var(--c-accent); }
-    .input-focus:focus { border-color: var(--c-accent); outline: none; }
+    /* Headless UI Switch Colors */
+    .peer:checked ~ .peer-checked\:bg-accent { background-color: var(--c-accent); border-color: var(--c-accent); }
+
+    .input-focus:focus { border-color: var(--c-accent); outline: none; box-shadow: 0 0 0 1px var(--c-accent); }
 
     body.theme-light {
       --c-bg: #f8fafc;
@@ -86,43 +88,51 @@
     .syncing-spin { animation: spin 1s linear infinite; }
   </style>
 </head>
-<body id="app-body" class="p-4 max-w-md mx-auto min-h-screen flex flex-col justify-start dark relative">
+<body id="app-body" class="p-4 max-w-md mx-auto min-h-screen flex flex-col justify-start relative">
 
-  <!-- MENÚ LATERAL DRAWER -->
-  <div id="drawer-menu" class="hidden fixed inset-0 z-[100] flex">
-    <div onclick="toggleDrawer()" class="absolute inset-0 bg-slate-950/80 backdrop-blur-sm"></div>
-    <div class="relative w-72 card-clean h-full p-5 shadow-2xl flex flex-col justify-between z-10 rounded-r-2xl rounded-l-none">
-      <div>
-        <div class="flex justify-between items-center pb-4 border-b border-slate-800/80 mb-6">
-          <h2 class="font-semibold text-base text-main flex items-center gap-2">📱 Menú Principal</h2>
-          <button onclick="toggleDrawer()" class="text-muted hover:text-main font-bold text-lg">✕</button>
+  <!-- MENÚ LATERAL DRAWER (Headless UI Slide-over Structure) -->
+  <div id="drawer-menu" class="hidden relative z-[100]" aria-labelledby="slide-over-title" role="dialog" aria-modal="true">
+    <div class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm transition-opacity" onclick="toggleDrawer()"></div>
+    <div class="fixed inset-0 overflow-hidden">
+      <div class="absolute inset-0 overflow-hidden">
+        <div class="pointer-events-none fixed inset-y-0 left-0 flex max-w-full pr-10">
+          <div class="pointer-events-auto relative w-72 transform transition ease-in-out duration-300">
+            <div class="flex h-full flex-col card-clean rounded-r-2xl rounded-l-none shadow-2xl p-5 justify-between">
+              <div>
+                <div class="flex justify-between items-center pb-4 border-b border-slate-800/80 mb-6">
+                  <h2 class="font-semibold text-base text-main flex items-center gap-2">📱 Menú Principal</h2>
+                  <button onclick="toggleDrawer()" class="text-muted hover:text-main font-bold text-lg focus:outline-none">✕</button>
+                </div>
+                <nav class="space-y-2">
+                  <button onclick="switchView('diario')" id="nav-btn-diario" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-xs bg-accent text-white shadow">
+                    ⚡ Presupuesto Diario
+                  </button>
+                  <button onclick="switchView('proyeccion')" id="nav-btn-proyeccion" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-xs text-muted hover:bg-slate-800/50 transition-all">
+                    📊 Proyección Mensual
+                  </button>
+                </nav>
+              </div>
+              <div class="pt-4 border-t border-slate-800/80 text-[11px] text-muted text-center">
+                Brian & Virginia © 2026
+              </div>
+            </div>
+          </div>
         </div>
-        <nav class="space-y-2">
-          <button onclick="switchView('diario')" id="nav-btn-diario" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-xs bg-accent text-white shadow">
-            ⚡ Presupuesto Diario
-          </button>
-          <button onclick="switchView('proyeccion')" id="nav-btn-proyeccion" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-xs text-muted hover:bg-slate-800/50 transition-all">
-            📊 Proyección Mensual
-          </button>
-        </nav>
-      </div>
-      <div class="pt-4 border-t border-slate-800/80 text-[11px] text-muted text-center">
-        Brian & Virginia © 2026
       </div>
     </div>
   </div>
 
   <!-- ENCABEZADO Y NAVEGACIÓN GLOBAL -->
-  <div class="flex justify-between items-center mb-5 relative">
+  <div class="flex justify-between items-center mb-5 relative z-10">
     <div class="flex gap-1.5 items-center shrink-0">
-      <button onclick="toggleDrawer()" class="px-2.5 py-1.5 text-xs rounded-full card-clean hover:bg-slate-800/60 transition-all shadow-sm" title="Menú Principal">☰</button>
-      <button id="user-brian" onclick="setUser('Brian')" class="px-3 py-1.5 text-xs rounded-full transition-all shadow-sm font-medium">Brian</button>
-      <button id="user-virginia" onclick="setUser('Virginia')" class="px-3 py-1.5 text-xs rounded-full transition-all shadow-sm font-medium">Virginia</button>
-      <button onclick="openConfigModal()" class="px-2 py-1.5 text-xs rounded-full card-clean hover:bg-slate-800/60 transition-all shadow-sm" title="Configuración">⚙️</button>
+      <button onclick="toggleDrawer()" class="px-2.5 py-1.5 text-xs rounded-full card-clean hover:bg-slate-800/60 transition-all shadow-sm focus:outline-none" title="Menú Principal">☰</button>
+      <button id="user-brian" onclick="setUser('Brian')" class="px-3 py-1.5 text-xs rounded-full transition-all shadow-sm font-medium focus:outline-none">Brian</button>
+      <button id="user-virginia" onclick="setUser('Virginia')" class="px-3 py-1.5 text-xs rounded-full transition-all shadow-sm font-medium focus:outline-none">Virginia</button>
+      <button onclick="openConfigModal()" class="px-2 py-1.5 text-xs rounded-full card-clean hover:bg-slate-800/60 transition-all shadow-sm focus:outline-none" title="Configuración">⚙️</button>
     </div>
 
     <div class="flex items-center gap-2 overflow-visible">
-      <button id="btn-top-sync" onclick="manualSync()" class="px-3 py-1.5 text-xs font-medium rounded-full card-clean text-main hover:bg-slate-800/60 transition-all shadow-sm flex items-center gap-1.5 shrink-0">
+      <button id="btn-top-sync" onclick="manualSync()" class="px-3 py-1.5 text-xs font-medium rounded-full card-clean text-main hover:bg-slate-800/60 transition-all shadow-sm flex items-center gap-1.5 shrink-0 focus:outline-none">
         <span class="sync-icon">🔄</span> Actualizar
       </button>
       <div id="sync-status" class="hidden flex items-center gap-1.5 text-xs t-accent font-semibold bg-accent-light px-3 py-1.5 rounded-full border border-accent-light shadow-sm whitespace-nowrap">
@@ -140,7 +150,7 @@
       <div class="card-clean p-4 col-span-2 text-center border-accent-light bg-accent-light relative overflow-hidden shadow-sm flex flex-col items-center justify-center">
         <div class="flex justify-between w-full items-start px-1 mb-1">
            <span class="text-[11px] t-accent uppercase tracking-wider font-semibold">Presupuesto para Hoy</span>
-           <button onclick="enviarSaldoHoyABolsa()" class="bg-accent hover:brightness-110 text-white text-[9px] font-semibold px-2 py-1 rounded-md shadow-sm flex items-center gap-1 transition-all" title="Mandar lo que sobró hoy a la Bolsa">
+           <button onclick="enviarSaldoHoyABolsa()" class="bg-accent hover:brightness-110 text-white text-[9px] font-semibold px-2 py-1 rounded-md shadow-sm flex items-center gap-1 transition-all focus:outline-none" title="Mandar lo que sobró hoy a la Bolsa">
               <span class="text-[10px]">📥</span> A Bolsa
            </button>
         </div>
@@ -162,75 +172,97 @@
           <span class="text-[10px] text-muted block uppercase font-medium">Home Banking</span>
           <span id="display-hb" class="text-sm font-semibold text-main mt-1 block">$ 0,00</span>
         </div>
-        <button onclick="focusUpdateHB()" class="mt-2 card-clean text-main py-1 rounded-md text-[10px] font-medium transition-colors w-full">Actualizar Saldo</button>
+        <button onclick="focusUpdateHB()" class="mt-2 card-clean text-main py-1 rounded-md text-[10px] font-medium transition-colors w-full focus:outline-none focus:ring-2 focus:ring-accent">Actualizar Saldo</button>
       </div>
 
-      <div onclick="openCalendarModal()" class="card-clean p-3 text-center flex flex-col justify-between cursor-pointer hover:bg-slate-800/40 transition-all group shadow-sm">
+      <div onclick="openCalendarModal()" class="card-clean p-3 text-center flex flex-col justify-between cursor-pointer hover:bg-slate-800/40 transition-all group shadow-sm focus:outline-none">
         <div>
           <span class="text-[10px] text-muted block uppercase font-medium">Días Restantes</span>
           <span id="display-days" class="text-lg font-bold t-accent mt-0.5 block">0 Días</span>
         </div>
-        <button type="button" class="mt-2 card-clean text-main py-1 px-1 rounded-md text-[9px] font-medium transition-all">
+        <button type="button" class="mt-2 card-clean text-main py-1 px-1 rounded-md text-[9px] font-medium transition-all pointer-events-none">
           📅 Ver Presupuestos
         </button>
       </div>
     </div>
 
-    <div class="flex border-b border-slate-800 mb-4 text-xs font-semibold">
-      <button onclick="switchTab('tab-unico')" id="btn-tab-unico" class="flex-1 py-2.5 t-accent border-b-2 border-accent transition-all text-center">Gasto Único</button>
-      <button onclick="switchTab('tab-divisible')" id="btn-tab-divisible" class="flex-1 py-2.5 text-muted transition-all text-center">Divisible</button>
-      <button onclick="switchTab('tab-ajuste')" id="btn-tab-ajuste" class="flex-1 py-2.5 text-muted transition-all text-center">Ajustes</button>
+    <!-- Headless UI Style Tabs -->
+    <div class="flex space-x-1 rounded-xl bg-slate-800/40 p-1 mb-2">
+      <button onclick="switchTab('tab-unico')" id="btn-tab-unico" class="w-full rounded-lg py-2.5 text-xs font-medium leading-5 bg-accent text-white shadow transition-all focus:outline-none">Gasto Único</button>
+      <button onclick="switchTab('tab-divisible')" id="btn-tab-divisible" class="w-full rounded-lg py-2.5 text-xs font-medium leading-5 text-muted hover:bg-slate-800/40 hover:text-main transition-all focus:outline-none">Divisible</button>
+      <button onclick="switchTab('tab-ajuste')" id="btn-tab-ajuste" class="w-full rounded-lg py-2.5 text-xs font-medium leading-5 text-muted hover:bg-slate-800/40 hover:text-main transition-all focus:outline-none">Ajustes</button>
     </div>
 
     <form id="tab-unico" class="space-y-3 nav-form" onsubmit="submitUnico(event)">
-      <input type="text" id="u-monto" inputmode="decimal" placeholder="Monto del gasto ($)" onfocus="handleInputFocus(this)" onblur="handleInputBlur(this)" oninput="formatLiveCurrencyInput(this)" required class="w-full card-clean p-3 font-semibold text-sm input-focus">
-      <input type="date" id="u-fecha" class="w-full card-clean p-3 text-xs input-focus">
-      <input type="text" id="u-concepto" placeholder="¿En qué se gastó? (Detalle)" required class="w-full card-clean p-3 text-xs input-focus">
-      <label class="flex items-center gap-2 text-xs text-main font-medium cursor-pointer p-1">
-        <input type="checkbox" id="u-bolsa" onchange="toggleBolsaUnico(this)" class="w-4 h-4 rounded"> Descontar directo de Bolsa
+      <input type="text" id="u-monto" inputmode="decimal" placeholder="Monto del gasto ($)" onfocus="handleInputFocus(this)" onblur="handleInputBlur(this)" oninput="formatLiveCurrencyInput(this)" required class="w-full card-clean p-3 font-semibold text-sm input-focus transition-shadow">
+      <input type="date" id="u-fecha" class="w-full card-clean p-3 text-xs input-focus transition-shadow">
+      <input type="text" id="u-concepto" placeholder="¿En qué se gastó? (Detalle)" required class="w-full card-clean p-3 text-xs input-focus transition-shadow">
+      
+      <!-- Headless UI Style Switch -->
+      <label class="flex items-center justify-between cursor-pointer p-1 rounded-lg hover:bg-slate-800/30 transition-colors">
+        <span class="text-xs text-main font-medium">Descontar directo de Bolsa</span>
+        <div class="relative inline-flex items-center">
+          <input type="checkbox" id="u-bolsa" onchange="toggleBolsaUnico(this)" class="sr-only peer">
+          <div class="w-11 h-6 bg-slate-700/50 border border-slate-600 rounded-full peer peer-checked:bg-accent transition-colors duration-200 ease-in-out"></div>
+          <div class="absolute left-[2px] top-[2px] bg-white w-5 h-5 rounded-full transition-transform duration-200 ease-in-out peer-checked:translate-x-5 shadow-sm"></div>
+        </div>
       </label>
+
       <div class="flex gap-2 pt-1">
-        <button type="submit" class="flex-1 bg-accent hover:brightness-110 text-white font-semibold text-xs py-3 rounded-xl shadow-sm transition-all">Guardar Gasto</button>
-        <button type="button" onclick="clearForm('tab-unico')" class="card-clean px-4 py-3 text-xs text-muted">Limpiar</button>
+        <button type="submit" class="flex-1 bg-accent hover:brightness-110 text-white font-semibold text-xs py-3 rounded-xl shadow-sm transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent focus:ring-offset-slate-900">Guardar Gasto</button>
+        <button type="button" onclick="clearForm('tab-unico')" class="card-clean px-4 py-3 text-xs text-muted hover:text-main focus:outline-none focus:ring-2 focus:ring-slate-500 rounded-xl">Limpiar</button>
       </div>
     </form>
 
     <form id="tab-divisible" class="space-y-3 nav-form hidden" onsubmit="submitDivisible(event)">
-      <input type="text" id="d-monto" inputmode="decimal" placeholder="Monto Total a dividir ($)" onfocus="handleInputFocus(this)" onblur="handleInputBlur(this)" oninput="formatLiveCurrencyInput(this)" required class="w-full card-clean p-3 font-semibold text-sm input-focus">
-      <input type="number" id="d-dias" placeholder="Días a dividir (Vacío = hasta fin de ciclo)" class="w-full card-clean p-3 text-xs input-focus">
+      <input type="text" id="d-monto" inputmode="decimal" placeholder="Monto Total a dividir ($)" onfocus="handleInputFocus(this)" onblur="handleInputBlur(this)" oninput="formatLiveCurrencyInput(this)" required class="w-full card-clean p-3 font-semibold text-sm input-focus transition-shadow">
+      <input type="number" id="d-dias" placeholder="Días a dividir (Vacío = hasta fin de ciclo)" class="w-full card-clean p-3 text-xs input-focus transition-shadow">
       <label class="text-[11px] text-muted ml-1">Fecha de inicio del gasto:</label>
-      <input type="date" id="d-fecha" class="w-full card-clean p-3 text-xs mt-0 input-focus">
-      <input type="text" id="d-concepto" placeholder="Detalle del gasto" required class="w-full card-clean p-3 text-xs input-focus">
-      <label class="flex items-center gap-2 text-xs text-main font-medium cursor-pointer p-1">
-        <input type="checkbox" id="d-bolsa" onchange="redirectDivisibleToUnico(this)" class="w-4 h-4 rounded"> Descontar de Bolsa (Gasto Único)
+      <input type="date" id="d-fecha" class="w-full card-clean p-3 text-xs mt-0 input-focus transition-shadow">
+      <input type="text" id="d-concepto" placeholder="Detalle del gasto" required class="w-full card-clean p-3 text-xs input-focus transition-shadow">
+      
+      <!-- Headless UI Style Switch -->
+      <label class="flex items-center justify-between cursor-pointer p-1 rounded-lg hover:bg-slate-800/30 transition-colors">
+        <span class="text-xs text-main font-medium">Descontar de Bolsa (Gasto Único)</span>
+        <div class="relative inline-flex items-center">
+          <input type="checkbox" id="d-bolsa" onchange="redirectDivisibleToUnico(this)" class="sr-only peer">
+          <div class="w-11 h-6 bg-slate-700/50 border border-slate-600 rounded-full peer peer-checked:bg-accent transition-colors duration-200 ease-in-out"></div>
+          <div class="absolute left-[2px] top-[2px] bg-white w-5 h-5 rounded-full transition-transform duration-200 ease-in-out peer-checked:translate-x-5 shadow-sm"></div>
+        </div>
       </label>
+
       <div class="flex gap-2 pt-1">
-        <button type="submit" class="flex-1 bg-accent hover:brightness-110 text-white font-semibold text-xs py-3 rounded-xl shadow-sm transition-all">Dividir y Guardar</button>
-        <button type="button" onclick="clearForm('tab-divisible')" class="card-clean px-4 py-3 text-xs text-muted">Limpiar</button>
+        <button type="submit" class="flex-1 bg-accent hover:brightness-110 text-white font-semibold text-xs py-3 rounded-xl shadow-sm transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent focus:ring-offset-slate-900">Dividir y Guardar</button>
+        <button type="button" onclick="clearForm('tab-divisible')" class="card-clean px-4 py-3 text-xs text-muted hover:text-main focus:outline-none focus:ring-2 focus:ring-slate-500 rounded-xl">Limpiar</button>
       </div>
     </form>
 
     <form id="tab-ajuste" class="space-y-3 nav-form hidden" onsubmit="submitAjuste(event)">
-      <input type="text" id="a-monto" inputmode="decimal" placeholder="Monto del movimiento ($)" onfocus="handleInputFocus(this)" onblur="handleInputBlur(this)" oninput="formatLiveCurrencyInput(this)" required class="w-full card-clean p-3 font-semibold text-sm input-focus">
-      <input type="text" id="a-concepto" placeholder="Concepto o justificación" required class="w-full card-clean p-3 text-xs input-focus">
-      <select id="a-tipo" onchange="toggleAjusteFields()" class="w-full card-clean p-3 text-xs input-focus">
-        <option value="1">1. Ingresar plata a Home Banking (Sumar al saldo)</option>
-        <option value="2">2. Ingresar plata directo a Bolsa de Saldos</option>
-        <option value="3">3. Restar plata del Home Banking general</option>
-        <option value="4">4. Restar plata de Bolsa de Saldos</option>
-        <option value="5">5. Mover de HB a Bolsa de Saldos (Ahorro)</option>
-        <option value="6">6. Agregar de HB a Presupuesto Diario (Hoy)</option>
-        <option value="7">7. Agregar de HB a día(s) específico(s)</option>
-        <option value="8">8. Agregar de Bolsa a día(s) específico(s)</option>
-      </select>
+      <input type="text" id="a-monto" inputmode="decimal" placeholder="Monto del movimiento ($)" onfocus="handleInputFocus(this)" onblur="handleInputBlur(this)" oninput="formatLiveCurrencyInput(this)" required class="w-full card-clean p-3 font-semibold text-sm input-focus transition-shadow">
+      <input type="text" id="a-concepto" placeholder="Concepto o justificación" required class="w-full card-clean p-3 text-xs input-focus transition-shadow">
+      <div class="relative">
+        <select id="a-tipo" onchange="toggleAjusteFields()" class="w-full card-clean p-3 text-xs input-focus transition-shadow appearance-none pr-10">
+          <option value="1">1. Ingresar plata a Home Banking (Sumar al saldo)</option>
+          <option value="2">2. Ingresar plata directo a Bolsa de Saldos</option>
+          <option value="3">3. Restar plata del Home Banking general</option>
+          <option value="4">4. Restar plata de Bolsa de Saldos</option>
+          <option value="5">5. Mover de HB a Bolsa de Saldos (Ahorro)</option>
+          <option value="6">6. Agregar de HB a Presupuesto Diario (Hoy)</option>
+          <option value="7">7. Agregar de HB a día(s) específico(s)</option>
+          <option value="8">8. Agregar de Bolsa a día(s) específico(s)</option>
+        </select>
+        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-muted">
+          <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+        </div>
+      </div>
       <div id="a-extra-fields" class="hidden space-y-2 mt-2 card-clean p-3">
           <label class="text-[11px] text-muted">A partir de qué fecha y en cuántos días:</label>
-          <input type="date" id="a-fecha" class="w-full card-clean p-2 text-xs input-focus">
-          <input type="number" id="a-dias" placeholder="Cant. días (Ej: 1 o más)" class="w-full card-clean p-2 text-xs input-focus">
+          <input type="date" id="a-fecha" class="w-full card-clean p-2 text-xs input-focus transition-shadow">
+          <input type="number" id="a-dias" placeholder="Cant. días (Ej: 1 o más)" class="w-full card-clean p-2 text-xs input-focus transition-shadow">
       </div>
       <div class="flex gap-2 pt-1">
-        <button type="submit" class="flex-1 bg-accent hover:brightness-110 text-white font-semibold text-xs py-3 rounded-xl shadow-sm transition-all">Ejecutar Acción</button>
-        <button type="button" onclick="clearForm('tab-ajuste')" class="card-clean px-4 py-3 text-xs text-muted">Limpiar</button>
+        <button type="submit" class="flex-1 bg-accent hover:brightness-110 text-white font-semibold text-xs py-3 rounded-xl shadow-sm transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent focus:ring-offset-slate-900">Ejecutar Acción</button>
+        <button type="button" onclick="clearForm('tab-ajuste')" class="card-clean px-4 py-3 text-xs text-muted hover:text-main focus:outline-none focus:ring-2 focus:ring-slate-500 rounded-xl">Limpiar</button>
       </div>
     </form>
 
@@ -262,14 +294,14 @@
              <option value="Noviembre [Premio]">Noviembre [Premio]</option>
              <option value="Diciembre [SAC]">Diciembre [SAC]</option>
            </select>
-           <button class="card-clean text-main p-2 font-medium text-xs transition-colors">📅</button>
+           <button class="card-clean text-main p-2 font-medium text-xs transition-colors focus:outline-none focus:ring-2 focus:ring-accent rounded-lg">📅</button>
         </div>
         
         <div id="month-swipe-container" class="flex-1 overflow-x-auto flex gap-1.5 scroll-smooth custom-scroll pb-1 items-center px-1">
         </div>
       </div>
 
-      <button onclick="openServiciosModal()" class="card-clean text-main font-medium text-xs px-2.5 py-2 shadow-sm flex items-center gap-1 shrink-0 hover:bg-slate-800/50">
+      <button onclick="openServiciosModal()" class="card-clean text-main font-medium text-xs px-2.5 py-2 shadow-sm flex items-center gap-1 shrink-0 hover:bg-slate-800/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent">
         ⚙️ Servicios
       </button>
     </div>
@@ -300,31 +332,31 @@
         <h3 class="text-[11px] font-semibold uppercase tracking-wider text-main flex items-center gap-1">
           <span>💼 Extras del Mes</span>
         </h3>
-        <button onclick="saveProyeccionCurrent(this)" class="btn-update-action text-[9px] card-clean text-main px-2 py-0.5 rounded-md font-medium transition-all">
+        <button onclick="saveProyeccionCurrent(this)" class="btn-update-action text-[9px] card-clean text-main px-2 py-0.5 rounded-md font-medium transition-all focus:outline-none">
           🔄 Guardar Cambios
         </button>
       </div>
 
       <div class="flex gap-2 items-center card-clean p-1.5 text-xs">
         <span id="label-user-brian" class="text-[11px] font-medium w-12 shrink-0">Brian</span>
-        <select id="p-tipo-extra-brian" onchange="onExtraTypeChange('Brian')" class="card-clean text-[10px] text-main rounded px-1 py-1 outline-none shrink-0">
+        <select id="p-tipo-extra-brian" onchange="onExtraTypeChange('Brian')" class="card-clean text-[10px] text-main rounded px-1 py-1 outline-none shrink-0 focus:ring-1 focus:ring-accent">
           <option value="SAC">SAC</option>
           <option value="Premio">Premio</option>
           <option value="Otro">Otro</option>
         </select>
-        <input type="text" id="p-concepto-extra-brian" placeholder="Detalle" class="card-clean p-1 text-main text-[11px] flex-1 outline-none min-w-0">
-        <input type="text" id="p-extra-brian" inputmode="decimal" placeholder="$ 0" onfocus="handleInputFocus(this)" onblur="handleInputBlur(this)" oninput="formatLiveCurrencyInput(this); calcProyTotales();" class="gasto-monto-input card-clean p-1 font-semibold text-main text-right text-xs w-24 shrink-0 outline-none">
+        <input type="text" id="p-concepto-extra-brian" placeholder="Detalle" class="card-clean p-1 text-main text-[11px] flex-1 outline-none min-w-0 focus:ring-1 focus:ring-accent rounded">
+        <input type="text" id="p-extra-brian" inputmode="decimal" placeholder="$ 0" onfocus="handleInputFocus(this)" onblur="handleInputBlur(this)" oninput="formatLiveCurrencyInput(this); calcProyTotales();" class="gasto-monto-input card-clean p-1 font-semibold text-main text-right text-xs w-24 shrink-0 outline-none focus:ring-1 focus:ring-accent rounded">
       </div>
 
       <div class="flex gap-2 items-center card-clean p-1.5 text-xs">
         <span id="label-user-virginia" class="text-[11px] font-medium w-12 shrink-0">Virginia</span>
-        <select id="p-tipo-extra-virginia" onchange="onExtraTypeChange('Virginia')" class="card-clean text-[10px] text-main rounded px-1 py-1 outline-none shrink-0">
+        <select id="p-tipo-extra-virginia" onchange="onExtraTypeChange('Virginia')" class="card-clean text-[10px] text-main rounded px-1 py-1 outline-none shrink-0 focus:ring-1 focus:ring-accent">
           <option value="SAC">SAC</option>
           <option value="Premio">Premio</option>
           <option value="Otro">Otro</option>
         </select>
-        <input type="text" id="p-concepto-extra-virginia" placeholder="Detalle" class="card-clean p-1 text-main text-[11px] flex-1 outline-none min-w-0">
-        <input type="text" id="p-extra-virginia" inputmode="decimal" placeholder="$ 0" onfocus="handleInputFocus(this)" onblur="handleInputBlur(this)" oninput="formatLiveCurrencyInput(this); calcProyTotales();" class="gasto-monto-input card-clean p-1 font-semibold text-main text-right text-xs w-24 shrink-0 outline-none">
+        <input type="text" id="p-concepto-extra-virginia" placeholder="Detalle" class="card-clean p-1 text-main text-[11px] flex-1 outline-none min-w-0 focus:ring-1 focus:ring-accent rounded">
+        <input type="text" id="p-extra-virginia" inputmode="decimal" placeholder="$ 0" onfocus="handleInputFocus(this)" onblur="handleInputBlur(this)" oninput="formatLiveCurrencyInput(this); calcProyTotales();" class="gasto-monto-input card-clean p-1 font-semibold text-main text-right text-xs w-24 shrink-0 outline-none focus:ring-1 focus:ring-accent rounded">
       </div>
     </div>
 
@@ -333,8 +365,8 @@
       <div class="flex justify-between items-center border-b border-slate-800/80 pb-2">
         <h3 id="title-gastos-brian" class="text-xs font-semibold uppercase tracking-wider text-main">📌 Gastos Fijos - Brian</h3>
         <div class="flex gap-1.5">
-          <button onclick="addGastoRow('Brian')" class="text-[10px] card-clean text-main px-2 py-1 font-medium hover:bg-slate-800/50">+ Agregar</button>
-          <button onclick="saveProyeccionCurrent(this)" class="btn-update-action text-[10px] card-clean text-main px-2 py-1 font-medium hover:bg-slate-800/50 transition-all">🔄 Guardar</button>
+          <button onclick="addGastoRow('Brian')" class="text-[10px] card-clean text-main px-2 py-1 font-medium hover:bg-slate-800/50 rounded focus:outline-none">+ Agregar</button>
+          <button onclick="saveProyeccionCurrent(this)" class="btn-update-action text-[10px] card-clean text-main px-2 py-1 font-medium hover:bg-slate-800/50 transition-all rounded focus:outline-none">🔄 Guardar</button>
         </div>
       </div>
       <div id="container-gastos-brian" class="space-y-2"></div>
@@ -348,8 +380,8 @@
       <div class="flex justify-between items-center border-b border-slate-800/80 pb-2">
         <h3 id="title-gastos-virginia" class="text-xs font-semibold uppercase tracking-wider text-main">📌 Gastos Fijos - Virginia</h3>
         <div class="flex gap-1.5">
-          <button onclick="addGastoRow('Virginia')" class="text-[10px] card-clean text-main px-2 py-1 font-medium hover:bg-slate-800/50">+ Agregar</button>
-          <button onclick="saveProyeccionCurrent(this)" class="btn-update-action text-[10px] card-clean text-main px-2 py-1 font-medium hover:bg-slate-800/50 transition-all">🔄 Guardar</button>
+          <button onclick="addGastoRow('Virginia')" class="text-[10px] card-clean text-main px-2 py-1 font-medium hover:bg-slate-800/50 rounded focus:outline-none">+ Agregar</button>
+          <button onclick="saveProyeccionCurrent(this)" class="btn-update-action text-[10px] card-clean text-main px-2 py-1 font-medium hover:bg-slate-800/50 transition-all rounded focus:outline-none">🔄 Guardar</button>
         </div>
       </div>
       <div id="container-gastos-virginia" class="space-y-2"></div>
@@ -387,202 +419,242 @@
   </section>
 
   <!-- MODAL SELECCIONADOR DE SERVICIOS PARA EL MES EN CURSO -->
-  <div id="modal-servicios-selector" onclick="if(event.target === this) closeServiciosSelectorModal()" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-md z-[85] flex items-center justify-center p-4">
-    <div class="card-clean w-full max-w-md max-h-[85vh] p-4 flex flex-col shadow-2xl space-y-3">
-      <div class="flex justify-between items-center border-b border-slate-800/80 pb-2">
-        <div>
-          <h2 class="text-sm font-semibold text-main flex items-center gap-1.5">⚡ Servicios del Mes</h2>
-          <p class="text-[10px] text-muted font-medium">Desmarcá los débitos que ya entraron en la tarjeta</p>
+  <div id="modal-servicios-selector" class="hidden relative z-[85]" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <div class="fixed inset-0 bg-slate-950/80 backdrop-blur-md transition-opacity"></div>
+    <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
+      <div class="flex min-h-full items-center justify-center p-4 text-center" onclick="if(event.target === this) closeServiciosSelectorModal()">
+        <div class="relative transform overflow-hidden rounded-2xl card-clean text-left shadow-xl transition-all w-full max-w-md p-4 flex flex-col space-y-3">
+          <div class="flex justify-between items-center border-b border-slate-800/80 pb-2">
+            <div>
+              <h2 class="text-sm font-semibold text-main flex items-center gap-1.5">⚡ Servicios del Mes</h2>
+              <p class="text-[10px] text-muted font-medium">Desmarcá los débitos que ya entraron en la tarjeta</p>
+            </div>
+            <button onclick="closeServiciosSelectorModal()" class="w-7 h-7 rounded-full card-clean text-muted font-semibold text-xs hover:bg-slate-800 focus:outline-none">✕</button>
+          </div>
+          <div class="flex justify-between items-center card-clean p-2 text-xs">
+            <span class="text-muted font-medium text-[11px]" id="servicios-selector-month-name">Mes: Enero</span>
+            <div class="flex gap-1.5">
+              <button onclick="toggleAllServiciosMonth(true)" class="card-clean text-main px-2 py-1 text-[10px] font-medium hover:bg-slate-800 rounded focus:outline-none">Tildar Todos</button>
+              <button onclick="toggleAllServiciosMonth(false)" class="card-clean text-main px-2 py-1 text-[10px] font-medium hover:bg-slate-800 rounded focus:outline-none">Destildar Todos</button>
+            </div>
+          </div>
+          <div id="modal-servicios-selector-list" class="space-y-2 overflow-y-auto max-h-60 pr-1 custom-scroll"></div>
+          <div class="pt-2 border-t border-slate-800/80 flex justify-between items-center">
+            <span class="text-xs text-muted font-medium">Total Computado:</span>
+            <span id="modal-servicios-selector-total" class="text-xs font-semibold text-main whitespace-nowrap">$ 0,00</span>
+          </div>
+          <button onclick="closeServiciosSelectorModal(); saveProyeccionCurrent();" class="w-full bg-accent hover:brightness-110 text-white py-2.5 rounded-xl text-xs font-semibold shadow-sm transition-all focus:outline-none focus:ring-2 focus:ring-accent">
+            ✅ Aplicar a este mes
+          </button>
         </div>
-        <button onclick="closeServiciosSelectorModal()" class="w-7 h-7 rounded-full card-clean text-muted font-semibold text-xs hover:bg-slate-800">✕</button>
       </div>
-
-      <div class="flex justify-between items-center card-clean p-2 text-xs">
-        <span class="text-muted font-medium text-[11px]" id="servicios-selector-month-name">Mes: Enero</span>
-        <div class="flex gap-1.5">
-          <button onclick="toggleAllServiciosMonth(true)" class="card-clean text-main px-2 py-1 text-[10px] font-medium hover:bg-slate-800">Tildar Todos</button>
-          <button onclick="toggleAllServiciosMonth(false)" class="card-clean text-main px-2 py-1 text-[10px] font-medium hover:bg-slate-800">Destildar Todos</button>
-        </div>
-      </div>
-
-      <div id="modal-servicios-selector-list" class="space-y-2 overflow-y-auto max-h-60 pr-1 custom-scroll"></div>
-
-      <div class="pt-2 border-t border-slate-800/80 flex justify-between items-center">
-        <span class="text-xs text-muted font-medium">Total Computado:</span>
-        <span id="modal-servicios-selector-total" class="text-xs font-semibold text-main whitespace-nowrap">$ 0,00</span>
-      </div>
-
-      <button onclick="closeServiciosSelectorModal(); saveProyeccionCurrent();" class="w-full bg-accent hover:brightness-110 text-white py-2.5 rounded-xl text-xs font-semibold shadow-sm transition-all">
-        ✅ Aplicar a este mes
-      </button>
     </div>
   </div>
 
   <!-- MODAL UNIFICADO: CONFIGURACIÓN DE SERVICIOS, SUELDOS Y DÓLAR -->
-  <div id="modal-servicios" onclick="if(event.target === this) closeServiciosModal()" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-md z-[80] flex items-center justify-center p-4">
-    <div class="card-clean w-full max-w-md max-h-[90vh] p-4 flex flex-col shadow-2xl space-y-3">
-      <div class="flex justify-between items-center border-b border-slate-800/80 pb-2">
-        <h2 class="text-sm font-semibold text-main flex items-center gap-2">⚙️ Tarifario & Sueldos Base</h2>
-        <button onclick="closeServiciosModal()" class="w-7 h-7 rounded-full card-clean text-muted font-semibold text-xs hover:bg-slate-800">✕</button>
-      </div>
-
-      <div class="flex border-b border-slate-800/80 text-xs font-semibold">
-        <button onclick="switchServTab('tab-serv-lista')" id="btn-serv-lista" class="flex-1 py-2 t-accent border-b-2 border-accent transition-all">Servicios / Subscripciones</button>
-        <button onclick="switchServTab('tab-serv-sueldos')" id="btn-serv-sueldos" class="flex-1 py-2 text-muted transition-all">Sueldos Base</button>
-      </div>
-
-      <div id="tab-serv-lista" class="space-y-3">
-        <div class="card-clean p-2.5 flex justify-between items-center">
-          <div>
-            <label class="text-xs font-semibold text-main block">Cotización Dólar ($ USD)</label>
-            <span class="text-[10px] text-muted block">Recalcula servicios en USD en vivo</span>
+  <div id="modal-servicios" class="hidden relative z-[80]" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <div class="fixed inset-0 bg-slate-950/80 backdrop-blur-md transition-opacity"></div>
+    <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
+      <div class="flex min-h-full items-center justify-center p-4 text-center" onclick="if(event.target === this) closeServiciosModal()">
+        <div class="relative transform overflow-hidden rounded-2xl card-clean text-left shadow-xl transition-all w-full max-w-md p-4 flex flex-col space-y-3">
+          <div class="flex justify-between items-center border-b border-slate-800/80 pb-2">
+            <h2 class="text-sm font-semibold text-main flex items-center gap-2">⚙️ Tarifario & Sueldos Base</h2>
+            <button onclick="closeServiciosModal()" class="w-7 h-7 rounded-full card-clean text-muted font-semibold text-xs hover:bg-slate-800 focus:outline-none">✕</button>
           </div>
-          <input type="text" id="cfg-dolar-usd" inputmode="decimal" placeholder="1200" onfocus="handleInputFocus(this)" onblur="handleInputBlur(this)" oninput="formatLiveCurrencyInput(this); renderServiciosGlobales();" class="w-24 card-clean p-2 text-right font-bold text-main text-xs">
+
+          <!-- Headless UI Style Tabs -->
+          <div class="flex space-x-1 rounded-xl bg-slate-800/40 p-1 mb-1">
+            <button onclick="switchServTab('tab-serv-lista')" id="btn-serv-lista" class="w-full rounded-lg py-2 text-xs font-medium bg-accent text-white shadow transition-all focus:outline-none">Servicios / Sub</button>
+            <button onclick="switchServTab('tab-serv-sueldos')" id="btn-serv-sueldos" class="w-full rounded-lg py-2 text-xs font-medium text-muted hover:bg-slate-800/40 hover:text-main transition-all focus:outline-none">Sueldos Base</button>
+          </div>
+
+          <div id="tab-serv-lista" class="space-y-3">
+            <div class="card-clean p-2.5 flex justify-between items-center">
+              <div>
+                <label class="text-xs font-semibold text-main block">Cotización Dólar ($ USD)</label>
+                <span class="text-[10px] text-muted block">Recalcula servicios en USD en vivo</span>
+              </div>
+              <input type="text" id="cfg-dolar-usd" inputmode="decimal" placeholder="1200" onfocus="handleInputFocus(this)" onblur="handleInputBlur(this)" oninput="formatLiveCurrencyInput(this); renderServiciosGlobales();" class="w-24 card-clean p-2 text-right font-bold text-main text-xs focus:ring-1 focus:ring-accent rounded-lg outline-none">
+            </div>
+            <div class="flex justify-between items-center">
+              <span class="text-xs font-semibold uppercase text-muted">Lista de Servicios</span>
+              <button onclick="addServicioGlobalRow()" class="text-[10px] bg-accent hover:brightness-110 text-white px-2 py-1 rounded-md font-semibold focus:outline-none">+ Nuevo Servicio</button>
+            </div>
+            <div id="modal-servicios-list" class="space-y-2 overflow-y-auto max-h-52 pr-1 custom-scroll"></div>
+            <div class="pt-2 border-t border-slate-800/80 flex justify-between items-center">
+              <span class="text-xs text-muted font-medium">Total Servicios Est.:</span>
+              <span id="modal-servicios-total" class="text-xs font-semibold text-main whitespace-nowrap">$ 0,00</span>
+            </div>
+            <button onclick="saveServiciosConfig(this)" class="w-full bg-accent hover:brightness-110 text-white py-2.5 rounded-xl text-xs font-semibold shadow-sm transition-all focus:outline-none focus:ring-2 focus:ring-accent">
+              🔄 Guardar Servicios
+            </button>
+          </div>
+
+          <div id="tab-serv-sueldos" class="hidden space-y-3 py-2">
+            <p class="text-xs text-muted">Ingresá los sueldos base actualizados. Aplicarán como base a todas las proyecciones.</p>
+            <div class="card-clean p-3 space-y-1">
+              <label class="text-xs font-semibold text-main block">Sueldo Base Brian ($)</label>
+              <input type="text" id="cfg-sueldo-brian" inputmode="decimal" placeholder="0.00" onfocus="handleInputFocus(this)" onblur="handleInputBlur(this)" oninput="formatLiveCurrencyInput(this)" class="w-full card-clean p-2 font-bold text-main text-sm outline-none focus:ring-1 focus:ring-accent rounded-lg">
+            </div>
+            <div class="card-clean p-3 space-y-1">
+              <label class="text-xs font-semibold text-main block">Sueldo Base Virginia ($)</label>
+              <input type="text" id="cfg-sueldo-virginia" inputmode="decimal" placeholder="0.00" onfocus="handleInputFocus(this)" onblur="handleInputBlur(this)" oninput="formatLiveCurrencyInput(this)" class="w-full card-clean p-2 font-bold text-main text-sm outline-none focus:ring-1 focus:ring-accent rounded-lg">
+            </div>
+            <button onclick="saveServiciosConfig(this)" class="w-full bg-accent hover:brightness-110 text-white py-2.5 rounded-xl text-xs font-semibold shadow-sm transition-all mt-2 focus:outline-none focus:ring-2 focus:ring-accent">
+              🔄 Guardar Sueldos
+            </button>
+          </div>
         </div>
-
-        <div class="flex justify-between items-center">
-          <span class="text-xs font-semibold uppercase text-muted">Lista de Servicios</span>
-          <button onclick="addServicioGlobalRow()" class="text-[10px] bg-accent hover:brightness-110 text-white px-2 py-1 rounded-md font-semibold">+ Nuevo Servicio</button>
-        </div>
-
-        <div id="modal-servicios-list" class="space-y-2 overflow-y-auto max-h-52 pr-1 custom-scroll"></div>
-
-        <div class="pt-2 border-t border-slate-800/80 flex justify-between items-center">
-          <span class="text-xs text-muted font-medium">Total Servicios Est.:</span>
-          <span id="modal-servicios-total" class="text-xs font-semibold text-main whitespace-nowrap">$ 0,00</span>
-        </div>
-
-        <button onclick="saveServiciosConfig(this)" class="w-full bg-accent hover:brightness-110 text-white py-2.5 rounded-xl text-xs font-semibold shadow-sm transition-all">
-          🔄 Guardar Servicios
-        </button>
-      </div>
-
-      <div id="tab-serv-sueldos" class="hidden space-y-3 py-2">
-        <p class="text-xs text-muted">Ingresá los sueldos base actualizados. Aplicarán como base a todas las proyecciones.</p>
-        
-        <div class="card-clean p-3 space-y-1">
-          <label class="text-xs font-semibold text-main block">Sueldo Base Brian ($)</label>
-          <input type="text" id="cfg-sueldo-brian" inputmode="decimal" placeholder="0.00" onfocus="handleInputFocus(this)" onblur="handleInputBlur(this)" oninput="formatLiveCurrencyInput(this)" class="w-full card-clean p-2 font-bold text-main text-sm">
-        </div>
-
-        <div class="card-clean p-3 space-y-1">
-          <label class="text-xs font-semibold text-main block">Sueldo Base Virginia ($)</label>
-          <input type="text" id="cfg-sueldo-virginia" inputmode="decimal" placeholder="0.00" onfocus="handleInputFocus(this)" onblur="handleInputBlur(this)" oninput="formatLiveCurrencyInput(this)" class="w-full card-clean p-2 font-bold text-main text-sm">
-        </div>
-
-        <button onclick="saveServiciosConfig(this)" class="w-full bg-accent hover:brightness-110 text-white py-2.5 rounded-xl text-xs font-semibold shadow-sm transition-all mt-2">
-          🔄 Guardar Sueldos
-        </button>
       </div>
     </div>
   </div>
 
   <!-- RESTO DE MODALES DE LA APP DIARIA -->
-  <div id="hb-quick-modal" onclick="if(event.target === this) closeHBUpdate()" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-[60] flex items-center justify-center p-4">
-    <div class="card-clean w-full max-w-sm p-5 shadow-xl">
-      <label class="text-xs font-semibold text-main block mb-3 text-center uppercase tracking-wide">Ingresar Nuevo Saldo (HB)</label>
-      <input type="text" id="input-hb-update" inputmode="decimal" placeholder="Ej: 500000,50" onfocus="handleInputFocus(this)" onblur="handleInputBlur(this)" oninput="formatLiveCurrencyInput(this)" class="w-full card-clean p-3 text-main text-base font-bold mb-4 text-center input-focus">
-      <div class="flex gap-2">
-        <button onclick="saveHBUpdate()" class="flex-1 bg-accent hover:brightness-110 text-white py-2.5 rounded-xl text-xs font-semibold shadow-sm">Guardar</button>
-        <button onclick="closeHBUpdate()" class="flex-1 card-clean text-main py-2.5 rounded-xl text-xs font-medium hover:bg-slate-800">Cancelar</button>
-      </div>
-    </div>
-  </div>
-
-  <div id="modal-rollover" class="hidden fixed inset-0 bg-slate-950/90 backdrop-blur-md z-[80] flex items-center justify-center p-4">
-    <div class="card-clean w-full max-w-sm p-5 flex flex-col text-center shadow-2xl">
-      <span class="text-3xl mb-2">🌅</span>
-      <h2 class="text-sm font-semibold text-main mb-1">¡Nuevo Día Detectado!</h2>
-      <p class="text-xs text-muted mb-3">Ayer te sobraron <strong id="rollover-amount" class="font-bold text-main text-sm">$ 0,00</strong> de tu presupuesto.</p>
-      <p class="text-[11px] text-muted mb-5">¿Qué te gustaría hacer con ese dinero sobrante?</p>
-
-      <div class="space-y-2">
-        <button onclick="confirmRollover(true)" class="w-full bg-accent hover:brightness-110 text-white font-semibold text-xs py-3 rounded-xl shadow-sm">
-          📥 Guardar sobrante en la Bolsa (Ahorro)
-        </button>
-        <button onclick="confirmRollover(false)" class="w-full card-clean text-main font-medium text-xs py-3 rounded-xl hover:bg-slate-800">
-          🔄 Repartir entre los días que quedan
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <div id="modal-config" onclick="if(event.target === this) closeConfigModal()" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-md z-[70] flex items-center justify-center p-4">
-    <div class="card-clean w-full max-w-sm p-4 flex flex-col shadow-2xl">
-      <div class="flex justify-between items-center border-b border-slate-800/80 pb-2 mb-3">
-        <h2 class="text-sm font-semibold text-main">⚙️ Preferencias</h2>
-        <button onclick="closeConfigModal()" class="w-7 h-7 rounded-full card-clean text-muted font-semibold text-xs hover:bg-slate-800">✕</button>
-      </div>
-
-      <div class="flex border-b border-slate-800/80 mb-4 text-xs font-semibold">
-        <button onclick="switchCfgTab('cfg-fecha')" id="btn-cfg-fecha" class="flex-1 py-2 t-accent border-b-2 border-accent transition-all">Fecha Cobro</button>
-        <button onclick="switchCfgTab('cfg-tema')" id="btn-cfg-tema" class="flex-1 py-2 text-muted transition-all">Estilo Visual</button>
-      </div>
-
-      <div id="cfg-fecha" class="space-y-4">
-        <label class="flex items-start gap-2 text-xs text-main">
-          <input type="checkbox" id="cfg-auto-date" onchange="toggleAutoDate()" class="w-4 h-4 mt-0.5 rounded">
-          <div>
-             <span class="font-semibold text-main block">Automático (Recomendado)</span>
-             <span class="text-[10px] text-muted block mt-0.5">Calcula feriados oficiales automáticamente.</span>
+  <div id="hb-quick-modal" class="hidden relative z-[60]" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <div class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm transition-opacity"></div>
+    <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
+      <div class="flex min-h-full items-center justify-center p-4 text-center" onclick="if(event.target === this) closeHBUpdate()">
+        <div class="relative transform overflow-hidden rounded-2xl card-clean text-left shadow-xl transition-all w-full max-w-sm p-5">
+          <label class="text-xs font-semibold text-main block mb-3 text-center uppercase tracking-wide">Ingresar Nuevo Saldo (HB)</label>
+          <input type="text" id="input-hb-update" inputmode="decimal" placeholder="Ej: 500000,50" onfocus="handleInputFocus(this)" onblur="handleInputBlur(this)" oninput="formatLiveCurrencyInput(this)" class="w-full card-clean p-3 text-main text-base font-bold mb-4 text-center input-focus rounded-xl">
+          <div class="flex gap-2">
+            <button onclick="saveHBUpdate()" class="flex-1 bg-accent hover:brightness-110 text-white py-2.5 rounded-xl text-xs font-semibold shadow-sm focus:outline-none">Guardar</button>
+            <button onclick="closeHBUpdate()" class="flex-1 card-clean text-main py-2.5 rounded-xl text-xs font-medium hover:bg-slate-800 focus:outline-none">Cancelar</button>
           </div>
-        </label>
-        <div id="cfg-manual-box" class="hidden p-3 card-clean">
-          <label class="text-[11px] text-muted block mb-1">Fijar fecha manualmente:</label>
-          <input type="date" id="cfg-manual-date" class="w-full card-clean p-2 text-main text-xs outline-none">
         </div>
       </div>
-
-      <div id="cfg-tema" class="hidden space-y-3">
-        <div>
-          <label class="text-[11px] text-muted block mb-1">Elegir un Tema (<span id="user-theme-label" class="font-semibold">Brian</span>):</label>
-          <select id="cfg-preset" onchange="applyPreset()" class="w-full card-clean p-2 text-main text-xs outline-none custom-scroll">
-          </select>
-        </div>
-        <div id="cfg-colors-box" class="hidden grid grid-cols-2 gap-3 p-3 card-clean">
-           <div><label class="text-[10px] text-muted block mb-1">Color Principal</label><input type="color" id="col-accent" class="w-full h-8 cursor-pointer rounded border border-slate-700 bg-slate-800"></div>
-           <div><label class="text-[10px] text-muted block mb-1">Fondo App</label><input type="color" id="col-bg" class="w-full h-8 cursor-pointer rounded border border-slate-700 bg-slate-800"></div>
-           <div><label class="text-[10px] text-muted block mb-1">Tarjetas</label><input type="color" id="col-card" class="w-full h-8 cursor-pointer rounded border border-slate-700 bg-slate-800"></div>
-           <div><label class="text-[10px] text-muted block mb-1">Bordes</label><input type="color" id="col-border" class="w-full h-8 cursor-pointer rounded border border-slate-700 bg-slate-800"></div>
-           <label class="col-span-2 flex items-center gap-2 text-xs text-main mt-1">
-             <input type="checkbox" id="col-islight" onchange="applyPreset()" class="w-4 h-4 rounded"> Tema Claro (Letras Oscuras)
-           </label>
-        </div>
-      </div>
-
-      <button onclick="saveConfiguration()" class="mt-5 w-full bg-accent hover:brightness-110 text-white py-2.5 rounded-xl text-xs font-semibold shadow-sm">Guardar Cambios</button>
     </div>
   </div>
 
-  <div id="modal-calendario" onclick="if(event.target === this) closeCalendarModal()" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-md z-[50] flex items-center justify-center p-4">
-    <div class="card-clean w-full max-w-md max-h-[85vh] p-4 flex flex-col shadow-2xl">
-      <div class="flex justify-between items-center border-b border-slate-800/80 pb-3 mb-3">
-        <div>
-          <h2 class="text-sm font-semibold text-main">📅 Presupuesto por Día</h2>
-          <p class="text-[10px] t-accent font-medium" id="modal-days-subtitle">Días Restantes</p>
+  <div id="modal-rollover" class="hidden relative z-[80]" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <div class="fixed inset-0 bg-slate-950/90 backdrop-blur-md transition-opacity"></div>
+    <div class="fixed inset-0 z-10 w-screen overflow-y-auto pointer-events-none">
+      <div class="flex min-h-full items-center justify-center p-4 text-center">
+        <div class="relative transform overflow-hidden rounded-2xl card-clean text-center shadow-2xl transition-all w-full max-w-sm p-5 flex flex-col pointer-events-auto">
+          <span class="text-3xl mb-2">🌅</span>
+          <h2 class="text-sm font-semibold text-main mb-1">¡Nuevo Día Detectado!</h2>
+          <p class="text-xs text-muted mb-3">Ayer te sobraron <strong id="rollover-amount" class="font-bold text-main text-sm">$ 0,00</strong> de tu presupuesto.</p>
+          <p class="text-[11px] text-muted mb-5">¿Qué te gustaría hacer con ese dinero sobrante?</p>
+          <div class="space-y-2">
+            <button onclick="confirmRollover(true)" class="w-full bg-accent hover:brightness-110 text-white font-semibold text-xs py-3 rounded-xl shadow-sm focus:outline-none">
+              📥 Guardar sobrante en la Bolsa (Ahorro)
+            </button>
+            <button onclick="confirmRollover(false)" class="w-full card-clean text-main font-medium text-xs py-3 rounded-xl hover:bg-slate-800 focus:outline-none">
+              🔄 Repartir entre los días que quedan
+            </button>
+          </div>
         </div>
-        <button onclick="closeCalendarModal()" class="w-8 h-8 rounded-full card-clean text-muted font-semibold text-xs hover:bg-slate-800">✕</button>
       </div>
-      <div id="modal-calendario-body" class="space-y-2 overflow-y-auto pr-1 custom-scroll flex-1"></div>
-      <button onclick="closeCalendarModal()" class="mt-4 w-full card-clean text-main py-2.5 rounded-xl font-semibold text-xs hover:bg-slate-800">Cerrar Ventana</button>
     </div>
   </div>
 
-  <div id="modal-editar" onclick="if(event.target === this) closeEditModal()" class="hidden fixed inset-0 bg-slate-950/90 backdrop-blur-md z-[60] flex items-center justify-center p-4">
-    <div class="card-clean w-full max-w-sm p-5 shadow-2xl">
-      <h2 class="text-sm font-semibold text-main mb-1">Editar Movimiento</h2>
-      <p id="edit-mov-tipo" class="text-xs text-muted mb-4"></p>
-      <input type="hidden" id="edit-id">
-      
-      <label class="text-xs text-muted block mb-1">Concepto:</label>
-      <input type="text" id="edit-concepto" class="w-full card-clean p-3 text-main text-xs mb-3 outline-none input-focus">
-      
-      <label class="text-xs text-muted block mb-1">Monto (Valor Absoluto):</label>
-      <input type="text" id="edit-monto" inputmode="decimal" onfocus="handleInputFocus(this)" onblur="handleInputBlur(this)" oninput="formatLiveCurrencyInput(this)" class="w-full card-clean p-3 text-main font-bold text-sm mb-5 outline-none input-focus">
-      
-      <div class="flex gap-2">
-        <button onclick="saveEdit()" class="flex-1 bg-accent hover:brightness-110 text-white py-2.5 rounded-xl text-xs font-semibold shadow-sm">Guardar Cambios</button>
-        <button onclick="closeEditModal()" class="flex-1 card-clean text-main py-2.5 rounded-xl text-xs font-medium hover:bg-slate-800">Cancelar</button>
+  <div id="modal-config" class="hidden relative z-[70]" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <div class="fixed inset-0 bg-slate-950/80 backdrop-blur-md transition-opacity"></div>
+    <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
+      <div class="flex min-h-full items-center justify-center p-4 text-center" onclick="if(event.target === this) closeConfigModal()">
+        <div class="relative transform overflow-hidden rounded-2xl card-clean text-left shadow-xl transition-all w-full max-w-sm p-4 flex flex-col">
+          <div class="flex justify-between items-center border-b border-slate-800/80 pb-2 mb-3">
+            <h2 class="text-sm font-semibold text-main">⚙️ Preferencias</h2>
+            <button onclick="closeConfigModal()" class="w-7 h-7 rounded-full card-clean text-muted font-semibold text-xs hover:bg-slate-800 focus:outline-none">✕</button>
+          </div>
+
+          <!-- Headless UI Style Tabs -->
+          <div class="flex space-x-1 rounded-xl bg-slate-800/40 p-1 mb-4">
+            <button onclick="switchCfgTab('cfg-fecha')" id="btn-cfg-fecha" class="w-full rounded-lg py-2 text-xs font-medium bg-accent text-white shadow transition-all focus:outline-none">Fecha Cobro</button>
+            <button onclick="switchCfgTab('cfg-tema')" id="btn-cfg-tema" class="w-full rounded-lg py-2 text-xs font-medium text-muted hover:bg-slate-800/40 hover:text-main transition-all focus:outline-none">Estilo Visual</button>
+          </div>
+
+          <div id="cfg-fecha" class="space-y-4">
+            <label class="flex items-center justify-between cursor-pointer p-1 rounded-lg hover:bg-slate-800/30 transition-colors">
+              <div>
+                 <span class="font-semibold text-main block text-xs">Automático (Recomendado)</span>
+                 <span class="text-[10px] text-muted block mt-0.5">Calcula feriados oficiales automáticamente.</span>
+              </div>
+              <div class="relative inline-flex items-center shrink-0">
+                <input type="checkbox" id="cfg-auto-date" onchange="toggleAutoDate()" class="sr-only peer">
+                <div class="w-11 h-6 bg-slate-700/50 border border-slate-600 rounded-full peer peer-checked:bg-accent transition-colors duration-200 ease-in-out"></div>
+                <div class="absolute left-[2px] top-[2px] bg-white w-5 h-5 rounded-full transition-transform duration-200 ease-in-out peer-checked:translate-x-5 shadow-sm"></div>
+              </div>
+            </label>
+            <div id="cfg-manual-box" class="hidden p-3 card-clean rounded-xl mt-2">
+              <label class="text-[11px] text-muted block mb-1">Fijar fecha manualmente:</label>
+              <input type="date" id="cfg-manual-date" class="w-full card-clean p-2 text-main text-xs outline-none rounded-lg focus:ring-1 focus:ring-accent">
+            </div>
+          </div>
+
+          <div id="cfg-tema" class="hidden space-y-3">
+            <div>
+              <label class="text-[11px] text-muted block mb-1">Elegir un Tema (<span id="user-theme-label" class="font-semibold">Brian</span>):</label>
+              <div class="relative">
+                <select id="cfg-preset" onchange="applyPreset()" class="w-full card-clean p-2 text-main text-xs outline-none custom-scroll rounded-lg appearance-none pr-8 focus:ring-1 focus:ring-accent">
+                </select>
+                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-muted">
+                  <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </div>
+              </div>
+            </div>
+            <div id="cfg-colors-box" class="hidden grid grid-cols-2 gap-3 p-3 card-clean rounded-xl">
+               <div><label class="text-[10px] text-muted block mb-1">Color Principal</label><input type="color" id="col-accent" class="w-full h-8 cursor-pointer rounded border border-slate-700 bg-slate-800"></div>
+               <div><label class="text-[10px] text-muted block mb-1">Fondo App</label><input type="color" id="col-bg" class="w-full h-8 cursor-pointer rounded border border-slate-700 bg-slate-800"></div>
+               <div><label class="text-[10px] text-muted block mb-1">Tarjetas</label><input type="color" id="col-card" class="w-full h-8 cursor-pointer rounded border border-slate-700 bg-slate-800"></div>
+               <div><label class="text-[10px] text-muted block mb-1">Bordes</label><input type="color" id="col-border" class="w-full h-8 cursor-pointer rounded border border-slate-700 bg-slate-800"></div>
+               
+               <label class="col-span-2 flex items-center justify-between mt-2 cursor-pointer p-1 rounded-lg hover:bg-slate-800/30 transition-colors">
+                 <span class="text-xs text-main">Tema Claro (Letras Oscuras)</span>
+                 <div class="relative inline-flex items-center shrink-0">
+                   <input type="checkbox" id="col-islight" onchange="applyPreset()" class="sr-only peer">
+                   <div class="w-11 h-6 bg-slate-700/50 border border-slate-600 rounded-full peer peer-checked:bg-accent transition-colors duration-200 ease-in-out"></div>
+                   <div class="absolute left-[2px] top-[2px] bg-white w-5 h-5 rounded-full transition-transform duration-200 ease-in-out peer-checked:translate-x-5 shadow-sm"></div>
+                 </div>
+               </label>
+            </div>
+          </div>
+
+          <button onclick="saveConfiguration()" class="mt-5 w-full bg-accent hover:brightness-110 text-white py-2.5 rounded-xl text-xs font-semibold shadow-sm focus:outline-none">Guardar Cambios</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="modal-calendario" class="hidden relative z-[50]" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <div class="fixed inset-0 bg-slate-950/80 backdrop-blur-md transition-opacity"></div>
+    <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
+      <div class="flex min-h-full items-center justify-center p-4 text-center" onclick="if(event.target === this) closeCalendarModal()">
+        <div class="relative transform overflow-hidden rounded-2xl card-clean text-left shadow-xl transition-all w-full max-w-md max-h-[85vh] p-4 flex flex-col">
+          <div class="flex justify-between items-center border-b border-slate-800/80 pb-3 mb-3">
+            <div>
+              <h2 class="text-sm font-semibold text-main">📅 Presupuesto por Día</h2>
+              <p class="text-[10px] t-accent font-medium" id="modal-days-subtitle">Días Restantes</p>
+            </div>
+            <button onclick="closeCalendarModal()" class="w-8 h-8 rounded-full card-clean text-muted font-semibold text-xs hover:bg-slate-800 focus:outline-none">✕</button>
+          </div>
+          <div id="modal-calendario-body" class="space-y-2 overflow-y-auto pr-1 custom-scroll flex-1"></div>
+          <button onclick="closeCalendarModal()" class="mt-4 w-full card-clean text-main py-2.5 rounded-xl font-semibold text-xs hover:bg-slate-800 focus:outline-none">Cerrar Ventana</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="modal-editar" class="hidden relative z-[60]" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <div class="fixed inset-0 bg-slate-950/90 backdrop-blur-md transition-opacity"></div>
+    <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
+      <div class="flex min-h-full items-center justify-center p-4 text-center" onclick="if(event.target === this) closeEditModal()">
+        <div class="relative transform overflow-hidden rounded-2xl card-clean text-left shadow-xl transition-all w-full max-w-sm p-5">
+          <h2 class="text-sm font-semibold text-main mb-1">Editar Movimiento</h2>
+          <p id="edit-mov-tipo" class="text-xs text-muted mb-4"></p>
+          <input type="hidden" id="edit-id">
+          
+          <label class="text-xs text-muted block mb-1">Concepto:</label>
+          <input type="text" id="edit-concepto" class="w-full card-clean p-3 text-main text-xs mb-3 outline-none input-focus rounded-xl">
+          
+          <label class="text-xs text-muted block mb-1">Monto (Valor Absoluto):</label>
+          <input type="text" id="edit-monto" inputmode="decimal" onfocus="handleInputFocus(this)" onblur="handleInputBlur(this)" oninput="formatLiveCurrencyInput(this)" class="w-full card-clean p-3 text-main font-bold text-sm mb-5 outline-none input-focus rounded-xl">
+          
+          <div class="flex gap-2">
+            <button onclick="saveEdit()" class="flex-1 bg-accent hover:brightness-110 text-white py-2.5 rounded-xl text-xs font-semibold shadow-sm focus:outline-none">Guardar</button>
+            <button onclick="closeEditModal()" class="flex-1 card-clean text-main py-2.5 rounded-xl text-xs font-medium hover:bg-slate-800 focus:outline-none">Cancelar</button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -907,13 +979,13 @@
       if(user === "Brian") {
         lblUser.innerHTML = `<span class="t-accent font-semibold">Brian</span>`; 
         if(lblUserTheme) { lblUserTheme.innerText = "Brian"; lblUserTheme.className = "t-accent font-semibold"; }
-        btnB.className = "px-4 py-1.5 text-xs rounded-full bg-accent text-white font-medium shadow-sm transition-all";
-        btnV.className = "px-4 py-1.5 text-xs rounded-full card-clean text-muted hover:bg-slate-800 transition-all font-medium";
+        btnB.className = "px-4 py-1.5 text-xs rounded-full bg-accent text-white font-medium shadow-sm transition-all focus:outline-none";
+        btnV.className = "px-4 py-1.5 text-xs rounded-full card-clean text-muted hover:bg-slate-800 transition-all font-medium focus:outline-none";
       } else {
         lblUser.innerHTML = `<span class="t-accent font-semibold">Virginia</span>`; 
         if(lblUserTheme) { lblUserTheme.innerText = "Virginia"; lblUserTheme.className = "t-accent font-semibold"; }
-        btnV.className = "px-4 py-1.5 text-xs rounded-full bg-accent text-white font-medium shadow-sm transition-all";
-        btnB.className = "px-4 py-1.5 text-xs rounded-full card-clean text-muted hover:bg-slate-800 transition-all font-medium";
+        btnV.className = "px-4 py-1.5 text-xs rounded-full bg-accent text-white font-medium shadow-sm transition-all focus:outline-none";
+        btnB.className = "px-4 py-1.5 text-xs rounded-full card-clean text-muted hover:bg-slate-800 transition-all font-medium focus:outline-none";
       }
       applySavedConfig(); guardarEnCache();
     }
@@ -941,10 +1013,12 @@
     }
     
     function closeConfigModal() { document.getElementById('modal-config').classList.add('hidden'); applySavedConfig(); }
+    
+    // Función actualizada para Headless UI Tabs style
     function switchCfgTab(tabId) {
       document.getElementById('cfg-fecha').classList.add('hidden'); document.getElementById('cfg-tema').classList.add('hidden'); document.getElementById(tabId).classList.remove('hidden');
-      document.getElementById('btn-cfg-fecha').className = tabId === 'cfg-fecha' ? "flex-1 py-2 t-accent border-b-2 border-accent transition-all" : "flex-1 py-2 text-muted transition-all";
-      document.getElementById('btn-cfg-tema').className = tabId === 'cfg-tema' ? "flex-1 py-2 t-accent border-b-2 border-accent transition-all" : "flex-1 py-2 text-muted transition-all";
+      document.getElementById('btn-cfg-fecha').className = tabId === 'cfg-fecha' ? "w-full rounded-lg py-2 text-xs font-medium bg-accent text-white shadow transition-all focus:outline-none" : "w-full rounded-lg py-2 text-xs font-medium text-muted hover:bg-slate-800/40 hover:text-main transition-all focus:outline-none";
+      document.getElementById('btn-cfg-tema').className = tabId === 'cfg-tema' ? "w-full rounded-lg py-2 text-xs font-medium bg-accent text-white shadow transition-all focus:outline-none" : "w-full rounded-lg py-2 text-xs font-medium text-muted hover:bg-slate-800/40 hover:text-main transition-all focus:outline-none";
     }
 
     function toggleAutoDate() { const isAuto = document.getElementById('cfg-auto-date').checked; document.getElementById('cfg-manual-box').classList.toggle('hidden', isAuto); }
@@ -1015,12 +1089,13 @@
       fetchData(true); 
     }
 
+    // Función actualizada para Headless UI Tabs style
     function switchTab(tabId) {
       document.querySelectorAll('.nav-form').forEach(f => f.classList.add('hidden')); document.getElementById(tabId).classList.remove('hidden');
       ['unico', 'divisible', 'ajuste'].forEach(t => {
         const btn = document.getElementById(`btn-tab-${t}`);
-        if (`tab-${t}` === tabId) btn.className = "flex-1 py-2.5 t-accent border-b-2 border-accent font-semibold transition-all text-center";
-        else btn.className = "flex-1 py-2.5 text-muted font-medium transition-all text-center";
+        if (`tab-${t}` === tabId) btn.className = "w-full rounded-lg py-2.5 text-xs font-medium leading-5 bg-accent text-white shadow transition-all focus:outline-none";
+        else btn.className = "w-full rounded-lg py-2.5 text-xs font-medium leading-5 text-muted hover:bg-slate-800/40 hover:text-main transition-all focus:outline-none";
       });
     }
 
@@ -1425,7 +1500,7 @@
         let cls = isActive 
           ? "bg-accent text-white font-semibold shadow-sm" 
           : "card-clean text-muted font-medium hover:bg-slate-800/50";
-        container.innerHTML += `<button onclick="changeMonth('${m}')" class="shrink-0 px-3 py-1.5 rounded-xl text-[11px] transition-all ${cls}">${m}</button>`;
+        container.innerHTML += `<button onclick="changeMonth('${m}')" class="shrink-0 px-3 py-1.5 rounded-xl text-[11px] transition-all focus:outline-none ${cls}">${m}</button>`;
       });
       document.getElementById('proy-select-mes').value = currentProyMonth;
 
@@ -1478,6 +1553,7 @@
       } catch (e) { console.error("Error cargando proyecciones", e); }
     }
 
+    // Funciones actualizadas para el diseño de Headless UI Tabs de Servicios
     function openServiciosModal() {
       document.getElementById('cfg-dolar-usd').value = dolarUSD;
       document.getElementById('cfg-sueldo-brian').value = sueldoBaseBrian;
@@ -1498,8 +1574,8 @@
       document.getElementById('tab-serv-sueldos').classList.add('hidden');
       document.getElementById(tabId).classList.remove('hidden');
 
-      document.getElementById('btn-serv-lista').className = tabId === 'tab-serv-lista' ? "flex-1 py-2 t-accent border-b-2 border-accent transition-all" : "flex-1 py-2 text-muted transition-all";
-      document.getElementById('btn-serv-sueldos').className = tabId === 'tab-serv-sueldos' ? "flex-1 py-2 t-accent border-b-2 border-accent transition-all" : "flex-1 py-2 text-muted transition-all";
+      document.getElementById('btn-serv-lista').className = tabId === 'tab-serv-lista' ? "w-full rounded-lg py-2 text-xs font-medium bg-accent text-white shadow transition-all focus:outline-none" : "w-full rounded-lg py-2 text-xs font-medium text-muted hover:bg-slate-800/40 hover:text-main transition-all focus:outline-none";
+      document.getElementById('btn-serv-sueldos').className = tabId === 'tab-serv-sueldos' ? "w-full rounded-lg py-2 text-xs font-medium bg-accent text-white shadow transition-all focus:outline-none" : "w-full rounded-lg py-2 text-xs font-medium text-muted hover:bg-slate-800/40 hover:text-main transition-all focus:outline-none";
     }
 
     function renderServiciosGlobales() {
@@ -1517,21 +1593,21 @@
         let row = `
           <div class="card-clean p-2 text-xs space-y-1.5">
             <div class="flex gap-1.5 items-center">
-              <input type="text" value="${serv.concepto}" placeholder="Servicio" onchange="serviciosGlobales[${idx}].concepto=this.value; renderServiciosGlobales();" class="flex-1 card-clean p-1 text-main font-medium outline-none">
-              <select onchange="serviciosGlobales[${idx}].moneda=this.value; renderServiciosGlobales();" class="card-clean text-main font-bold p-1 outline-none">
+              <input type="text" value="${serv.concepto}" placeholder="Servicio" onchange="serviciosGlobales[${idx}].concepto=this.value; renderServiciosGlobales();" class="flex-1 card-clean p-1 text-main font-medium outline-none rounded">
+              <select onchange="serviciosGlobales[${idx}].moneda=this.value; renderServiciosGlobales();" class="card-clean text-main font-bold p-1 outline-none rounded appearance-none pr-4">
                 <option value="ARS" ${serv.moneda === 'ARS' ? 'selected' : ''}>$ ARS</option>
                 <option value="USD" ${serv.moneda === 'USD' ? 'selected' : ''}>$ USD</option>
               </select>
-              <button onclick="serviciosGlobales.splice(${idx},1); renderServiciosGlobales();" class="text-muted hover:text-red-400 p-1">🗑️</button>
+              <button onclick="serviciosGlobales.splice(${idx},1); renderServiciosGlobales();" class="text-muted hover:text-red-400 p-1 focus:outline-none">🗑️</button>
             </div>
             <div class="flex gap-2 items-center justify-between">
               <div class="flex items-center gap-1">
                 <span class="text-[9px] text-muted">Cant:</span>
-                <input type="number" value="${cant}" onchange="serviciosGlobales[${idx}].cant=parseInt(this.value)||1; renderServiciosGlobales();" class="w-12 card-clean p-1 text-center text-main font-bold outline-none">
+                <input type="number" value="${cant}" onchange="serviciosGlobales[${idx}].cant=parseInt(this.value)||1; renderServiciosGlobales();" class="w-12 card-clean p-1 text-center text-main font-bold outline-none rounded">
               </div>
               <div class="flex items-center gap-1">
                 <span class="text-[9px] text-muted">Precio Unit:</span>
-                <input type="text" inputmode="decimal" value="${new Intl.NumberFormat('es-AR').format(precioIndividual)}" onfocus="handleInputFocus(this)" onblur="handleInputBlur(this)" oninput="formatLiveCurrencyInput(this); serviciosGlobales[${idx}].precio=parseAmountInput(this.value); renderServiciosGlobales();" class="w-24 card-clean p-1 text-right text-main font-bold outline-none">
+                <input type="text" inputmode="decimal" value="${new Intl.NumberFormat('es-AR').format(precioIndividual)}" onfocus="handleInputFocus(this)" onblur="handleInputBlur(this)" oninput="formatLiveCurrencyInput(this); serviciosGlobales[${idx}].precio=parseAmountInput(this.value); renderServiciosGlobales();" class="w-24 card-clean p-1 text-right text-main font-bold outline-none rounded">
               </div>
               <span class="font-semibold text-main text-xs">${formatMoney(costoSubtotal)}</span>
             </div>
@@ -1632,16 +1708,20 @@
         if (isEnabled) totalComputado += costoSubtotal;
 
         let row = `
-          <div class="card-clean p-2.5 ${isEnabled ? 'bg-accent-light border-accent-light' : 'opacity-50'} flex justify-between items-center transition-all cursor-pointer" onclick="toggleServicioForCurrentMonth('${serv.concepto.replace(/'/g, "\\'")}', ${!isEnabled})">
-            <div class="flex items-center gap-2.5">
-              <input type="checkbox" ${isEnabled ? 'checked' : ''} onclick="event.stopPropagation(); toggleServicioForCurrentMonth('${serv.concepto.replace(/'/g, "\\'")}', this.checked)" class="w-4 h-4 rounded cursor-pointer">
+          <label class="card-clean p-2.5 ${isEnabled ? 'bg-accent-light border-accent-light' : 'opacity-50'} flex justify-between items-center transition-all cursor-pointer rounded-lg hover:bg-slate-800/30">
+            <div class="flex items-center gap-3">
+              <div class="relative inline-flex items-center shrink-0">
+                <input type="checkbox" ${isEnabled ? 'checked' : ''} onclick="event.stopPropagation(); toggleServicioForCurrentMonth('${serv.concepto.replace(/'/g, "\\'")}', this.checked)" class="sr-only peer">
+                <div class="w-11 h-6 bg-slate-700/50 border border-slate-600 rounded-full peer peer-checked:bg-accent transition-colors duration-200 ease-in-out"></div>
+                <div class="absolute left-[2px] top-[2px] bg-white w-5 h-5 rounded-full transition-transform duration-200 ease-in-out peer-checked:translate-x-5 shadow-sm"></div>
+              </div>
               <div class="flex flex-col">
                 <span class="text-xs font-semibold ${isEnabled ? 'text-main' : 'text-muted line-through'}">${serv.concepto}</span>
                 <span class="text-[9px] text-muted">${serv.cant > 1 ? serv.cant + 'x ' : ''}${serv.moneda === 'USD' ? 'USD ' + serv.precio : '$ ' + serv.precio}</span>
               </div>
             </div>
             <span class="text-xs font-semibold ${isEnabled ? 'text-main' : 'text-muted line-through'}">${formatMoney(costoSubtotal)}</span>
-          </div>`;
+          </label>`;
         container.innerHTML += row;
       });
 
@@ -1734,19 +1814,19 @@
           <div class="card-clean p-2 space-y-2">
             <div class="flex gap-1.5 items-center">
               <div class="flex flex-col gap-0.5">
-                <button onclick="moveGastoOrder('${user}', '${gasto.id}', -1)" ${idx === 0 ? 'disabled class="opacity-20"' : ''} title="Subir orden" class="text-[10px] card-clean p-0.5 leading-none hover:bg-slate-800">▲</button>
-                <button onclick="moveGastoOrder('${user}', '${gasto.id}', 1)" ${idx === list.length - 1 ? 'disabled class="opacity-20"' : ''} title="Bajar orden" class="text-[10px] card-clean p-0.5 leading-none hover:bg-slate-800">▼</button>
+                <button onclick="moveGastoOrder('${user}', '${gasto.id}', -1)" ${idx === 0 ? 'disabled class="opacity-20"' : ''} title="Subir orden" class="text-[10px] card-clean p-0.5 leading-none hover:bg-slate-800 focus:outline-none">▲</button>
+                <button onclick="moveGastoOrder('${user}', '${gasto.id}', 1)" ${idx === list.length - 1 ? 'disabled class="opacity-20"' : ''} title="Bajar orden" class="text-[10px] card-clean p-0.5 leading-none hover:bg-slate-800 focus:outline-none">▼</button>
               </div>
 
-              <select onchange="updateGastoItem('${user}', '${gasto.id}', 'categoria', this.value)" class="card-clean text-[10px] text-main rounded p-1 outline-none">
+              <select onchange="updateGastoItem('${user}', '${gasto.id}', 'categoria', this.value)" class="card-clean text-[10px] text-main rounded p-1 outline-none appearance-none pr-4">
                 ${catOptionsHtml}
               </select>
               <input type="text" value="${gasto.concepto || ''}" placeholder="Concepto" onchange="updateGastoItem('${user}', '${gasto.id}', 'concepto', this.value)" class="flex-1 card-clean p-1.5 rounded text-xs text-main outline-none min-w-0">
-              <button onclick="removeGastoRow('${user}', '${gasto.id}')" class="text-muted hover:text-red-400 p-1.5 card-clean">🗑️</button>
+              <button onclick="removeGastoRow('${user}', '${gasto.id}')" class="text-muted hover:text-red-400 p-1.5 card-clean focus:outline-none">🗑️</button>
             </div>
             
             <div class="flex justify-between items-center gap-2 pl-4">
-              <button type="button" onclick="replicateGastoValue('${user}', '${gasto.id}')" class="flex items-center gap-1.5 text-[10px] text-muted hover:text-main transition-colors" title="Copiar este monto a todos los meses">
+              <button type="button" onclick="replicateGastoValue('${user}', '${gasto.id}')" class="flex items-center gap-1.5 text-[10px] text-muted hover:text-main transition-colors focus:outline-none" title="Copiar este monto a todos los meses">
                 <span class="p-1 rounded card-clean">🔁</span>
                 <span>Copiar al resto del año</span>
               </button>
